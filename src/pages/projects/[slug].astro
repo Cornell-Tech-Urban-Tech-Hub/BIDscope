@@ -1,0 +1,133 @@
+---
+import Layout from '../../layouts/Default.astro';
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import MapVisualizer from '../../components/visualizations/MapVisualizer.js';
+import fs from 'node:fs';
+import path from 'node:path';
+
+// Define getStaticPaths to tell Astro which paths to generate
+export async function getStaticPaths() {
+  const projectEntries = await getCollection('projects');
+  
+  return projectEntries.map(entry => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+// Get the project data from the props
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+
+// Get BID names from all projects for the map
+const allProjects = await getCollection('projects');
+const projectBids = allProjects.map(project => project.data.bidName);
+
+// Check if this BID exists in the GeoJSON
+let bidInMap = false;
+let bidGeoData = null;
+try {
+  const geojsonPath = path.join(process.cwd(), 'public', 'data', 'bids.geojson');
+  const geojsonData = JSON.parse(fs.readFileSync(geojsonPath, 'utf8'));
+  const bidFeature = geojsonData.features.find(
+    feature => feature.properties.F_ALL_BI_2 === entry.data.bidName
+  );
+  
+  if (bidFeature) {
+    bidInMap = true;
+    bidGeoData = bidFeature;
+  }
+} catch (error) {
+  console.error('Error loading BID map data:', error);
+}
+
+// Format date
+function formatDate(date) {
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+}
+---
+
+<Layout 
+  title={`${entry.data.title} | BIDscope`}
+  description={entry.data.description}
+>
+  <div class="container mx-auto px-4 py-12">
+    <div class="mb-8">
+      <a href="/projects" class="text-primary hover:underline flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>
+        Back to Projects
+      </a>
+    </div>
+
+    <article class="max-w-4xl mx-auto">
+      <header class="mb-8">
+        <div class="flex items-center gap-2 text-muted-foreground text-sm mb-2">
+          <span>{formatDate(entry.data.publishDate)}</span>
+          <span>•</span>
+          <span class="bg-primary/10 text-primary px-2 py-1 rounded-full text-xs">{entry.data.borough}</span>
+        </div>
+        
+        <h1 class="text-4xl font-bold mb-4">{entry.data.title}</h1>
+        
+        <div class="flex items-center gap-2">
+          <span class={`text-sm font-medium ${bidInMap ? 'text-primary' : 'text-muted-foreground'}`}>
+            {entry.data.bidName}
+          </span>
+          {bidInMap && (
+            <span class="bg-primary/20 text-primary text-xs px-2 py-1 rounded-full">
+              On Map
+            </span>
+          )}
+        </div>
+      </header>
+
+      {entry.data.thumbnail && (
+        <div class="mb-8">
+          <Image 
+            src={entry.data.thumbnail} 
+            alt={entry.data.title} 
+            width={1200} 
+            height={600} 
+            class="rounded-lg object-cover w-full max-h-[400px]"
+          />
+        </div>
+      )}
+
+      {bidInMap && (
+        <div class="mb-8">
+          <h2 class="text-2xl font-bold mb-4">BID Location</h2>
+          <div class="border rounded-lg overflow-hidden">
+            <!-- Pass the current BID name as focusBid parameter -->
+            <MapVisualizer 
+              client:load 
+              projectBids={projectBids} 
+              focusBid={entry.data.bidName} 
+            />
+          </div>
+        </div>
+      )}
+
+      <div class="prose prose-lg max-w-none">
+        <Content />
+      </div>
+
+      {entry.data.metrics && entry.data.metrics.length > 0 && (
+        <div class="mt-12">
+          <h2 class="text-2xl font-bold mb-4">Key Metrics</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {entry.data.metrics.map((metric) => (
+              <div class="bg-muted p-4 rounded-lg">
+                <p>{metric}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </article>
+  </div>
+</Layout>

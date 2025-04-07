@@ -1,0 +1,110 @@
+---
+import BaseNavigation from '@components/layout/BaseNavigation.astro';
+import BaseFooter from '@components/layout/BaseFooter.astro';
+import BaseHead from '../components/layout/BaseHead.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  classList?: string;
+  pageTitle?: string;
+  ogImage?: URL;
+}
+
+const { title, description, classList, pageTitle, ogImage } = Astro.props;
+---
+
+<html lang='en' class='h-full scroll-smooth'>
+  <BaseHead ogImage={ogImage} title={title} description={description} />
+
+  <body class:list={['min-h-screen flex flex-col', classList]}>
+    <header class="site-header">
+      <div class="container mx-auto px-6 flex items-center justify-between">
+        <a href="/" class="flex items-center gap-3">
+          <span class="text-2xl font-bold tracking-tight text-primary">BIDscope</span>
+        </a>
+        <nav class="hidden md:flex items-center gap-8">
+          <a href="/" class="text-sm font-medium hover:text-primary transition-colors">Home</a>
+          <a href="/projects" class="text-sm font-medium hover:text-primary transition-colors">Projects</a>
+          <a href="/about" class="text-sm font-medium hover:text-primary transition-colors">About</a>
+          <a href="/methodology" class="text-sm font-medium hover:text-primary transition-colors">Methodology</a>
+        </nav>
+        <button id="mobile-menu-button" class="md:hidden">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <div id="mobile-menu" class="fixed inset-0 z-50 bg-background/95 backdrop-blur-md hidden">
+      <div class="container h-full flex flex-col">
+        <div class="flex justify-between items-center py-6">
+          <span class="text-2xl font-bold text-primary">BIDscope</span>
+          <button id="mobile-menu-close">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <nav class="flex flex-col gap-6 text-center mt-12 text-lg">
+          <a href="/" class="py-2 hover:text-primary transition-colors">Home</a>
+          <a href="/projects" class="py-2 hover:text-primary transition-colors">Projects</a>
+          <a href="/about" class="py-2 hover:text-primary transition-colors">About</a>
+          <a href="/methodology" class="py-2 hover:text-primary transition-colors">Methodology</a>
+        </nav>
+      </div>
+    </div>
+
+    <main class="flex-1">
+      <slot />
+    </main>
+    
+    <BaseFooter />
+    
+    <script>
+      // Handle scroll effects on header
+      const header = document.querySelector('.site-header');
+      const handleScroll = () => {
+        if (window.scrollY > 10) {
+          header?.classList.add('scrolled');
+        } else {
+          header?.classList.remove('scrolled');
+        }
+      };
+      
+      window.addEventListener('scroll', handleScroll);
+      
+      // Mobile menu toggle
+      const mobileMenuButton = document.getElementById('mobile-menu-button');
+      const mobileMenuClose = document.getElementById('mobile-menu-close');
+      const mobileMenu = document.getElementById('mobile-menu');
+      
+      mobileMenuButton?.addEventListener('click', () => {
+        mobileMenu?.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      });
+      
+      mobileMenuClose?.addEventListener('click', () => {
+        mobileMenu?.classList.add('hidden');
+        document.body.style.overflow = '';
+      });
+      
+      // Initialize animation observers
+      const fadeElements = document.querySelectorAll('.fade-in');
+      
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.1 });
+      
+      fadeElements.forEach(element => {
+        observer.observe(element);
+      });
+    </script>
+  </body>
+</html>

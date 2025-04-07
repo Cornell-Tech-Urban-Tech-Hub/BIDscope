@@ -1,0 +1,480 @@
+/* Font imports - Using system fonts + web fonts for enhanced typography */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Bitter:wght@400;500;700&display=swap');
+@import url('https://use.typekit.net/ptx6khk.css');
+
+
+:root {
+  /* Refined color palette */
+  --cornell-red: #B31B1B;
+  --cornell-dark-red: #8F1414;
+  --cornell-light-red: #EB4C42;
+  --cornell-gray: #222222;
+  --cornell-light-gray: #F7F7F7;
+  
+  /* Refined UI colors (Apple-inspired) */
+  --apple-blue: #0071E3;
+  --apple-background: #FBFBFD;
+  --apple-card: #FFFFFF;
+  --apple-text: #1D1D1F;
+  
+  /* Refined map colors */
+  --map-water: #A8C8E0;
+  --map-land: #EAEAEA;
+  --map-highlight: #F9C74F;
+  --map-accent: #4C956C;
+  
+  /* System colors */
+  --sys-color-white: #FFFFFF;
+  --sys-color-black: #000000;
+  
+  /* Theme Tokens */
+  --primary: var(--cornell-red);
+  --secondary: var(--cornell-light-gray);
+  --text-primary: var(--apple-text);
+  --text-secondary: #6E6E73;
+  --background: var(--apple-background);
+  --accent: var(--map-accent);
+}
+
+/* Base HTML styling with improved typography */
+html {
+  font-family: 'din-2014', -apple-system, BlinkMacSystemFont, sans-serif;
+  scroll-behavior: smooth;
+  background-color: var(--background);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  line-height: 1.5;
+  font-weight: 400;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Enhanced Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'din-2014', serif;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  margin-top: 1.5em;
+  margin-bottom: 0.75em;
+  color: var(--apple-text);
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+h2 {
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+}
+
+h3 {
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  line-height: 1.25;
+}
+
+p {
+  margin-bottom: 1.5em;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+a:hover {
+  color: var(--cornell-dark-red);
+}
+
+/* Modern section styling */
+.hero-section {
+  min-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--cornell-light-gray) 0%, var(--sys-color-white) 100%);
+}
+
+.content-section {
+  padding: 140px 0;
+  position: relative;
+}
+
+.content-section:nth-child(even) {
+  background-color: var(--cornell-light-gray);
+}
+
+.container {
+  width: 100%;
+  max-width: 1340px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+/* Enhanced card components */
+.bid-card {
+  background: var(--apple-card);
+  border-radius: 16px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.bid-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.10);
+}
+
+.bid-card-image {
+  height: 240px;
+  overflow: hidden;
+}
+
+.bid-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s ease;
+}
+
+.bid-card:hover .bid-card-image img {
+  transform: scale(1.05);
+}
+
+.bid-card-content {
+  padding: 28px;
+}
+
+/* Refined header styling */
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 1.5rem 0;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+  background: rgba(251, 251, 253, 0.8);
+  transition: all 0.3s ease;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.site-header.scrolled {
+  padding: 1rem 0;
+  background: rgba(251, 251, 253, 0.95);
+  box-shadow: 0 1px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Refined quote styling */
+.highlight-quote {
+  border-left: 4px solid var(--cornell-red);
+  padding-left: 24px;
+  font-style: italic;
+  margin: 40px 0;
+  font-size: 1.25rem;
+  color: #444;
+}
+
+/* Modern buttons with refined styling */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary);
+  color: white;
+  font-weight: 500;
+  padding: 14px 28px;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  letter-spacing: 0.01em;
+}
+
+.button:hover {
+  background: var(--cornell-dark-red);
+  color: white;
+  text-decoration: none;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(179, 27, 27, 0.25);
+}
+
+.button-outline {
+  background: transparent;
+  color: var(--primary);
+  border: 2px solid var(--primary);
+}
+
+.button-outline:hover {
+  background: var(--primary);
+  color: white;
+}
+
+/* Enhanced map styling */
+.map-container {
+  height: 650px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.map-overlay {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  max-width: 320px;
+}
+
+/* Enhanced stat cards */
+.stat-card {
+  background: white;
+  padding: 32px;
+  border-radius: 16px;
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.10);
+}
+
+.stat-number {
+  font-size: 3.25rem;
+  font-weight: 700;
+  color: var(--cornell-red);
+  margin-bottom: 12px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.stat-label {
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+}
+
+/* Enhanced animations */
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Refined scrollbar styling */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--apple-background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  border: 3px solid var(--apple-background);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* Enhanced data visualization container */
+.chart-area {
+  border-radius: 16px;
+  padding: 32px;
+  background: white;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+/* Theme customization for shadcn/ui */
+@layer base {
+  :root {
+    --background: 0 0% 98%;
+    --foreground: 0 0% 12%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 12%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 12%;
+    --primary: 0 72% 42%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 12%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
+    --accent: 142 38% 44%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 0 72% 42%;
+    --chart-1: 0 72% 42%;
+    --chart-2: 26 90% 64%;
+    --chart-3: 212 86% 64%;
+    --chart-4: 142 38% 44%;
+    --chart-5: 263 51% 54%;
+    --radius: 0.75rem;
+  }
+  
+  .dark {
+    --background: 0 0% 10%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 15%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 15%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 72% 50%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 20%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 20%;
+    --muted-foreground: 0 0% 70%;
+    --accent: 142 38% 44%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 84% 50%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 0 72% 50%;
+    --chart-1: 0 72% 55%;
+    --chart-2: 26 90% 64%;
+    --chart-3: 212 86% 64%;
+    --chart-4: 142 38% 44%;
+    --chart-5: 263 51% 54%;
+  }
+}
+
+/* Enhanced responsive design */
+@media (max-width: 768px) {
+  .content-section {
+    padding: 100px 0;
+  }
+  
+  .map-container {
+    height: 450px;
+  }
+  
+  .bid-card-image {
+    height: 180px;
+  }
+  
+  .container {
+    padding: 0 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .button {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+  
+  .stat-card {
+    margin-bottom: 20px;
+  }
+  
+  h1 {
+    font-size: 2.5rem;
+  }
+}
+
+/* Enhanced project highlights */
+.project-highlight {
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+  height: 450px;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: flex-end;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.project-highlight:hover {
+  transform: translateY(-6px);
+}
+
+.project-highlight-content {
+  background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+  width: 100%;
+  padding: 40px 32px;
+  color: white;
+}
+
+.project-highlight-title {
+  font-size: 2.25rem;
+  margin: 0 0 12px 0;
+  color: white;
+}
+
+.project-highlight-description {
+  opacity: 0.95;
+  margin: 0;
+  font-size: 1.125rem;
+  max-width: 80%;
+}
+
+/* Replace basic card with refined style */
+.brutal-card {
+  background: var(--apple-card) !important;
+  border-radius: 16px !important;
+  border: none !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.06) !important;
+  padding: 32px !important;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  border: 1px solid rgba(0, 0, 0, 0.04) !important;
+}
+
+.brutal-card:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Add a gradient accent section */
+.gradient-accent {
+  background: linear-gradient(135deg, #B31B1B 0%, #8F1414 100%);
+  color: white;
+}
+
+/* Add image frame styling */
+.image-frame {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}

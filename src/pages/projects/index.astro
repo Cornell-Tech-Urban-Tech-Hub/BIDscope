@@ -1,0 +1,130 @@
+---
+import Layout from '../../layouts/Default.astro';
+import ProjectCard from '../../components/projects/ProjectCard.astro';
+import MapVisualizer from '../../components/visualizations/MapVisualizer.js';
+import { getCollection } from 'astro:content';
+import fs from 'node:fs';
+import path from 'node:path';
+
+// Fetch all projects
+const allProjects = await getCollection('projects');
+
+// Sort projects by publish date (newest first)
+const sortedProjects = allProjects.sort((a, b) => 
+  b.data.publishDate.getTime() - a.data.publishDate.getTime()
+);
+
+// Extract BID names for the map
+const projectBids = allProjects.map(project => project.data.bidName);
+
+// Get valid BID names from the GeoJSON file for validation
+let mapBidNames = [];
+try {
+  const geojsonPath = path.join(process.cwd(), 'public', 'data', 'bids.geojson');
+  const geojsonData = JSON.parse(fs.readFileSync(geojsonPath, 'utf8'));
+  mapBidNames = geojsonData.features
+    .map(feature => feature.properties.F_ALL_BI_2)
+    .filter(Boolean);
+} catch (error) {
+  console.error('Error loading BID map data:', error);
+}
+
+// Get unique boroughs for filter
+const boroughs = [...new Set(sortedProjects.map(project => project.data.borough))];
+---
+
+<Layout title="BID Projects | BIDscope" description="Explore projects and analysis of Business Improvement Districts across NYC">
+  <div class="container mx-auto px-4 py-12">
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-bold mb-4">BID Analysis Projects</h1>
+      <p class="text-xl text-muted-foreground">
+        Explore in-depth analysis of Business Improvement Districts across NYC
+      </p>
+    </div>
+
+    <!-- Map visualization -->
+    <div class="mb-12">
+      <h2 class="text-2xl font-bold mb-6">BID Map</h2>
+      <MapVisualizer client:load projectBids={projectBids} />
+    </div>
+
+    <!-- Filters -->
+    <div class="mb-8">
+      <h2 class="text-2xl font-bold mb-4">Project Filters</h2>
+      <div class="flex flex-wrap gap-2" id="borough-filters">
+        <button class="px-4 py-2 rounded-full bg-primary text-white" data-borough="all">All</button>
+        {boroughs.map(borough => (
+          <button class="px-4 py-2 rounded-full bg-muted hover:bg-muted/80" data-borough={borough}>
+            {borough}
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <!-- Projects Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="projects-grid">
+      {sortedProjects.map(project => (
+        <ProjectCard 
+          project={project} 
+          hasBidOnMap={mapBidNames.includes(project.data.bidName)}
+        />
+      ))}
+    </div>
+  </div>
+</Layout>
+
+<script>
+// Filter projects by borough
+document.addEventListener('DOMContentLoaded', () => {
+  const filterButtons = document.querySelectorAll('#borough-filters button');
+  const projectCards = document.querySelectorAll('#projects-grid > div');
+  
+  // Check for hash in URL to highlight specific BID
+  const highlightBid = () => {
+    const hash = window.location.hash.substring(1);
+    if (hash) {
+      const decodedHash = decodeURIComponent(hash);
+      const targetCard = document.querySelector(`[data-bid-name="${decodedHash}"]`);
+      if (targetCard) {
+        // Remove highlight from any previously highlighted card
+        document.querySelectorAll('.highlight-card').forEach(el => {
+          el.classList.remove('highlight-card', 'ring-2', 'ring-primary', 'ring-offset-2');
+        });
+        
+        // Add highlight to the target card
+        targetCard.classList.add('highlight-card', 'ring-2', 'ring-primary', 'ring-offset-2');
+        targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+  };
+  
+  // Run highlight on page load
+  highlightBid();
+  
+  // Listen for hash changes
+  window.addEventListener('hashchange', highlightBid);
+  
+  filterButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      // Update active button
+      filterButtons.forEach(btn => {
+        btn.classList.remove('bg-primary', 'text-white');
+        btn.classList.add('bg-muted', 'hover:bg-muted/80');
+      });
+      button.classList.remove('bg-muted', 'hover:bg-muted/80');
+      button.classList.add('bg-primary', 'text-white');
+      
+      const selectedBorough = button.dataset.borough;
+      
+      // Filter projects
+      projectCards.forEach(card => {
+        if (selectedBorough === 'all' || card.dataset.borough === selectedBorough) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
+});
+</script>

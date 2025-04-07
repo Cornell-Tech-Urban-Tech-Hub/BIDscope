@@ -1,0 +1,60 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+  hasBidOnMap?: boolean;
+}
+
+const { project, hasBidOnMap = true } = Astro.props;
+
+// Format date to a readable format
+function formatDate(date: Date): string {
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+}
+---
+
+<div class="rounded-lg border bg-card shadow hover:shadow-lg transition-shadow" 
+     data-borough={project.data.borough}
+     data-bid-name={project.data.bidName}
+     id={project.data.bidName.replace(/\s+/g, '-').toLowerCase()}>
+  <a href={`/projects/${project.slug}`} class="block">
+    {project.data.thumbnail && (
+      <div class="relative">
+        <Image 
+          src={project.data.thumbnail} 
+          alt={project.data.title} 
+          width={400} 
+          height={225} 
+          class="rounded-t-lg object-cover w-full h-48"
+        />
+        {hasBidOnMap && (
+          <div class="absolute top-2 right-2 bg-primary/80 text-white text-xs px-2 py-1 rounded-full">
+            On Map
+          </div>
+        )}
+      </div>
+    )}
+  </a>
+  <div class="p-4">
+    <div class="flex justify-between items-center mb-2">
+      <span class="text-sm text-muted-foreground">{formatDate(project.data.publishDate)}</span>
+      <span class="px-2 py-1 bg-primary/10 text-primary text-xs rounded-full">{project.data.borough}</span>
+    </div>
+    <a href={`/projects/${project.slug}`} class="block hover:text-primary transition-colors">
+      <h3 class="text-xl font-bold">{project.data.title}</h3>
+    </a>
+    <p class="text-sm text-muted-foreground line-clamp-3 mt-2">{project.data.description}</p>
+    <div class="mt-4 flex items-center justify-between">
+      <span class={`text-sm font-medium ${hasBidOnMap ? 'text-primary' : ''}`}>
+        {project.data.bidName}
+      </span>
+      <a href={`/projects/${project.slug}`} class="text-primary hover:underline">Read analysis →</a>
+    </div>
+  </div>
+</div>
