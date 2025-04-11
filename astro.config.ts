@@ -5,7 +5,7 @@ import UnoCSS from 'unocss/astro';
 
 export default defineConfig({
   site: 'https://cornell-tech-urban-tech-hub.github.io',
-  base: '/bidspec',  // Repository name as base path
+  base: '/BIDspec',  // Repository name as base path
   trailingSlash: 'ignore',
   integrations: [sitemap(), react(), UnoCSS()],
   vite: {
