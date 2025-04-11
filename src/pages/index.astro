@@ -15,8 +15,8 @@ const projectBids = allProjects.map(project => project.data.bidName);
 <MainLayout title="BIDSpec - Business Improvement District Analysis" 
             description="Data-driven insights into the impact and performance of Business Improvement Districts across New York City">
   
-  <!-- Hero Section -->
-  <section class="py-32 md:py-40 bg-gradient-to-b from-background to-secondary/20 mt-16">
+  <!-- Hero Section - Remove mt-16 and add header-offset class -->
+  <section class="py-32 md:py-40 bg-gradient-to-b from-background to-secondary/20 header-offset">
     <div class="container">
       <div class="max-w-3xl mx-auto text-center fade-in">
         <div class="inline-flex items-center px-3 py-1 text-sm font-medium text-primary bg-primary/10 rounded-full mb-6">
@@ -38,9 +38,9 @@ const projectBids = allProjects.map(project => project.data.bidName);
   <section class="py-20 container">
     <div class="mb-12 text-center fade-in">
       <div class="inline-flex items-center px-3 py-1 text-sm font-medium text-primary bg-primary/10 rounded-full mb-4">
-        Featured Work
+        Current Work
       </div>
-      <h2 class="text-3xl md:text-4xl font-bold">Featured Analyses</h2>
+      <h2 class="text-3xl md:text-4xl font-bold">Current Work</h2>
       <p class="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
         Explore our in-depth analyses of selected Business Improvement Districts
       </p>
@@ -104,81 +104,111 @@ const projectBids = allProjects.map(project => project.data.bidName);
     </div>
   </section>
   
-  <!-- Stats Section -->
+  <!-- Analysis Framework Section -->
   <section class="py-20 bg-secondary/30">
     <div class="container">
       <div class="text-center mb-16 fade-in">
-        <h2 class="text-3xl md:text-4xl font-bold">Project Goals</h2>
+        <h2 class="text-3xl md:text-4xl font-bold">Our Analysis Framework</h2>
         <p class="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-          Key statistics highlighting the significance of Business Improvement Districts in NYC
+          Each BID analysis is structured around four key components that provide a comprehensive understanding of district performance
         </p>
       </div>
       
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 fade-in">
         <div class="stat-card">
-          <div class="stat-number">Insight</div>
-          <div class="stat-label">BIDs Analyzed</div>
+          <div class="text-primary text-2xl font-bold mb-2">Insight</div>
+          <div class="text-muted-foreground">
+            Data-driven examination of current BID conditions, including economic indicators, public space utilization, and demographic context
+          </div>
         </div>
         
         <div class="stat-card">
-          <div class="stat-number">Transformation</div>
-          <div class="stat-label">BIDs in NYC</div>
+          <div class="text-primary text-2xl font-bold mb-2">Transformation</div>
+          <div class="text-muted-foreground">
+            Analysis of how BIDs have evolved over time, tracking changes in commercial activity, property values, and neighborhood character
+          </div>
         </div>
         
         <div class="stat-card">
-          <div class="stat-number">Prediction</div>
-          <div class="stat-label">Annual Assessment</div>
+          <div class="text-primary text-2xl font-bold mb-2">Prediction</div>
+          <div class="text-muted-foreground">
+            Forward-looking projections of district trajectories based on historical data and emerging trends within the urban context
+          </div>
         </div>
         
         <div class="stat-card">
-          <div class="stat-number">Consensus</div>
-          <div class="stat-label">Businesses Served</div>
+          <div class="text-primary text-2xl font-bold mb-2">Consensus</div>
+          <div class="text-muted-foreground">
+            Integration of stakeholder perspectives, aligning community needs with data findings to produce actionable recommendations
+          </div>
         </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- About Section -->
+  <section class="py-24 container">
+    <div class="grid md:grid-cols-5 gap-12 items-center">
+      <div class="md:col-span-3 fade-in">
+        <div class="inline-flex items-center px-3 py-1 text-sm font-medium text-primary bg-primary/10 rounded-full mb-4">
+          Academic Project
+        </div>
+        <h2 class="text-3xl md:text-4xl font-bold mb-6">About BIDSpec</h2>
+        <p class="text-lg text-muted-foreground mb-6">
+          This project is part of INFO 5420: Smart Cities, a course offered by the Urban Tech program at Cornell Tech. BIDSpec applies data science and urban analytics to understand the impact of Business Improvement Districts across New York City.
+        </p>
+        
+        <div class="flex flex-col gap-6 mt-8">
+          <div class="flex items-start gap-3">
+            <div class="mt-1 w-8 h-8 flex items-center justify-center rounded-full bg-primary/10 text-primary">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5" />
+              </svg>
+            </div>
+            <div>
+              <h4 class="text-base font-semibold">Course Information</h4>
+              <p class="text-sm text-muted-foreground">INFO 5420: Smart Cities — Taught by Ariel Noyman with TA Matt Franchi</p>
+            </div>
+          </div>
+          
+          <div class="flex items-start gap-3">
+            <div class="mt-1 w-8 h-8 flex items-center justify-center rounded-full bg-primary/10 text-primary">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Z" />
+              </svg>
+            </div>
+            <div>
+              <h4 class="text-base font-semibold">Affiliation</h4>
+              <p class="text-sm text-muted-foreground">Urban Tech Hub at Cornell Tech, Jacobs Technion-Cornell Institute</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="md:col-span-2 fade-in">
+        <div class="relative rounded-xl overflow-hidden border border-muted/30 shadow-lg image-frame">
+          <img src="/images/cornell-tech.jpg" alt="Cornell Tech campus" class="w-full h-auto object-cover aspect-[4/3]" />
+        </div>
+        <p class="text-sm text-muted-foreground mt-3 text-center">Cornell Tech campus on Roosevelt Island, NYC</p>
       </div>
     </div>
   </section>
   
   <!-- Latest Updates Section -->
   <section class="py-24 container">
-    <div class="grid md:grid-cols-2 gap-16 items-center">
-      <div class="fade-in">
-        <div class="inline-flex items-center px-3 py-1 text-sm font-medium text-primary bg-primary/10 rounded-full mb-4">
-          What's New
-        </div>
-        <h2 class="text-3xl md:text-4xl font-bold mb-6">Latest Updates</h2>
-        <p class="text-lg text-muted-foreground mb-6">
-          Our research team is constantly working on new analyses and improvements to our methodology. Stay tuned for upcoming releases.
-        </p>
-        
-        <div class="bg-card rounded-xl p-6 border border-border mb-5">
-          <div class="text-sm text-muted-foreground mb-2">Coming Soon</div>
-          <h3 class="text-xl font-bold mb-2">Economic Impact Assessment</h3>
-          <p class="text-muted-foreground">Comprehensive analysis of BIDs' influence on local economic development and property values.</p>
-        </div>
-        
-        <div class="bg-card rounded-xl p-6 border border-border">
-          <div class="text-sm text-muted-foreground mb-2">In Development</div>
-          <h3 class="text-xl font-bold mb-2">Interactive Comparison Tool</h3>
-          <p class="text-muted-foreground">Compare metrics across multiple BIDs with our new visualization dashboard.</p>
-        </div>
+    <div class="fade-in">
+      <div class="inline-flex items-center px-3 py-1 text-sm font-medium text-primary bg-primary/10 rounded-full mb-4">
+        What's New
       </div>
+      <h2 class="text-3xl md:text-4xl font-bold mb-6">Latest Updates</h2>
+      <p class="text-lg text-muted-foreground mb-6">
+        Our research team is constantly working on new analyses and improvements to our methodology. Stay tuned for upcoming releases.
+      </p>
       
-      <div class="fade-in bg-primary/5 rounded-2xl p-8 border border-primary/10">
-        <h3 class="text-2xl font-bold mb-6">Subscribe for Updates</h3>
-        <p class="text-muted-foreground mb-6">Stay informed about our latest research findings and tool releases.</p>
-        
-        <form class="space-y-4">
-          <div>
-            <label for="email" class="block text-sm font-medium mb-2">Email address</label>
-            <input type="email" id="email" class="w-full px-4 py-3 rounded-lg border border-border bg-card" placeholder="Enter your email" />
-          </div>
-          
-          <button type="submit" class="button w-full">Subscribe</button>
-          
-          <p class="text-xs text-muted-foreground text-center">
-            We respect your privacy and will never share your information.
-          </p>
-        </form>
+      <div class="bg-card rounded-xl p-6 border border-border">
+        <div class="text-sm text-muted-foreground mb-2">May 2025</div>
+        <h3 class="text-xl font-bold mb-2">Spring 2025 Cohort Completes BID Analyses</h3>
+        <p class="text-muted-foreground">The Spring 2025 cohort has completed their analysis of five different NYC BIDs: Downtown Brooklyn, DUMBO Improvement District, 5th Avenue in Brooklyn, Long Island City, and the West Village.</p>
       </div>
     </div>
   </section>
@@ -202,6 +232,10 @@ const projectBids = allProjects.map(project => project.data.bidName);
 <script>
 // Enhanced page transition handling
 document.addEventListener('DOMContentLoaded', () => {
+  // Apply header offset fix immediately on first load
+  const headerHeight = document.querySelector('.site-header')?.offsetHeight || 0;
+  document.documentElement.style.setProperty('--header-height', `${headerHeight}px`);
+  
   // Handle image fallbacks
   const imgElements = document.querySelectorAll('img');
   imgElements.forEach(img => {

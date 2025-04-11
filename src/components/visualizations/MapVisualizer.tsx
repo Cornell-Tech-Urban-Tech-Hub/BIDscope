@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import 'maplibre-gl/dist/maplibre-gl.css';
 // Add Turf.js import
@@ -8,17 +8,40 @@ import * as turf from '@turf/turf';
 interface MapVisualizerProps {
   projectBids: string[];
   focusBid?: string | null;
+  height?: string;
+  initialZoom?: number;
 }
 
-export default function MapVisualizer({ projectBids = [], focusBid = null }: MapVisualizerProps) {
+export default function MapVisualizer({ 
+  projectBids = [], 
+  focusBid = null, 
+  height = '500px',
+  initialZoom = 14  // Default to a zoomed-in view
+}: MapVisualizerProps) {
+  const [zoomLevel, setZoomLevel] = useState(initialZoom);
+  
+  // Only keep the simple zoom level state handling
+  const handleZoom = (newZoom: number) => {
+    setZoomLevel(newZoom);
+  };
+
   return (
     <div className="relative">
-      <div id="map-container" className="w-full h-[500px] bg-card rounded-lg border relative"></div>
+      <div 
+        id="map-container" 
+        className="w-full bg-card rounded-lg border relative"
+        style={{ height }}
+      ></div>
       <p className="text-center text-sm text-muted-foreground mt-4">
         Interactive map of NYC Business Improvement Districts
         {focusBid && <span className="font-medium"> • Focused on: {focusBid}</span>}
       </p>
-      <DeckGLMap projectBids={projectBids} focusBid={focusBid} />
+      <DeckGLMap 
+        projectBids={projectBids} 
+        focusBid={focusBid} 
+        zoomLevel={zoomLevel}
+        onZoomChange={handleZoom}
+      />
     </div>
   );
 }
@@ -27,9 +50,11 @@ export default function MapVisualizer({ projectBids = [], focusBid = null }: Map
 interface DeckGLMapProps {
   projectBids: string[];
   focusBid?: string | null;
+  zoomLevel: number;
+  onZoomChange: (zoom: number) => void;
 }
 
-function DeckGLMap({ projectBids, focusBid }: DeckGLMapProps) {
+function DeckGLMap({ projectBids, focusBid, zoomLevel, onZoomChange }: DeckGLMapProps) {
   // Only execute client-side
   if (typeof window === 'undefined') return null;
   
@@ -57,7 +82,7 @@ function DeckGLMap({ projectBids, focusBid }: DeckGLMapProps) {
         let viewState = {
           latitude: 40.7128,
           longitude: -74.0060,
-          zoom: 11,
+          zoom: zoomLevel, // Use the zoom level from props (now defaulting to zoomed in)
           pitch: 0,
           bearing: 0
         };
@@ -76,7 +101,7 @@ function DeckGLMap({ projectBids, focusBid }: DeckGLMapProps) {
                 ...viewState,
                 latitude: (bbox.maxLat + bbox.minLat) / 2,
                 longitude: (bbox.maxLng + bbox.minLng) / 2,
-                zoom: 13
+                zoom: zoomLevel // Use dynamic zoom level
               };
             }
           }
@@ -121,6 +146,25 @@ function DeckGLMap({ projectBids, focusBid }: DeckGLMapProps) {
           pitch: viewState.pitch,
           minZoom: 9 // Restrict zoom out to keep focus on NYC area
         });
+        
+        // Listen for zoom changes
+        map.on('zoom', () => {
+          const currentZoom = map.getZoom();
+          onZoomChange(currentZoom);
+        });
+        
+        // Handle external zoom requests
+        const handleExternalZoom = (e: CustomEvent) => {
+          if (e.detail?.zoom) {
+            map.flyTo({
+              center: [viewState.longitude, viewState.latitude],
+              zoom: e.detail.zoom,
+              duration: 1500
+            });
+          }
+        };
+        
+        window.addEventListener('map-zoom-request', handleExternalZoom as EventListener);
         
         map.on('style.load', () => {
           // Find the first label layer
@@ -258,7 +302,7 @@ function DeckGLMap({ projectBids, focusBid }: DeckGLMapProps) {
         
         // Cleanup function
         return () => {
-          // Remove timeout cleanup since we're not using timeouts anymore
+          window.removeEventListener('map-zoom-request', handleExternalZoom as EventListener);
           map.remove();
           if (mapContainer) {
             while (mapContainer.firstChild) {
@@ -282,7 +326,7 @@ function DeckGLMap({ projectBids, focusBid }: DeckGLMapProps) {
         });
       }
     };
-  }, [projectBids, focusBid]);
+  }, [projectBids, focusBid, zoomLevel, onZoomChange]);
   
   return null;
 }
@@ -294,7 +338,6 @@ function calculateBoundingBox(feature) {
   let maxLng = -Infinity;
   let maxLat = -Infinity;
   
-  // ... existing implementation ...
   const processCoordinates = coords => {
     if (Array.isArray(coords[0]) && typeof coords[0][0] !== 'number') {
       coords.forEach(processCoordinates);

@@ -2,7 +2,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Bitter:wght@400;500;700&display=swap');
 @import url('https://use.typekit.net/ptx6khk.css');
 
-
 :root {
   /* Refined color palette */
   --cornell-red: #B31B1B;
@@ -34,6 +33,9 @@
   --text-secondary: #6E6E73;
   --background: var(--apple-background);
   --accent: var(--map-accent);
+
+  /* Header sizing variable */
+  --header-height: 4.5rem;
 }
 
 /* Base HTML styling with improved typography */
@@ -54,6 +56,9 @@ body {
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 /* Enhanced Typography */
@@ -109,6 +114,8 @@ a:hover {
   position: relative;
   overflow: hidden;
   background: linear-gradient(135deg, var(--cornell-light-gray) 0%, var(--sys-color-white) 100%);
+  margin-top: 0 !important;
+  padding-top: calc(var(--header-height) + 2rem) !important;
 }
 
 .content-section {
@@ -125,6 +132,9 @@ a:hover {
   max-width: 1340px;
   margin: 0 auto;
   padding: 0 32px;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 /* Enhanced card components */
@@ -162,13 +172,16 @@ a:hover {
   padding: 28px;
 }
 
-/* Refined header styling */
+/* Refined header styling - Fix positioning issues */
 .site-header {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  padding: 1.5rem 0;
+  height: var(--header-height);
+  padding: 0;
+  display: flex;
+  align-items: center;
   z-index: 100;
   backdrop-filter: blur(10px);
   background: rgba(251, 251, 253, 0.8);
@@ -177,9 +190,25 @@ a:hover {
 }
 
 .site-header.scrolled {
-  padding: 1rem 0;
+  --header-height: 3.5rem;
+  height: var(--header-height);
   background: rgba(251, 251, 253, 0.95);
   box-shadow: 0 1px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Add header offset utility class */
+.header-offset {
+  padding-top: var(--header-height);
+}
+
+/* Main content should have proper spacing from header */
+main {
+  padding-top: var(--header-height);
+}
+
+/* For specific pages that need different header spacing */
+main > section:first-child.header-offset {
+  padding-top: 0; /* The section already has the offset */
 }
 
 /* Refined quote styling */
@@ -477,4 +506,179 @@ a:hover {
   overflow: hidden;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.06);
   border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+/* Project listing page styles */
+.projects-container {
+  min-height: 50vh; /* Ensure minimum height even when content is loading */
+  opacity: 1 !important; /* Ensure visibility on revisit */
+  display: block !important; /* Prevent hiding on revisit */
+}
+
+.projects-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.projects-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.projects-description {
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+}
+
+/* Filter system styles */
+.filter-container {
+  margin-bottom: 2rem;
+}
+
+.filter-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.filter-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.filter-button {
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.filter-button.active {
+  background-color: var(--primary);
+  color: white;
+}
+
+.filter-button:not(.active) {
+  background-color: var(--secondary);
+  color: var(--text-primary);
+}
+
+.filter-button:not(.active):hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Project grid styles */
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .projects-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .projects-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Highlight card styles */
+.highlight-card {
+  animation: highlight-pulse 2s ease-in-out;
+}
+
+@keyframes highlight-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 2px var(--primary);
+  }
+  50% {
+    box-shadow: 0 0 0 6px var(--primary);
+  }
+}
+
+/* Map container styles */
+.map-section {
+  margin-bottom: 3rem;
+}
+
+.map-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+/* Make sure content is visible when revisiting page */
+#projects-grid {
+  min-height: 100px;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Ensure components stay visible */
+#borough-filters, .project-card {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Improve visibility of important containers */
+main {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Fix navigation issues when returning from project page */
+html.astro-transition-fallback,
+html.astro-transition {
+  opacity: 1 !important;
+  visibility: visible !important;
+  height: auto !important;
+}
+
+html.astro-transition body,
+html.astro-transition-fallback body,
+html.astro-transition .projects-container,
+html.astro-transition-fallback .projects-container {
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: block !important;
+  height: auto !important;
+}
+
+/* Ensure projects are visible during and after transitions */
+html.astro-transition .projects-grid,
+html.astro-transition-fallback .projects-grid,
+html.astro-transition #projects-grid,
+html.astro-transition-fallback #projects-grid {
+  display: grid !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  min-height: 200px;
+}
+
+/* Ensure the projects section is always visible */
+[data-astro-transition-scope="projects"] {
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: block !important;
+}
+
+/* Force render of critical elements */
+html:not(.astro-transition) .projects-container,
+html:not(.astro-transition-fallback) .projects-container {
+  animation: force-render 0.1s forwards;
+}
+
+@keyframes force-render {
+  0% { opacity: 0.99; }
+  100% { opacity: 1; }
 }

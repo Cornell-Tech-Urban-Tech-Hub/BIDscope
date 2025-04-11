@@ -1,21 +1,21 @@
 ---
 # Basic Project Information
-title: "DUMBO Improvement District"
-description: "Analysis of the DUMBO Improvement District in Brooklyn, an area known for its tech innovation and arts scene."
-publishDate: 2023-09-25
-updatedDate: 2023-10-10
-thumbnail: "/images/projects/dumbo-bid-thumbnail.jpg"
+title: "5th Avenue BID - Brooklyn"
+description: "Analysis of the 5th Avenue Business Improvement District in Park Slope, Brooklyn."
+publishDate: 2023-09-15
+updatedDate: 2023-10-01
+thumbnail: "/images/projects/fifth-avenue-bid-thumbnail.jpg"
 
 # BID-specific Information
-bidName: "DUMBO"
+bidName: "Park Slope 5th Avenue"
 borough: "Brooklyn"
-yearEstablished: 2006
+yearEstablished: 1992
 
 # Content Classification
 featured: true
 draft: false
 revisionMode: true
-tags: ["Tech Hub", "Arts", "Waterfront", "Historic Industrial"]
+tags: ["Retail", "Small Business", "Community Development"]
 
 # Visualization Component References - empty arrays to be filled by students
 insightComponents: []
@@ -24,11 +24,11 @@ predictionComponents: []
 consensusComponents: []
 
 # Data Sources and techniques
-dataSource: "NYC Open Data, DUMBO Improvement District Annual Reports, Census Data, Real Estate Market Data, Tourism Statistics"
-visualizationTechniques: ["Time Series Analysis", "Comparative Metrics", "Spatial Analysis", "Economic Impact Assessment"]
+dataSource: "NYC Open Data, 5th Avenue BID Annual Reports, Census Data"
+visualizationTechniques: ["Time Series Analysis", "Comparative Metrics"]
 ---
 
-The DUMBO Improvement District (Down Under the Manhattan Bridge Overpass) serves one of Brooklyn's most transformed neighborhoods. Established in 2006, the BID supports a dynamic mix of tech startups, creative businesses, arts organizations, and retail establishments in what was once a manufacturing district. The area is known for its cobblestone streets, converted industrial buildings, stunning views of the Manhattan skyline, and position between the Brooklyn and Manhattan Bridges.
+The 5th Avenue Business Improvement District serves one of Brooklyn's most vibrant commercial corridors in Park Slope. Established in 1992, the BID supports approximately 500 businesses along a 1.5-mile stretch of 5th Avenue from Dean Street to 18th Street. The district is known for its eclectic mix of independent retailers, restaurants, and service businesses.
 
 # Insight Analysis
 
@@ -56,6 +56,6 @@ Donec vitae justo vitae turpis rutrum vestibulum vel at tortor. Aliquam quis tel
 
 ## Additional Resources
 
-- [DUMBO Improvement District Website](https://dumbo.org/)
-- [Annual Report (PDF)](https://dumbo.org/annual-reports/)
+- [5th Avenue BID Website](https://parkslopefifthavenuebid.com/)
+- [Annual Report (PDF)](https://parkslopefifthavenuebid.com/annual-reports/)
 - [NYC Small Business Services - BID Directory](https://www1.nyc.gov/site/sbs/neighborhoods/business-improvement-districts.page)

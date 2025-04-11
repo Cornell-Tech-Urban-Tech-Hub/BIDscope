@@ -1,21 +1,21 @@
 ---
 # Basic Project Information
-title: "DUMBO Improvement District"
-description: "Analysis of the DUMBO Improvement District in Brooklyn, an area known for its tech innovation and arts scene."
-publishDate: 2023-09-25
-updatedDate: 2023-10-10
-thumbnail: "/images/projects/dumbo-bid-thumbnail.jpg"
+title: "West Village BID"
+description: "Analysis of the West Village Business Improvement District in Manhattan."
+publishDate: 2023-09-20
+updatedDate: 2023-10-05
+thumbnail: "/images/projects/west-village-bid-thumbnail.jpg"
 
 # BID-specific Information
-bidName: "DUMBO"
-borough: "Brooklyn"
-yearEstablished: 2006
+bidName: "West Village"
+borough: "Manhattan"
+yearEstablished: 2007
 
 # Content Classification
 featured: true
 draft: false
 revisionMode: true
-tags: ["Tech Hub", "Arts", "Waterfront", "Historic Industrial"]
+tags: ["Historic District", "Retail", "Tourism", "Cultural Heritage"]
 
 # Visualization Component References - empty arrays to be filled by students
 insightComponents: []
@@ -24,11 +24,11 @@ predictionComponents: []
 consensusComponents: []
 
 # Data Sources and techniques
-dataSource: "NYC Open Data, DUMBO Improvement District Annual Reports, Census Data, Real Estate Market Data, Tourism Statistics"
-visualizationTechniques: ["Time Series Analysis", "Comparative Metrics", "Spatial Analysis", "Economic Impact Assessment"]
+dataSource: "NYC Open Data, West Village BID Annual Reports, Census Data, Tourism Statistics"
+visualizationTechniques: ["Time Series Analysis", "Comparative Metrics", "Spatial Analysis"]
 ---
 
-The DUMBO Improvement District (Down Under the Manhattan Bridge Overpass) serves one of Brooklyn's most transformed neighborhoods. Established in 2006, the BID supports a dynamic mix of tech startups, creative businesses, arts organizations, and retail establishments in what was once a manufacturing district. The area is known for its cobblestone streets, converted industrial buildings, stunning views of the Manhattan skyline, and position between the Brooklyn and Manhattan Bridges.
+The West Village Business Improvement District serves one of Manhattan's most iconic and historic neighborhoods. Established in 2007, the BID supports local businesses in an area known for its distinctive architectural character, winding streets, and vibrant mix of shops, restaurants, and cultural venues. The district encompasses several blocks of primarily commercial streets within the larger West Village neighborhood.
 
 # Insight Analysis
 
@@ -56,6 +56,6 @@ Donec vitae justo vitae turpis rutrum vestibulum vel at tortor. Aliquam quis tel
 
 ## Additional Resources
 
-- [DUMBO Improvement District Website](https://dumbo.org/)
-- [Annual Report (PDF)](https://dumbo.org/annual-reports/)
+- [West Village BID Website](https://westvillagebid.org/)
+- [Annual Report (PDF)](https://westvillagebid.org/annual-reports/)
 - [NYC Small Business Services - BID Directory](https://www1.nyc.gov/site/sbs/neighborhoods/business-improvement-districts.page)

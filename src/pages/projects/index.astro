@@ -33,28 +33,28 @@ try {
 const boroughs = [...new Set(sortedProjects.map(project => project.data.borough))];
 ---
 
-<Layout title="BID Projects | BIDscope" description="Explore projects and analysis of Business Improvement Districts across NYC">
-  <div class="container mx-auto px-4 py-12">
-    <div class="text-center mb-12">
-      <h1 class="text-4xl font-bold mb-4">BID Analysis Projects</h1>
-      <p class="text-xl text-muted-foreground">
+<Layout title="BID Projects | BIDSpec" description="Explore projects and analysis of Business Improvement Districts across NYC">
+  <div class="container mx-auto px-4 py-12 projects-container">
+    <div class="projects-header">
+      <h1 class="projects-title">BID Analysis Projects</h1>
+      <p class="projects-description">
         Explore in-depth analysis of Business Improvement Districts across NYC
       </p>
     </div>
 
     <!-- Map visualization -->
-    <div class="mb-12">
-      <h2 class="text-2xl font-bold mb-6">BID Map</h2>
+    <div class="map-section">
+      <h2 class="map-title">BID Map</h2>
       <MapVisualizer client:load projectBids={projectBids} />
     </div>
 
     <!-- Filters -->
-    <div class="mb-8">
-      <h2 class="text-2xl font-bold mb-4">Project Filters</h2>
-      <div class="flex flex-wrap gap-2" id="borough-filters">
-        <button class="px-4 py-2 rounded-full bg-primary text-white" data-borough="all">All</button>
+    <div class="filter-container">
+      <h2 class="filter-title">Project Filters</h2>
+      <div class="filter-buttons" id="borough-filters">
+        <button class="filter-button active" data-borough="all">All</button>
         {boroughs.map(borough => (
-          <button class="px-4 py-2 rounded-full bg-muted hover:bg-muted/80" data-borough={borough}>
+          <button class="filter-button" data-borough={borough}>
             {borough}
           </button>
         ))}
@@ -62,7 +62,7 @@ const boroughs = [...new Set(sortedProjects.map(project => project.data.borough)
     </div>
 
     <!-- Projects Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="projects-grid">
+    <div class="projects-grid" id="projects-grid">
       {sortedProjects.map(project => (
         <ProjectCard 
           project={project} 
@@ -74,47 +74,108 @@ const boroughs = [...new Set(sortedProjects.map(project => project.data.borough)
 </Layout>
 
 <script>
-// Filter projects by borough
-document.addEventListener('DOMContentLoaded', () => {
-  const filterButtons = document.querySelectorAll('#borough-filters button');
-  const projectCards = document.querySelectorAll('#projects-grid > div');
+// Enhanced script with navigation-specific handling
+document.addEventListener('astro:page-load', initializeFilters);
+document.addEventListener('DOMContentLoaded', initializeFilters);
+document.addEventListener('astro:after-swap', initializeFilters); // Critical for view transitions
+
+// Handle navigation directly
+window.addEventListener('popstate', () => {
+  // Short delay to ensure DOM is ready after navigation
+  setTimeout(() => ensureContentVisibility(), 50);
+});
+
+// Ensure content visibility regardless of transition state
+function ensureContentVisibility() {
+  // Force display of critical containers
+  const containers = [
+    document.querySelector('.projects-container'),
+    document.querySelector('#projects-grid'),
+    document.querySelector('.filter-buttons')
+  ];
   
-  // Check for hash in URL to highlight specific BID
-  const highlightBid = () => {
-    const hash = window.location.hash.substring(1);
-    if (hash) {
-      const decodedHash = decodeURIComponent(hash);
-      const targetCard = document.querySelector(`[data-bid-name="${decodedHash}"]`);
-      if (targetCard) {
-        // Remove highlight from any previously highlighted card
-        document.querySelectorAll('.highlight-card').forEach(el => {
-          el.classList.remove('highlight-card', 'ring-2', 'ring-primary', 'ring-offset-2');
-        });
-        
-        // Add highlight to the target card
-        targetCard.classList.add('highlight-card', 'ring-2', 'ring-primary', 'ring-offset-2');
-        targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
+  containers.forEach(container => {
+    if (container) {
+      container.style.display = container.tagName === 'DIV' ? 'block' : 'flex';
+      container.style.visibility = 'visible';
+      container.style.opacity = '1';
     }
-  };
+  });
   
-  // Run highlight on page load
-  highlightBid();
+  // Force grid display for project grid
+  const projectsGrid = document.querySelector('#projects-grid');
+  if (projectsGrid) {
+    projectsGrid.style.display = 'grid';
+  }
+  
+  // Make all project cards visible
+  document.querySelectorAll('#projects-grid > div').forEach(card => {
+    card.style.display = 'block';
+    card.style.visibility = 'visible';
+    card.style.opacity = '1';
+  });
+}
+
+// Centralized initialization function with improved navigation handling
+function initializeFilters() {
+  // First ensure everything is visible
+  ensureContentVisibility();
+  
+  try {
+    const filterButtons = document.querySelectorAll('#borough-filters button');
+    const projectCards = document.querySelectorAll('#projects-grid > div');
+    
+    if (!filterButtons.length || !projectCards.length) {
+      console.warn('Filter buttons or project cards not found, initiating fallback');
+      // Try again with a slight delay - helps with navigation timing issues
+      setTimeout(() => {
+        const retryButtons = document.querySelectorAll('#borough-filters button');
+        const retryCards = document.querySelectorAll('#projects-grid > div');
+        
+        if (retryButtons.length && retryCards.length) {
+          console.log('Delayed initialization successful');
+          setupFilters(retryButtons, retryCards);
+        } else {
+          // Last resort - if content still missing, force a reload
+          console.warn('Critical content missing after navigation - consider manual reload');
+        }
+      }, 150);
+      return;
+    }
+    
+    setupFilters(filterButtons, projectCards);
+    console.log('Project filters initialized successfully');
+  } catch (error) {
+    console.error('Error initializing project filters:', error);
+    // Ensure content is visible even if script fails
+    document.querySelectorAll('#projects-grid > div').forEach(card => {
+      card.style.display = 'block';
+    });
+  }
+}
+
+// Separated filter setup function
+function setupFilters(filterButtons, projectCards) {
+  // Highlight specific BID from URL hash
+  highlightBidFromHash();
   
   // Listen for hash changes
-  window.addEventListener('hashchange', highlightBid);
+  window.addEventListener('hashchange', highlightBidFromHash);
   
+  // Set up filter button listeners
   filterButtons.forEach(button => {
-    button.addEventListener('click', () => {
+    // Remove existing listeners to prevent duplicates after navigation
+    const newButton = button.cloneNode(true);
+    button.parentNode.replaceChild(newButton, button);
+    
+    newButton.addEventListener('click', () => {
       // Update active button
       filterButtons.forEach(btn => {
-        btn.classList.remove('bg-primary', 'text-white');
-        btn.classList.add('bg-muted', 'hover:bg-muted/80');
+        btn.classList.remove('active');
       });
-      button.classList.remove('bg-muted', 'hover:bg-muted/80');
-      button.classList.add('bg-primary', 'text-white');
+      newButton.classList.add('active');
       
-      const selectedBorough = button.dataset.borough;
+      const selectedBorough = newButton.dataset.borough;
       
       // Filter projects
       projectCards.forEach(card => {
@@ -126,5 +187,40 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   });
+}
+
+// Separated function for highlighting BIDs from hash
+function highlightBidFromHash() {
+  try {
+    const hash = window.location.hash.substring(1);
+    if (hash) {
+      const decodedHash = decodeURIComponent(hash);
+      const targetCard = document.querySelector(`[data-bid-name="${decodedHash}"]`);
+      if (targetCard) {
+        // Remove highlight from any previously highlighted card
+        document.querySelectorAll('.highlight-card').forEach(el => {
+          el.classList.remove('highlight-card');
+        });
+        
+        // Add highlight to the target card
+        targetCard.classList.add('highlight-card');
+        targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+  } catch (error) {
+    console.error('Error handling hash change:', error);
+  }
+}
+
+// Add a final fallback for extreme cases
+window.addEventListener('load', function() {
+  // Delay check to ensure all other scripts have run
+  setTimeout(() => {
+    const projectGrid = document.querySelector('#projects-grid');
+    if (projectGrid && !projectGrid.children.length && window.location.pathname.includes('/projects')) {
+      console.warn('No project cards found after full page load - attempting repair');
+      ensureContentVisibility();
+    }
+  }, 500);
 });
 </script>

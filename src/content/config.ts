@@ -9,20 +9,20 @@ const projects = defineCollection({
     thumbnail: z.string().optional(),
     bidName: z.string(),
     borough: z.enum(['Manhattan', 'Brooklyn', 'Queens', 'Bronx', 'Staten Island']),
-    budget: z.number().optional(),
     yearEstablished: z.number().optional(),
-    metrics: z.object({
-      cleaningBudget: z.number().optional(),
-      marketingBudget: z.number().optional(),
-      publicSpaceBudget: z.number().optional(),
-      securityBudget: z.number().optional(),
-      totalAssessment: z.number().optional(),
-    }).optional(),
     featured: z.boolean().default(false),
+    revisionMode: z.boolean().default(false).describe('If true, displays visualization placeholders even if no components exist'),
     tags: z.array(z.string()).default([]),
-    geoJson: z.string().optional(),
-    streetCoverage: z.number().optional(), // miles
-    businesses: z.number().optional(),
+    
+    // Visualization component references - now as arrays to support multiple components per section
+    insightComponents: z.array(z.string()).optional().describe('Array of relative filepaths to TSX components for Insight visualizations'),
+    transformationComponents: z.array(z.string()).optional().describe('Array of relative filepaths to TSX components for Transformation visualizations'),
+    predictionComponents: z.array(z.string()).optional().describe('Array of relative filepaths to TSX components for Prediction visualizations'),
+    consensusComponents: z.array(z.string()).optional().describe('Array of relative filepaths to TSX components for Consensus visualizations'),
+    
+    // Additional optional metadata for visualizations
+    dataSource: z.string().optional(),
+    visualizationTechniques: z.array(z.string()).optional(),
   }),
 });
 

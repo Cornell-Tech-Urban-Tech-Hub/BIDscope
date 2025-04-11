@@ -1,21 +1,21 @@
 ---
 # Basic Project Information
-title: "DUMBO Improvement District"
-description: "Analysis of the DUMBO Improvement District in Brooklyn, an area known for its tech innovation and arts scene."
-publishDate: 2023-09-25
-updatedDate: 2023-10-10
-thumbnail: "/images/projects/dumbo-bid-thumbnail.jpg"
+title: "Long Island City Partnership"
+description: "Analysis of the Long Island City Partnership, an area undergoing rapid transformation in Queens."
+publishDate: 2023-10-05
+updatedDate: 2023-10-20
+thumbnail: "/images/projects/long-island-city-bid-thumbnail.jpg"
 
 # BID-specific Information
-bidName: "DUMBO"
-borough: "Brooklyn"
-yearEstablished: 2006
+bidName: "Long Island City Partnership"
+borough: "Queens"
+yearEstablished: 2005
 
 # Content Classification
 featured: true
 draft: false
 revisionMode: true
-tags: ["Tech Hub", "Arts", "Waterfront", "Historic Industrial"]
+tags: ["Mixed-Use Development", "Arts District", "Waterfront", "Innovation Hub"]
 
 # Visualization Component References - empty arrays to be filled by students
 insightComponents: []
@@ -24,11 +24,11 @@ predictionComponents: []
 consensusComponents: []
 
 # Data Sources and techniques
-dataSource: "NYC Open Data, DUMBO Improvement District Annual Reports, Census Data, Real Estate Market Data, Tourism Statistics"
-visualizationTechniques: ["Time Series Analysis", "Comparative Metrics", "Spatial Analysis", "Economic Impact Assessment"]
+dataSource: "NYC Open Data, Long Island City Partnership Annual Reports, Census Data, Real Estate Market Data, Arts Organization Data, MTA Ridership"
+visualizationTechniques: ["Time Series Analysis", "Comparative Metrics", "Spatial Analysis", "Economic Impact Assessment", "Development Tracking"]
 ---
 
-The DUMBO Improvement District (Down Under the Manhattan Bridge Overpass) serves one of Brooklyn's most transformed neighborhoods. Established in 2006, the BID supports a dynamic mix of tech startups, creative businesses, arts organizations, and retail establishments in what was once a manufacturing district. The area is known for its cobblestone streets, converted industrial buildings, stunning views of the Manhattan skyline, and position between the Brooklyn and Manhattan Bridges.
+The Long Island City Partnership serves one of New York City's fastest-growing and most dynamic neighborhoods. Located on the western edge of Queens directly across from Midtown Manhattan, Long Island City has undergone a remarkable transformation from an industrial center to a vibrant mixed-use district. The BID supports a diverse array of businesses, cultural institutions, and an expanding residential population. With its distinctive waterfront, world-class arts organizations like MoMA PS1, and rapidly changing skyline, Long Island City represents one of the most dramatic urban transformations in recent New York City history.
 
 # Insight Analysis
 
@@ -56,6 +56,6 @@ Donec vitae justo vitae turpis rutrum vestibulum vel at tortor. Aliquam quis tel
 
 ## Additional Resources
 
-- [DUMBO Improvement District Website](https://dumbo.org/)
-- [Annual Report (PDF)](https://dumbo.org/annual-reports/)
+- [Long Island City Partnership Website](https://longislandcityqueens.com/)
+- [Annual Report (PDF)](https://longislandcityqueens.com/about/annual-reports/)
 - [NYC Small Business Services - BID Directory](https://www1.nyc.gov/site/sbs/neighborhoods/business-improvement-districts.page)

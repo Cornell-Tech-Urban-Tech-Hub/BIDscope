@@ -22,13 +22,11 @@ const { title, description, classList, pageTitle, ogImage } = Astro.props;
     <header class="site-header">
       <div class="container mx-auto px-6 flex items-center justify-between">
         <a href="/" class="flex items-center gap-3">
-          <span class="text-2xl font-bold tracking-tight text-primary">BIDscope</span>
+          <span class="text-2xl font-bold tracking-tight text-primary">BIDSpec</span>
         </a>
         <nav class="hidden md:flex items-center gap-8">
           <a href="/" class="text-sm font-medium hover:text-primary transition-colors">Home</a>
           <a href="/projects" class="text-sm font-medium hover:text-primary transition-colors">Projects</a>
-          <a href="/about" class="text-sm font-medium hover:text-primary transition-colors">About</a>
-          <a href="/methodology" class="text-sm font-medium hover:text-primary transition-colors">Methodology</a>
         </nav>
         <button id="mobile-menu-button" class="md:hidden">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -41,7 +39,7 @@ const { title, description, classList, pageTitle, ogImage } = Astro.props;
     <div id="mobile-menu" class="fixed inset-0 z-50 bg-background/95 backdrop-blur-md hidden">
       <div class="container h-full flex flex-col">
         <div class="flex justify-between items-center py-6">
-          <span class="text-2xl font-bold text-primary">BIDscope</span>
+          <span class="text-2xl font-bold text-primary">BIDSpec</span>
           <button id="mobile-menu-close">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
               <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -51,8 +49,6 @@ const { title, description, classList, pageTitle, ogImage } = Astro.props;
         <nav class="flex flex-col gap-6 text-center mt-12 text-lg">
           <a href="/" class="py-2 hover:text-primary transition-colors">Home</a>
           <a href="/projects" class="py-2 hover:text-primary transition-colors">Projects</a>
-          <a href="/about" class="py-2 hover:text-primary transition-colors">About</a>
-          <a href="/methodology" class="py-2 hover:text-primary transition-colors">Methodology</a>
         </nav>
       </div>
     </div>
@@ -64,47 +60,80 @@ const { title, description, classList, pageTitle, ogImage } = Astro.props;
     <BaseFooter />
     
     <script>
-      // Handle scroll effects on header
-      const header = document.querySelector('.site-header');
-      const handleScroll = () => {
-        if (window.scrollY > 10) {
-          header?.classList.add('scrolled');
-        } else {
-          header?.classList.remove('scrolled');
-        }
-      };
-      
-      window.addEventListener('scroll', handleScroll);
-      
-      // Mobile menu toggle
-      const mobileMenuButton = document.getElementById('mobile-menu-button');
-      const mobileMenuClose = document.getElementById('mobile-menu-close');
-      const mobileMenu = document.getElementById('mobile-menu');
-      
-      mobileMenuButton?.addEventListener('click', () => {
-        mobileMenu?.classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-      });
-      
-      mobileMenuClose?.addEventListener('click', () => {
-        mobileMenu?.classList.add('hidden');
-        document.body.style.overflow = '';
-      });
-      
-      // Initialize animation observers
-      const fadeElements = document.querySelectorAll('.fade-in');
-      
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
+      // Function to initialize or reinitialize header behaviors
+      function initializeHeaderBehaviors() {
+        // Handle scroll effects on header
+        const header = document.querySelector('.site-header');
+        
+        const handleScroll = () => {
+          if (window.scrollY > 10) {
+            header?.classList.add('scrolled');
+          } else {
+            header?.classList.remove('scrolled');
           }
+        };
+        
+        // Apply initial scroll state
+        handleScroll();
+        
+        // Remove any existing scroll event listeners to prevent duplicates
+        window.removeEventListener('scroll', handleScroll);
+        window.addEventListener('scroll', handleScroll);
+        
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenuClose = document.getElementById('mobile-menu-close');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        // Create new event listeners to prevent duplicates
+        const openMenu = () => {
+          mobileMenu?.classList.remove('hidden');
+          document.body.style.overflow = 'hidden';
+        };
+        
+        const closeMenu = () => {
+          mobileMenu?.classList.add('hidden');
+          document.body.style.overflow = '';
+        };
+        
+        // Remove existing listeners by cloning and replacing elements
+        if (mobileMenuButton) {
+          const newButton = mobileMenuButton.cloneNode(true);
+          mobileMenuButton.parentNode?.replaceChild(newButton, mobileMenuButton);
+          newButton.addEventListener('click', openMenu);
+        }
+        
+        if (mobileMenuClose) {
+          const newCloseButton = mobileMenuClose.cloneNode(true);
+          mobileMenuClose.parentNode?.replaceChild(newCloseButton, mobileMenuClose);
+          newCloseButton.addEventListener('click', closeMenu);
+        }
+        
+        // Initialize animation observers
+        const fadeElements = document.querySelectorAll('.fade-in');
+        
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+            }
+          });
+        }, { threshold: 0.1 });
+        
+        fadeElements.forEach(element => {
+          observer.observe(element);
         });
-      }, { threshold: 0.1 });
+      }
       
-      fadeElements.forEach(element => {
-        observer.observe(element);
-      });
+      // Initialize on first load
+      initializeHeaderBehaviors();
+      
+      // Handle Astro page transitions
+      document.addEventListener('astro:page-load', initializeHeaderBehaviors);
+      document.addEventListener('astro:after-swap', initializeHeaderBehaviors);
+      
+      // Backup initialization for regular page loads
+      window.addEventListener('load', initializeHeaderBehaviors);
     </script>
   </body>
 </html>
