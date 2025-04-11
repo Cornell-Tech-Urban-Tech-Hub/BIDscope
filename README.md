@@ -1,12 +1,10 @@
-# Dense Street Imagery (DSI) Project Website
+# BIDSpec Project Website
 
-This is the official website for the Dense Street Imagery (DSI) academic project from Cornell Tech. Built with [Astro](https://astro.build/), the site showcases our research on visual data collection from "digital eyes on the street" including dashcams and autonomous vehicle systems.
+This is the official website for the BIDSpec (Business Improvement District) project from Cornell Tech. Built with [Astro](https://astro.build/), the site showcases our research on Business Improvement Districts (BIDs) and their impact on urban development and community engagement.
 
-## About Dense Street Imagery
+## About BIDSpec
 
-Dense Street Imagery (DSI) represents a breakthrough in visual urban data collection, combining advanced vehicle hardware, imaging technology, and networking capabilities to create dynamic, real-time depictions of city environments. Unlike traditional static snapshots from services like Google Street View, DSI leverages temporal density through networked dashcams and driver-assist systems to deliver fresh, continuous imagery at unprecedented frequency.
-
-This project is under review for FAccT '25: ACM Conference on Fairness, Accountability, and Transparency.
+BIDSpec is a comprehensive analysis platform for Business Improvement Districts, providing insights into how these special assessment districts function, their economic impact, and their role in urban development. The project combines geospatial data visualization, economic analysis, and policy research to create a holistic understanding of BIDs across various cities.
 
 ## Development
 
@@ -36,27 +34,27 @@ The site uses TailwindCSS for styling, a utility-first CSS framework that enable
 ### Components
 
 The website features several custom components:
-- Stats highlight section showing the scale of digital eyes data
-- Application cards for DSI use cases
-- Comparison section between DSI and traditional street imagery
-- Team member display grid with responsive layout
+- Interactive maps showing BID locations and boundaries
+- Data visualization tools for BID financial analysis
+- Project showcase highlighting specific BID case studies
+- Comparative analysis of BID structures across different cities
 
 ## Project Structure
 
 - `/src/pages/` - Page templates including the main index
 - `/src/components/` - UI components organized by function
 - `/src/layouts/` - Layout templates for consistent page structure
-- `/public/` - Static assets like team member images and logos
+- `/public/` - Static assets like images, logos, and geospatial data
 
-## Resources
+## Deployment
 
-- [Paper Link](https://doi.org/10.1145/3706598.3714009)
+The site is deployed at [urban.tech.cornell.edu/bidspec](https://urban.tech.cornell.edu/bidspec) via GitHub Pages.
 
 ## Team
 
 - Matt Franchi - Computer Science PhD Candidate
-- Hauke Sandhaus - Information Science PhD Candidate
-- Madiha Zahrah Choksi - Information Science PhD Candidate
-- Severin Engelmann - Digital Life Initiative Postdoctoral Associate
-- Wendy Ju - Associate Professor
-- Helen Nissenbaum - Professor / Director of Digital Life Initiative
+- [Additional team members]
+
+## Contact
+
+For more information about the BIDSpec project, please contact [project email/contact].
