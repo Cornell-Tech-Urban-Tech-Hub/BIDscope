@@ -13,6 +13,7 @@ interface Props {
 }
 
 const { title, description, classList, pageTitle, ogImage } = Astro.props;
+const base = import.meta.env.BASE_URL || '/';
 ---
 
 <html lang='en' class='h-full scroll-smooth'>
@@ -20,15 +21,15 @@ const { title, description, classList, pageTitle, ogImage } = Astro.props;
 
   <body class:list={['min-h-screen flex flex-col', classList]}>
     <header class="site-header">
-      <div class="container mx-auto px-6 flex items-center justify-between">
-        <a href="/" class="flex items-center gap-3">
+      <div class="header-container">
+        <a href={`${base}/`} class="site-branding">
           <span class="text-2xl font-bold tracking-tight text-primary">BIDSpec</span>
         </a>
-        <nav class="hidden md:flex items-center gap-8">
-          <a href="/" class="text-sm font-medium hover:text-primary transition-colors">Home</a>
-          <a href="/projects" class="text-sm font-medium hover:text-primary transition-colors">Projects</a>
+        <nav class="site-navigation">
+          <a href={`${base}/`}>Home</a>
+          <a href={`${base}/projects`}>Projects</a>
         </nav>
-        <button id="mobile-menu-button" class="md:hidden">
+        <button id="mobile-menu-button" class="mobile-menu-button">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
             <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
           </svg>
@@ -36,28 +37,28 @@ const { title, description, classList, pageTitle, ogImage } = Astro.props;
       </div>
     </header>
 
-    <div id="mobile-menu" class="fixed inset-0 z-50 bg-background/95 backdrop-blur-md hidden">
-      <div class="container h-full flex flex-col">
-        <div class="flex justify-between items-center py-6">
-          <span class="text-2xl font-bold text-primary">BIDSpec</span>
-          <button id="mobile-menu-close">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-        <nav class="flex flex-col gap-6 text-center mt-12 text-lg">
-          <a href="/" class="py-2 hover:text-primary transition-colors">Home</a>
-          <a href="/projects" class="py-2 hover:text-primary transition-colors">Projects</a>
-        </nav>
+    <div id="mobile-menu" class="mobile-menu">
+      <div class="mobile-menu-header">
+        <span class="text-2xl font-bold text-primary">BIDSpec</span>
+        <button id="mobile-menu-close" class="mobile-menu-button">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
       </div>
+      <nav class="mobile-menu-nav">
+        <a href={`${base}/`}>Home</a>
+        <a href={`${base}/projects`}>Projects</a>
+      </nav>
     </div>
 
-    <main class="flex-1">
+    <main class="site-main">
       <slot />
     </main>
     
-    <BaseFooter />
+    <footer class="site-footer">
+      <BaseFooter />
+    </footer>
     
     <script>
       // Function to initialize or reinitialize header behaviors
@@ -87,12 +88,12 @@ const { title, description, classList, pageTitle, ogImage } = Astro.props;
         
         // Create new event listeners to prevent duplicates
         const openMenu = () => {
-          mobileMenu?.classList.remove('hidden');
+          mobileMenu?.classList.add('open');
           document.body.style.overflow = 'hidden';
         };
         
         const closeMenu = () => {
-          mobileMenu?.classList.add('hidden');
+          mobileMenu?.classList.remove('open');
           document.body.style.overflow = '';
         };
         

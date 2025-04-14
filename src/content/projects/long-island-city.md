@@ -4,7 +4,7 @@ title: "Long Island City Partnership"
 description: "Analysis of the Long Island City Partnership, an area undergoing rapid transformation in Queens."
 publishDate: 2023-10-05
 updatedDate: 2023-10-20
-thumbnail: "/images/projects/long-island-city-bid-thumbnail.jpg"
+thumbnail: "../../assets/placeholder.jpg"
 
 # BID-specific Information
 bidName: "Long Island City Partnership"

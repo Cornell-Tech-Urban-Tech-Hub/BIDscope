@@ -4,7 +4,7 @@ title: "West Village BID"
 description: "Analysis of the West Village Business Improvement District in Manhattan."
 publishDate: 2023-09-20
 updatedDate: 2023-10-05
-thumbnail: "/images/projects/west-village-bid-thumbnail.jpg"
+thumbnail: "../../assets/placeholder.jpg"
 
 # BID-specific Information
 bidName: "West Village"

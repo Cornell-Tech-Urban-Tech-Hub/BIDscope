@@ -2,7 +2,7 @@
 import MainLayout from '../layouts/Default.astro';
 import { getCollection } from 'astro:content';
 import ProjectCard from '../components/projects/ProjectCard.astro';
-import MapVisualizer from '../components/visualizations/MapVisualizer.tsx';
+import MapVisualizer from '../components/visualizations/MapVisualizer.js';
 
 // Get featured projects
 const featuredProjects = await getCollection('projects', ({ data }) => data.featured);
@@ -10,100 +10,110 @@ const featuredProjects = await getCollection('projects', ({ data }) => data.feat
 // Get all project BID names for the map
 const allProjects = await getCollection('projects');
 const projectBids = allProjects.map(project => project.data.bidName);
+
+// Create a mapping from BID names to project slugs for direct navigation
+const bidToSlugMap = Object.fromEntries(
+  allProjects.map(project => [project.data.bidName, project.slug])
+);
+
+const base = import.meta.env.BASE_URL || '/';
 ---
 
 <MainLayout title="BIDSpec - Business Improvement District Analysis" 
             description="Data-driven insights into the impact and performance of Business Improvement Districts across New York City">
   
-  <!-- Hero Section - Remove mt-16 and add header-offset class -->
-  <section class="py-32 md:py-40 bg-gradient-to-b from-background to-secondary/20 header-offset">
-    <div class="container">
-      <div class="max-w-3xl mx-auto text-center fade-in">
-        <div class="inline-flex items-center px-3 py-1 text-sm font-medium text-primary bg-primary/10 rounded-full mb-6">
-          Urban Tech Hub @ Cornell Tech
-        </div>
-        <h1 class="text-5xl md:text-6xl font-bold leading-tight mb-6">NYC BIDSpec</h1>
-        <p class="mt-6 text-xl text-muted-foreground max-w-2xl mx-auto">
-          Targeted analyses of Business Improvement Districts (BIDs) in New York City, providing insights into their impact on local communities and economies, and extrapolating into the future.
+  <!-- Hero Section - Make it full screen height with larger map -->
+  <section class="min-h-screen flex flex-col pt-16 bg-gradient-to-b from-background to-secondary/20 header-offset">
+    <div class="container flex-1 flex flex-col">
+      <div class="mx-auto text-center fade-in mb-4">
+        <h1 class="text-5xl md:text-6xl font-bold leading-tight mb-3">NYC BIDSpec</h1>
+        <p class="text-xl text-muted-foreground max-w-3xl mx-auto mb-6">
+          Targeted analyses of Business Improvement Districts (BIDs) in New York City, providing insights into their impact on local communities and economies.
         </p>
-        <div class="mt-10 flex flex-wrap justify-center gap-4">
-          <a href="/projects" class="button">View Projects</a>
+      </div>
+      
+      <!-- Map added to hero section with navigation pills on sides -->
+      <div class="relative rounded-2xl overflow-hidden border border-muted/30 shadow-xl flex-1 mx-auto w-full max-w-[95%] mb-16">
+        <!-- Left side navigation pills -->
+        <div class="map-nav-pills map-nav-pills-left">
+          {projectBids.slice(0, Math.ceil(projectBids.length/2)).map(bid => (
+            <button class="map-nav-pill" data-bid={bid} aria-label={`Navigate to ${bid}`}>
+              <span class="map-nav-pill-text">{bid}</span>
+            </button>
+          ))}
         </div>
+        
+        <!-- Right side navigation pills -->
+        <div class="map-nav-pills map-nav-pills-right">
+          {projectBids.slice(Math.ceil(projectBids.length/2)).map(bid => (
+            <button class="map-nav-pill" data-bid={bid} aria-label={`Navigate to ${bid}`}>
+              <span class="map-nav-pill-text">{bid}</span>
+            </button>
+          ))}
+        </div>
+        
+        <div id="home-map-container" class="h-full min-h-[55vh]">
+          <MapVisualizer 
+            client:load 
+            projectBids={projectBids} 
+            mapId="home-page-map" 
+            bidToSlugMap={bidToSlugMap}
+          />
+        </div>
+      </div>
+      
+      <div class="mt-6 mb-8 flex flex-wrap justify-center gap-4">
+        <a href={`${base}/projects`} class="button">View Projects</a>
       </div>
     </div>
     <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent"></div>
   </section>
 
-  <!-- Featured Projects Section -->
-  <section class="py-20 container">
-    <div class="mb-12 text-center fade-in">
-      <div class="inline-flex items-center px-3 py-1 text-sm font-medium text-primary bg-primary/10 rounded-full mb-4">
-        Current Work
-      </div>
-      <h2 class="text-3xl md:text-4xl font-bold">Current Work</h2>
-      <p class="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-        Explore our in-depth analyses of selected Business Improvement Districts
-      </p>
-    </div>
-    
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 fade-in">
-      {featuredProjects.map(project => <ProjectCard project={project} />)}
-    </div>
-    
-    <div class="mt-14 text-center fade-in">
-      <a href="/projects" class="button">View all projects</a>
-    </div>
-  </section>
-  
-  <!-- Map Explorer Section with enhanced visuals -->
-  <section class="py-24 bg-secondary/30">
-    <div class="container">
-      <div class="grid md:grid-cols-5 gap-12 items-center">
-        <div class="md:col-span-2 fade-in">
-          <div class="inline-flex items-center px-3 py-1 text-sm font-medium text-primary bg-primary/10 rounded-full mb-4">
-            Interactive Tool
-          </div>
-          <h2 class="text-3xl md:text-4xl font-bold mb-6">BID Map Explorer</h2>
-          <p class="text-lg text-muted-foreground mb-8">
-            Navigate through New York City's Business Improvement Districts. Click on areas with existing analyses to explore detailed insights.
-          </p>
-          <div class="flex flex-col gap-6">
-            <div class="flex items-start gap-3">
-              <div class="mt-1 w-8 h-8 flex items-center justify-center rounded-full bg-primary/10 text-primary">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-                </svg>
-              </div>
-              <div>
-                <h4 class="text-base font-semibold">Geographic Context</h4>
-                <p class="text-sm text-muted-foreground">Visualize the spatial distribution and boundaries of each BID</p>
-              </div>
-            </div>
-            
-            <div class="flex items-start gap-3">
-              <div class="mt-1 w-8 h-8 flex items-center justify-center rounded-full bg-primary/10 text-primary">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5m.75-9l3-3 2.148 2.148A12.061 12.061 0 0116.5 7.605" />
-                </svg>
-              </div>
-              <div>
-                <h4 class="text-base font-semibold">Project Coverage</h4>
-                <p class="text-sm text-muted-foreground">Highlighted areas indicate BIDs with completed analyses</p>
-              </div>
-            </div>
-          </div>
-        </div>
+  <!-- About Section -->
+  <section class="py-24 container">
+    <div class="grid md:grid-cols-5 gap-12 items-center">
+      <div class="md:col-span-3 fade-in">
+        <h2 class="text-3xl md:text-4xl font-bold mb-6">About BIDSpec</h2>
+        <p class="text-lg text-muted-foreground mb-6">
+          This project is part of INFO 5420: Smart Cities, a course offered by the Urban Tech program at Cornell Tech. BIDSpec applies data science and urban analytics to understand the impact of Business Improvement Districts across New York City.
+        </p>
         
-        <div class="md:col-span-3 fade-in">
-          <div class="relative rounded-2xl overflow-hidden border border-muted/30 shadow-xl">
-            <MapVisualizer client:load projectBids={projectBids} />
+        <div class="flex flex-col gap-6 mt-8">
+          <div class="flex items-start gap-3">
+            <div class="mt-1 w-8 h-8 flex items-center justify-center rounded-full bg-primary/10 text-primary">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5" />
+              </svg>
+            </div>
+            <div>
+              <h4 class="text-base font-semibold">Course Information</h4>
+              <p class="text-sm text-muted-foreground">INFO 5420: Smart Cities — Taught by Ariel Noyman with TA Matt Franchi</p>
+            </div>
+          </div>
+          
+          <div class="flex items-start gap-3">
+            <div class="mt-1 w-8 h-8 flex items-center justify-center rounded-full bg-primary/10 text-primary">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Z" />
+              </svg>
+            </div>
+            <div>
+              <h4 class="text-base font-semibold">Affiliation</h4>
+              <p class="text-sm text-muted-foreground">Urban Tech Hub at Cornell Tech, Jacobs Technion-Cornell Institute</p>
+            </div>
           </div>
         </div>
       </div>
+      
+      <div class="md:col-span-2 fade-in">
+        <div class="relative rounded-xl overflow-hidden border border-muted/30 shadow-lg image-frame">
+          <img src={`${base}/images/cornell-tech.jpg`} alt="Cornell Tech campus" class="w-full h-auto object-cover aspect-[4/3]" />
+        </div>
+        <p class="text-sm text-muted-foreground mt-3 text-center">Cornell Tech campus on Roosevelt Island, NYC</p>
+      </div>
     </div>
   </section>
-  
+
   <!-- Analysis Framework Section -->
   <section class="py-20 bg-secondary/30">
     <div class="container">
@@ -145,61 +155,28 @@ const projectBids = allProjects.map(project => project.data.bidName);
       </div>
     </div>
   </section>
-  
-  <!-- About Section -->
-  <section class="py-24 container">
-    <div class="grid md:grid-cols-5 gap-12 items-center">
-      <div class="md:col-span-3 fade-in">
-        <div class="inline-flex items-center px-3 py-1 text-sm font-medium text-primary bg-primary/10 rounded-full mb-4">
-          Academic Project
-        </div>
-        <h2 class="text-3xl md:text-4xl font-bold mb-6">About BIDSpec</h2>
-        <p class="text-lg text-muted-foreground mb-6">
-          This project is part of INFO 5420: Smart Cities, a course offered by the Urban Tech program at Cornell Tech. BIDSpec applies data science and urban analytics to understand the impact of Business Improvement Districts across New York City.
-        </p>
-        
-        <div class="flex flex-col gap-6 mt-8">
-          <div class="flex items-start gap-3">
-            <div class="mt-1 w-8 h-8 flex items-center justify-center rounded-full bg-primary/10 text-primary">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5" />
-              </svg>
-            </div>
-            <div>
-              <h4 class="text-base font-semibold">Course Information</h4>
-              <p class="text-sm text-muted-foreground">INFO 5420: Smart Cities — Taught by Ariel Noyman with TA Matt Franchi</p>
-            </div>
-          </div>
-          
-          <div class="flex items-start gap-3">
-            <div class="mt-1 w-8 h-8 flex items-center justify-center rounded-full bg-primary/10 text-primary">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Z" />
-              </svg>
-            </div>
-            <div>
-              <h4 class="text-base font-semibold">Affiliation</h4>
-              <p class="text-sm text-muted-foreground">Urban Tech Hub at Cornell Tech, Jacobs Technion-Cornell Institute</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <div class="md:col-span-2 fade-in">
-        <div class="relative rounded-xl overflow-hidden border border-muted/30 shadow-lg image-frame">
-          <img src="/images/cornell-tech.jpg" alt="Cornell Tech campus" class="w-full h-auto object-cover aspect-[4/3]" />
-        </div>
-        <p class="text-sm text-muted-foreground mt-3 text-center">Cornell Tech campus on Roosevelt Island, NYC</p>
-      </div>
+
+  <!-- Featured Projects Section -->
+  <section class="py-20 container">
+    <div class="mb-12 text-center fade-in">
+      <h2 class="text-3xl md:text-4xl font-bold">Current Work</h2>
+      <p class="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
+        Explore our in-depth analyses of selected Business Improvement Districts
+      </p>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 fade-in">
+      {featuredProjects.map(project => <ProjectCard project={project} />)}
+    </div>
+    
+    <div class="mt-14 text-center fade-in">
+      <a href={`${base}/projects`} class="button">View all projects</a>
     </div>
   </section>
   
   <!-- Latest Updates Section -->
   <section class="py-24 container">
     <div class="fade-in">
-      <div class="inline-flex items-center px-3 py-1 text-sm font-medium text-primary bg-primary/10 rounded-full mb-4">
-        What's New
-      </div>
       <h2 class="text-3xl md:text-4xl font-bold mb-6">Latest Updates</h2>
       <p class="text-lg text-muted-foreground mb-6">
         Our research team is constantly working on new analyses and improvements to our methodology. Stay tuned for upcoming releases.
@@ -209,6 +186,12 @@ const projectBids = allProjects.map(project => project.data.bidName);
         <div class="text-sm text-muted-foreground mb-2">May 2025</div>
         <h3 class="text-xl font-bold mb-2">Spring 2025 Cohort Completes BID Analyses</h3>
         <p class="text-muted-foreground">The Spring 2025 cohort has completed their analysis of five different NYC BIDs: Downtown Brooklyn, DUMBO Improvement District, 5th Avenue in Brooklyn, Long Island City, and the West Village.</p>
+      </div>
+      
+      <div class="bg-card rounded-xl p-6 border border-border mt-4">
+        <div class="text-sm text-muted-foreground mb-2">April 2025</div>
+        <h3 class="text-xl font-bold mb-2">Interactive Map Experience Enhanced</h3>
+        <p class="text-muted-foreground">We've optimized our BID Map Explorer for better performance and smoother interactions, allowing you to navigate NYC's Business Improvement Districts more seamlessly than ever.</p>
       </div>
     </div>
   </section>
@@ -221,7 +204,7 @@ const projectBids = allProjects.map(project => project.data.bidName);
         Dive into our comprehensive analyses of Business Improvement Districts across New York City.
       </p>
       <div class="flex flex-wrap justify-center gap-4">
-        <a href="/projects" class="px-8 py-3 bg-white text-primary font-medium rounded-lg hover:bg-opacity-95 transition-colors">
+        <a href={`${base}/projects`} class="px-8 py-3 bg-white text-primary font-medium rounded-lg hover:bg-opacity-95 transition-colors">
           View All Projects
         </a>
       </div>
@@ -230,9 +213,14 @@ const projectBids = allProjects.map(project => project.data.bidName);
 </MainLayout>
 
 <script>
-// Enhanced page transition handling
-document.addEventListener('DOMContentLoaded', () => {
-  // Apply header offset fix immediately on first load
+// Enhanced page transition handling with improved initialization
+document.addEventListener('DOMContentLoaded', initializePage);
+document.addEventListener('astro:page-load', initializePage);
+document.addEventListener('astro:after-swap', initializePage);
+
+// Centralized initialization function to ensure consistent behavior
+function initializePage() {
+  // Apply header offset fix immediately
   const headerHeight = document.querySelector('.site-header')?.offsetHeight || 0;
   document.documentElement.style.setProperty('--header-height', `${headerHeight}px`);
   
@@ -240,51 +228,230 @@ document.addEventListener('DOMContentLoaded', () => {
   const imgElements = document.querySelectorAll('img');
   imgElements.forEach(img => {
     img.onerror = () => {
-      img.src = '/images/placeholder.jpg';
+      const base = import.meta.env.BASE_URL || '/';
+      img.src = `${base}/images/placeholder.jpg`;
     };
   });
 
-  // Fix fade-in transitions when navigating back to home page
-  const fadeElements = document.querySelectorAll('.fade-in');
-  
-  // Function to check if element is in viewport and apply transition
-  const applyFadeIn = () => {
-    fadeElements.forEach(element => {
-      // Reset any inline styles to ensure transitions can reapply
-      element.style.opacity = '';
-      element.style.transform = '';
-      
-      // Slight delay to ensure the DOM has updated
-      setTimeout(() => {
-        // Apply the fade-in class animation
-        element.classList.add('animated');
-      }, 10);
-    });
-  };
-  
-  // Apply transitions on load and when navigating via history
+  // Apply fade-in animations
   applyFadeIn();
   
-  // Handle browser navigation events
-  window.addEventListener('popstate', applyFadeIn);
+  // Check if we're on the home page before initializing map-specific functionality
+  const isHomePage = document.getElementById('home-map-container') !== null;
   
-  // Add CSS for the animation if not already in your global styles
-  if (!document.getElementById('fade-in-styles')) {
-    const styleSheet = document.createElement('style');
-    styleSheet.id = 'fade-in-styles';
-    styleSheet.textContent = `
-      .fade-in {
-        opacity: 0;
-        transform: translateY(20px);
-        transition: opacity 0.5s ease-out, transform 0.5s ease-out;
-      }
-      .fade-in.animated {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    `;
-    document.head.appendChild(styleSheet);
+  if (isHomePage) {
+    console.log('Home page detected, initializing map functionality');
+    // Ensure map functionality is properly initialized
+    ensureMapFunctions();
+    
+    // Set up map pill navigation
+    setupMapPills();
+  } else {
+    console.log('Not on home page, skipping map initialization');
   }
-});
+}
+
+// Function to check if element is in viewport and apply transition
+function applyFadeIn() {
+  const fadeElements = document.querySelectorAll('.fade-in');
+  
+  fadeElements.forEach(element => {
+    // Skip map container parents to avoid affecting the map
+    if (element.contains(document.getElementById('home-map-container'))) {
+      element.classList.add('animated');
+      return;
+    }
+    
+    // Reset any inline styles to ensure transitions can reapply
+    element.style.opacity = '';
+    element.style.transform = '';
+    
+    // Apply the fade-in class animation
+    requestAnimationFrame(() => {
+      element.classList.add('animated');
+    });
+  });
+}
+
+// Ensure map events are properly initialized
+function ensureMapFunctions() {
+  // Only run if we're on the home page
+  if (!document.getElementById('home-map-container')) {
+    console.log('Home map container not found, skipping map functions setup');
+    return;
+  }
+  
+  // Add a global safety handler for map functions
+  window.handleMapError = (fnName) => {
+    console.warn(`Map function ${fnName} was called before being defined`);
+    return () => {}; // Return empty function as fallback
+  };
+  
+  // Initialize debug functions
+  window.debugLongPress = {
+    start: (bidName) => {
+      console.log(`DEBUG: Starting long press for ${bidName}`);
+      const tooltip = document.getElementById('deck-tooltip-home-page-map');
+      if (tooltip) {
+        const content = tooltip.querySelector('.tooltip-content');
+        if (content) {
+          const debug = document.createElement('div');
+          debug.style.cssText = 'background:#10B981;height:6px;width:0%;transition:width 1s linear;margin-top:8px;';
+          debug.classList.add('debug-progress');
+          content.appendChild(debug);
+          
+          setTimeout(() => {
+            const bar = tooltip.querySelector('.debug-progress');
+            if (bar) bar.style.width = '100%';
+          }, 50);
+          
+          // After animation completes, navigate
+          setTimeout(() => {
+            const base = import.meta.env.BASE_URL || '/';
+            console.log(`DEBUG: Navigation would go to ${base}/projects#${bidName}`);
+          }, 1000);
+        }
+      }
+    }
+  };
+  
+  // Monitor map initialization with retries
+  let retryCount = 0;
+  const maxRetries = 10;
+  
+  const checkMapInitialized = () => {
+    const mapContainer = document.getElementById('map-container-home-page-map');
+    if (mapContainer) {
+      console.log('Home page map container found');
+      
+      // Verify tooltip element exists
+      const tooltip = document.getElementById('deck-tooltip-home-page-map');
+      if (tooltip) {
+        console.log('Home page tooltip found');
+      } else if (retryCount < maxRetries) {
+        console.log(`Home page tooltip not found, retry ${retryCount + 1}/${maxRetries}`);
+        retryCount++;
+        setTimeout(checkMapInitialized, 300);
+      } else {
+        console.warn('Home page tooltip not found after multiple retries');
+      }
+    } else if (retryCount < maxRetries) {
+      retryCount++;
+      setTimeout(checkMapInitialized, 300);
+    } else {
+      console.warn('Map container not found after multiple retries');
+    }
+  };
+  
+  // Start checking for map initialization
+  checkMapInitialized();
+  
+  // Add debug event listener for monitoring long press progress
+  window.addEventListener('mousemove', (e) => {
+    // Check if we're hovering over a BID on the map
+    const tooltip = document.getElementById('deck-tooltip-home-page-map');
+    if (tooltip && tooltip.style.display === 'block') {
+      const progressBar = tooltip.querySelector('.tooltip-progress');
+      if (progressBar) {
+        const width = progressBar.style.width;
+        if (width && parseInt(width) > 0) {
+          // Log progress bar updates to console
+          console.log(`Home page progress: ${width}`);
+        }
+      }
+    }
+  }, { passive: true });
+}
+
+// Setup map navigation pills with better error handling
+function setupMapPills() {
+  // Only run if we're on the home page
+  if (!document.getElementById('home-map-container')) {
+    console.log('Home map container not found, skipping map pills setup');
+    return;
+  }
+  
+  const mapPills = document.querySelectorAll('.map-nav-pill');
+  if (!mapPills.length) {
+    console.log('Map pills not found - this is expected on non-home pages');
+    // Retry once more with a delay
+    setTimeout(() => {
+      // Check again if we're still on the home page
+      if (!document.getElementById('home-map-container')) return;
+      
+      const retryPills = document.querySelectorAll('.map-nav-pill');
+      if (retryPills.length) {
+        console.log(`Found ${retryPills.length} map pills on retry`);
+        attachPillListeners(retryPills);
+      }
+    }, 500);
+    return;
+  }
+  
+  console.log(`Found ${mapPills.length} map pills`);
+  attachPillListeners(mapPills);
+}
+
+function attachPillListeners(pills) {
+  pills.forEach((pill, index) => {
+    const bidName = pill.getAttribute('data-bid');
+    console.log(`Pill ${index}: ${bidName}`);
+    
+    // Remove any existing listeners by cloning
+    const newPill = pill.cloneNode(true);
+    pill.parentNode.replaceChild(newPill, pill);
+    
+    newPill.addEventListener('click', (e) => {
+      e.preventDefault();
+      const pillBidName = newPill.getAttribute('data-bid');
+      if (!pillBidName) return;
+      
+      console.log(`Pill clicked: ${pillBidName}`);
+      
+      // Highlight the active pill first
+      document.querySelectorAll('.map-nav-pill').forEach(p => p.classList.remove('active'));
+      newPill.classList.add('active');
+      
+      // Make sure DOM updates before navigation event
+      requestAnimationFrame(() => {
+        // Create navigation event with clear logging
+        try {
+          const event = new CustomEvent('map-navigate-to-bid', {
+            detail: {
+              mapId: 'home-page-map',
+              bidName: pillBidName
+            }
+          });
+          
+          console.log(`Dispatching map navigation event for ${pillBidName}`);
+          window.dispatchEvent(event);
+        } catch (error) {
+          console.error('Error dispatching navigation event:', error);
+        }
+      });
+    });
+  });
+}
+
+// Handle browser navigation events
+window.addEventListener('popstate', initializePage);
+
+// Add CSS for the animation if not already in global styles
+if (!document.getElementById('fade-in-styles')) {
+  const styleSheet = document.createElement('style');
+  styleSheet.id = 'fade-in-styles';
+  styleSheet.textContent = `
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    }
+    .fade-in.animated {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  `;
+  document.head.appendChild(styleSheet);
+}
 </script>
 

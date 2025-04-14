@@ -1,9 +1,10 @@
 /* Project page specific styling */
 
-/* Project header and metadata */
+/* Project header and metadata - Add spacing to prevent header overlap */
 .project-header {
   margin-bottom: 3rem;
   padding-bottom: 2rem;
+  padding-top: 2rem; /* Add padding to ensure content isn't hidden */
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
@@ -32,6 +33,11 @@
   margin: 4rem 0;
   padding-top: 1rem;
   position: relative;
+}
+
+/* Ensure first content sections have proper spacing */
+.content-section:first-of-type {
+  margin-top: 2rem;
 }
 
 .section-title {
@@ -355,5 +361,9 @@
   
   .methodology-label {
     margin-bottom: 0.5rem;
+  }
+  
+  .project-header {
+    padding-top: 1.5rem;
   }
 }

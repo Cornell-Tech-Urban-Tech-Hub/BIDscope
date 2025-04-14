@@ -196,6 +196,129 @@ a:hover {
   box-shadow: 0 1px 10px rgba(0, 0, 0, 0.05);
 }
 
+/* Main content spacing to prevent header overlap */
+main.site-main {
+  padding-top: var(--header-height);
+  min-height: calc(100vh - var(--header-height));
+}
+
+/* Container for header content */
+.header-container {
+  width: 100%;
+  max-width: 1340px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+}
+
+/* Header branding/logo styles */
+.site-branding {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Site navigation styles */
+.site-navigation {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.site-navigation a {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  transition: color 0.2s ease;
+  padding: 0.5rem 0;
+  position: relative;
+}
+
+.site-navigation a:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--primary);
+  transition: width 0.3s ease;
+}
+
+.site-navigation a:hover {
+  color: var(--primary);
+}
+
+.site-navigation a:hover:after {
+  width: 100%;
+}
+
+/* Mobile menu button styles */
+.mobile-menu-button {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-primary);
+}
+
+/* Mobile menu styles */
+.mobile-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background-color: rgba(251, 251, 253, 0.95);
+  backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  transform: translateY(-100%);
+  transition: transform 0.3s ease;
+}
+
+.mobile-menu.open {
+  transform: translateY(0);
+}
+
+.mobile-menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.mobile-menu-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.mobile-menu-nav a {
+  font-size: 1.25rem;
+  font-weight: 500;
+  padding: 0.75rem 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .site-navigation {
+    display: none;
+  }
+  
+  .mobile-menu-button {
+    display: block;
+  }
+  
+  .header-container {
+    padding: 0 1.5rem;
+  }
+}
+
 /* Add header offset utility class */
 .header-offset {
   padding-top: var(--header-height);
@@ -270,10 +393,205 @@ main > section:first-child.header-offset {
 .map-overlay {
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(10px);
-  padding: 24px;
-  border-radius: 12px;
+  padding: 12px 16px;
+  border-radius: 10px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  max-width: 320px;
+  max-width: 280px;
+  max-height: 140px;
+  overflow-y: auto;
+}
+
+/* Aggressive map caption box reduction - specific for home page map */
+#home-map-container .mapboxgl-ctrl-bottom-right {
+  position: absolute !important;
+  bottom: 0 !important;
+  max-height: 18px !important;
+  transform: scale(0.8) !important;
+  transform-origin: bottom right !important;
+  z-index: 1 !important;
+}
+
+#home-map-container .mapboxgl-ctrl-attrib {
+  padding: 0 !important;
+  max-height: 18px !important;
+  line-height: 18px !important;
+  background: rgba(255, 255, 255, 0.5) !important;
+  margin: 0 !important;
+}
+
+#home-map-container .mapboxgl-ctrl-attrib-inner {
+  font-size: 8px !important;
+  max-width: 200px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  padding: 0 4px !important;
+  color: #555 !important;
+}
+
+/* Optional - hide attribution completely for home page map */
+/* Uncomment this if you want to completely hide the caption box */
+
+#home-map-container .mapboxgl-ctrl-attrib {
+  display: none !important;
+}
+
+
+/* Ensure the home map takes full available height */
+#home-map-container {
+  height: 100% !important;
+}
+
+#home-map-container .mapboxgl-canvas {
+  height: 100% !important;
+}
+
+/* Map caption box adjustments for the home page map */
+.mapboxgl-map .mapboxgl-ctrl-attrib {
+  padding: 0 5px;
+  max-height: 24px;
+  line-height: 24px;
+  font-size: 10px;
+  max-width: 90%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mapboxgl-ctrl-bottom-right {
+  max-height: 30px;
+}
+
+/* Compact version of mapbox controls */
+.mapboxgl-ctrl-group {
+  transform: scale(0.85);
+  transform-origin: bottom right;
+}
+
+#home-map-container .mapboxgl-ctrl-attrib-inner {
+  font-size: 9px;
+  max-width: 100%;
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Make the attribution button smaller */
+.mapboxgl-ctrl-attrib-button {
+  width: 20px !important;
+  height: 20px !important;
+  line-height: 20px !important;
+}
+
+/* Make map caption minimal */
+.map-caption {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.7);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  color: #555;
+  z-index: 10;
+  margin: 0;
+  pointer-events: none;
+  max-width: 90%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Map navigation pills styling */
+.map-nav-pills {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 10;
+  max-height: 80%;
+  overflow-y: auto;
+  padding: 10px;
+  -ms-overflow-style: none;  /* Hide scrollbar IE and Edge */
+  scrollbar-width: none;  /* Hide scrollbar Firefox */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.map-nav-pills::-webkit-scrollbar {
+  display: none;
+}
+
+.map-nav-pills-left {
+  left: 0;
+  align-items: flex-start;
+}
+
+.map-nav-pills-right {
+  right: 0;
+  align-items: flex-end;
+}
+
+.map-nav-pill {
+  background-color: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(4px);
+}
+
+.map-nav-pill:hover {
+  transform: translateX(0) scale(1.05);
+  background-color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.map-nav-pill.active {
+  background-color: var(--primary);
+  color: white;
+  box-shadow: 0 4px 12px rgba(179, 27, 27, 0.25);
+}
+
+.map-nav-pills-left .map-nav-pill {
+  transform: translateX(-5px);
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.map-nav-pills-left .map-nav-pill:hover {
+  transform: translateX(0) scale(1.05);
+}
+
+.map-nav-pills-right .map-nav-pill {
+  transform: translateX(5px);
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.map-nav-pills-right .map-nav-pill:hover {
+  transform: translateX(0) scale(1.05);
+}
+
+/* Responsive adjustments for map pills */
+@media (max-width: 768px) {
+  .map-nav-pills {
+    padding: 5px;
+  }
+  
+  .map-nav-pill {
+    padding: 4px 12px;
+    font-size: 10px;
+  }
 }
 
 /* Enhanced stat cards */
@@ -681,4 +999,53 @@ html:not(.astro-transition-fallback) .projects-container {
 @keyframes force-render {
   0% { opacity: 0.99; }
   100% { opacity: 1; }
+}
+
+/* Enhanced tooltip styling for long press */
+.map-tooltip {
+  pointer-events: none !important;
+  z-index: 1000 !important;
+}
+
+.tooltip-progress-container {
+  width: 100% !important;
+  height: 6px !important;
+  background: #e5e7eb !important;
+  margin-top: 8px !important;
+  border-radius: 3px !important;
+  overflow: hidden !important;
+  position: relative !important;
+}
+
+.tooltip-progress {
+  height: 100% !important;
+  background: #10B981 !important;
+  transition: width 0.05s linear !important;
+  min-width: 3px !important;
+  display: block !important;
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+}
+
+/* Make sure tooltips are visible and accessible */
+#deck-tooltip-home-page-map {
+  z-index: 1000 !important;
+  pointer-events: none !important;
+}
+
+/* Ensure tooltip content is visible */
+.tooltip-content {
+  background: white !important;
+  border-radius: 4px !important;
+  padding: 8px !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
+  min-width: 150px !important;
+}
+
+/* Ensure text is readable */
+.tooltip-content p {
+  margin: 4px 0 !important;
+  font-size: 13px !important;
+  line-height: 1.4 !important;
 }

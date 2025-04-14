@@ -17,13 +17,18 @@ function formatDate(date: Date): string {
     day: 'numeric'
   });
 }
+
+// Get base URL and ensure consistent formatting
+const baseUrl = import.meta.env.BASE_URL || '/';
+// Ensure base has no trailing slash when concatenating paths
+const base = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
 ---
 
 <div class="rounded-lg border bg-card shadow hover:shadow-lg transition-shadow" 
      data-borough={project.data.borough}
      data-bid-name={project.data.bidName}
      id={project.data.bidName.replace(/\s+/g, '-').toLowerCase()}>
-  <a href={`/projects/${project.slug}`} class="block">
+  <a href={`${base}/projects/${project.slug}`} class="block">
     {project.data.thumbnail && (
       <div class="relative">
         <Image 
@@ -46,7 +51,7 @@ function formatDate(date: Date): string {
       <span class="text-sm text-muted-foreground">{formatDate(project.data.publishDate)}</span>
       <span class="px-2 py-1 bg-primary/10 text-primary text-xs rounded-full">{project.data.borough}</span>
     </div>
-    <a href={`/projects/${project.slug}`} class="block hover:text-primary transition-colors">
+    <a href={`${base}/projects/${project.slug}`} class="block hover:text-primary transition-colors">
       <h3 class="text-xl font-bold">{project.data.title}</h3>
     </a>
     <p class="text-sm text-muted-foreground line-clamp-3 mt-2">{project.data.description}</p>
@@ -54,7 +59,7 @@ function formatDate(date: Date): string {
       <span class={`text-sm font-medium ${hasBidOnMap ? 'text-primary' : ''}`}>
         {project.data.bidName}
       </span>
-      <a href={`/projects/${project.slug}`} class="text-primary hover:underline">Read analysis →</a>
+      <a href={`${base}/projects/${project.slug}`} class="text-primary hover:underline">Read analysis →</a>
     </div>
   </div>
 </div>

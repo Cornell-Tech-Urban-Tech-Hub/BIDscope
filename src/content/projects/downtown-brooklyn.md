@@ -4,7 +4,7 @@ title: "Downtown Brooklyn Partnership"
 description: "Analysis of the Downtown Brooklyn Partnership, a major commercial and cultural district in Brooklyn."
 publishDate: 2023-10-01
 updatedDate: 2023-10-15
-thumbnail: "/images/projects/downtown-brooklyn-bid-thumbnail.jpg"
+thumbnail: "../../assets/placeholder.jpg"
 
 # BID-specific Information
 bidName: "Fulton Mall Improvement Association"

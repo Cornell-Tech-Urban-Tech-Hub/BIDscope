@@ -1,7 +1,7 @@
 ---
 import Layout from '../../layouts/Default.astro';
 import ProjectCard from '../../components/projects/ProjectCard.astro';
-import MapVisualizer from '../../components/visualizations/MapVisualizer.js';
+import MapVisualizer from '../../components/visualizations/MapVisualizer.js'; // Fix the import to use .tsx
 import { getCollection } from 'astro:content';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -16,6 +16,11 @@ const sortedProjects = allProjects.sort((a, b) =>
 
 // Extract BID names for the map
 const projectBids = allProjects.map(project => project.data.bidName);
+
+// Create a mapping from BID names to project slugs
+const bidToSlugMap = Object.fromEntries(
+  allProjects.map(project => [project.data.bidName, project.slug])
+);
 
 // Get valid BID names from the GeoJSON file for validation
 let mapBidNames = [];
@@ -42,10 +47,18 @@ const boroughs = [...new Set(sortedProjects.map(project => project.data.borough)
       </p>
     </div>
 
-    <!-- Map visualization -->
+    <!-- Map visualization - add a unique mapId and pass bidToSlugMap -->
     <div class="map-section">
       <h2 class="map-title">BID Map</h2>
-      <MapVisualizer client:load projectBids={projectBids} />
+      <div class="relative rounded-xl overflow-hidden border">
+        <MapVisualizer 
+          client:only="react" 
+          projectBids={projectBids} 
+          height="450px" 
+          mapId="projects-page-map"
+          bidToSlugMap={bidToSlugMap}
+        />
+      </div>
     </div>
 
     <!-- Filters -->
@@ -195,8 +208,12 @@ function highlightBidFromHash() {
     const hash = window.location.hash.substring(1);
     if (hash) {
       const decodedHash = decodeURIComponent(hash);
+      console.log(`Looking for BID with name: ${decodedHash}`);
+      
       const targetCard = document.querySelector(`[data-bid-name="${decodedHash}"]`);
       if (targetCard) {
+        console.log(`Found matching BID card for: ${decodedHash}`);
+        
         // Remove highlight from any previously highlighted card
         document.querySelectorAll('.highlight-card').forEach(el => {
           el.classList.remove('highlight-card');
@@ -204,7 +221,16 @@ function highlightBidFromHash() {
         
         // Add highlight to the target card
         targetCard.classList.add('highlight-card');
-        targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        // Ensure card is visible first (in case it was filtered out)
+        targetCard.style.display = 'block';
+        
+        // Scroll to it with a slight delay to ensure UI is ready
+        setTimeout(() => {
+          targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+      } else {
+        console.warn(`No BID card found with name: ${decodedHash}`);
       }
     }
   } catch (error) {
@@ -214,6 +240,11 @@ function highlightBidFromHash() {
 
 // Add a final fallback for extreme cases
 window.addEventListener('load', function() {
+  // Check for hash in URL on load
+  if (window.location.hash) {
+    setTimeout(highlightBidFromHash, 300);
+  }
+  
   // Delay check to ensure all other scripts have run
   setTimeout(() => {
     const projectGrid = document.querySelector('#projects-grid');

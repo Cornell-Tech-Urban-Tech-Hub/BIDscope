@@ -1,12 +1,12 @@
 import { z, defineCollection } from 'astro:content';
 
 const projects = defineCollection({
-  schema: z.object({
+  schema: ({ image }) => z.object({
     title: z.string(),
     description: z.string(),
     publishDate: z.date(),
     updatedDate: z.date().optional(),
-    thumbnail: z.string().optional(),
+    thumbnail: image().optional(),
     bidName: z.string(),
     borough: z.enum(['Manhattan', 'Brooklyn', 'Queens', 'Bronx', 'Staten Island']),
     yearEstablished: z.number().optional(),
