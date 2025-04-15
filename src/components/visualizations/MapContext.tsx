@@ -49,9 +49,6 @@ export const MapProvider: React.FC<{children: React.ReactNode}> = ({ children })
   const [geojsonData, setGeojsonDataState] = useState<any>(globalMapState.geojsonData);
   const [deckOverlay, setDeckOverlayState] = useState<any>(globalMapState.deckOverlay);
   const tooltipRef = useRef<HTMLDivElement>(globalMapState.tooltipElement);
-  
-  // Add state to track tooltip updates
-  const [tooltipUpdate, setTooltipUpdate] = useState(0);
 
   // Create setter functions that update both React state and global state
   const setMapInstance = (map: any) => {
@@ -107,9 +104,6 @@ export const MapProvider: React.FC<{children: React.ReactNode}> = ({ children })
           };
         }
       }
-      
-      // Trigger re-render when tooltips are updated
-      setTooltipUpdate(prev => prev + 1);
     }
   };
 
@@ -151,13 +145,6 @@ export const MapProvider: React.FC<{children: React.ReactNode}> = ({ children })
     return null;
   };
 
-  // Update tooltipRef.current in global state when it changes
-  useEffect(() => {
-    if (tooltipRef.current) {
-      globalMapState.tooltipElement = tooltipRef.current;
-    }
-  }, [tooltipUpdate]);
-
   // Make sure to expose the MapContext globally for direct access in emergencies
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -187,17 +174,6 @@ export const MapProvider: React.FC<{children: React.ReactNode}> = ({ children })
         console.warn('Error retrieving cached GeoJSON:', e);
       }
     }
-    
-    // Cleanup on unmount/navigation
-    return () => {
-      // Don't actually clear state on unmount to preserve between navigations
-      // But we can clear temporary resources
-      if (typeof window !== 'undefined') {
-        // Clean up any dangling event listeners
-        window.removeEventListener('map-navigate-to-bid', () => {});
-        window.removeEventListener('map-zoom-request', () => {});
-      }
-    };
   }, []);
 
   return (

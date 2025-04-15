@@ -4,35 +4,26 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import * as turf from '@turf/turf';
 import { MapProvider, useMapContext } from './MapContext';
 import mapCleanupManager from '../../utils/mapCleanup';
+// Import utility functions from mapUtils.js
+import { createBidPerimeters, createBidPolygons, calculateBoundingBox, getBasePath } from '../../utils/mapUtils';
 
-// Add mapId prop and make it available throughout component
 interface MapVisualizerProps {
   projectBids: string[];
   focusBid?: string | null;
   height?: string;
   initialZoom?: number;
-  mapId?: string; // Add mapId prop to support multiple maps
-  bidToSlugMap?: Record<string, string>; // Add mapping of BID names to project slugs
+  mapId?: string;
+  bidToSlugMap?: Record<string, string>;
 }
 
-// This is the main exported component that will be used in Astro
-export default function MapVisualizer(props: MapVisualizerProps) {
-  // Wrap the inner component with the provider
-  return (
-    <MapProvider>
-      <MapVisualizerInner {...props} />
-    </MapProvider>
-  );
-}
-
-// Inner component that uses the context
-function MapVisualizerInner({ 
+// Main exported component with unified structure
+export default function MapVisualizer({ 
   projectBids = [], 
   focusBid = null, 
   height = '500px',
   initialZoom = 14,
-  mapId = 'default-map', // Use a default map ID if none provided
-  bidToSlugMap = {} // Default to empty object if not provided
+  mapId = 'default-map',
+  bidToSlugMap = {}
 }: MapVisualizerProps) {
   // Use ref instead of state for zoom level to prevent re-renders
   const zoomLevelRef = useRef(initialZoom);
@@ -51,30 +42,31 @@ function MapVisualizerInner({
   const mapHeight = mapId === 'home-page-map' ? '55vh' : height;
 
   return (
-    <div className="relative">
-      <div 
-        id={mapContainerId} 
-        className="w-full bg-card rounded-lg border relative"
-        style={{ height: mapHeight }}
-      ></div>
-      {/* Restore the caption text - make it shorter for the home page */}
-      <p className={`text-center text-sm text-muted-foreground ${mapId === 'home-page-map' ? 'mt-2' : 'mt-4'}`}>
-        Interactive map of NYC Business Improvement Districts
-        {focusBid && <span className="font-medium"> • Focused on: {focusBid}</span>}
-      </p>
-      {/* Caption text position restored but with smaller margins for home page */}
-      <DeckGLMap 
-        projectBids={projectBids} 
-        focusBid={focusBid} 
-        initialZoom={initialZoom}
-        onZoomChange={handleZoom}
-        mapId={mapId}
-        mapContainerId={mapContainerId}
-        mapLibreId={mapLibreId}
-        tooltipId={tooltipId}
-        bidToSlugMap={bidToSlugMap} // Pass down the mapping
-      />
-    </div>
+    <MapProvider>
+      <div className="relative">
+        <div 
+          id={mapContainerId} 
+          className="w-full bg-card rounded-lg border relative"
+          style={{ height: mapHeight }}
+        ></div>
+        {/* Restore the caption text - make it shorter for the home page */}
+        <p className={`text-center text-sm text-muted-foreground ${mapId === 'home-page-map' ? 'mt-2' : 'mt-4'}`}>
+          Interactive map of NYC Business Improvement Districts
+          {focusBid && <span className="font-medium"> • Focused on: {focusBid}</span>}
+        </p>
+        <DeckGLMap 
+          projectBids={projectBids} 
+          focusBid={focusBid} 
+          initialZoom={initialZoom}
+          onZoomChange={handleZoom}
+          mapId={mapId}
+          mapContainerId={mapContainerId}
+          mapLibreId={mapLibreId}
+          tooltipId={tooltipId}
+          bidToSlugMap={bidToSlugMap}
+        />
+      </div>
+    </MapProvider>
   );
 }
 
@@ -88,7 +80,7 @@ interface DeckGLMapProps {
   mapContainerId: string;
   mapLibreId: string;
   tooltipId: string;
-  bidToSlugMap: Record<string, string>; // Add mapping prop
+  bidToSlugMap: Record<string, string>;
 }
 
 function DeckGLMap({ 
@@ -129,228 +121,12 @@ function DeckGLMap({
   // Store instance-specific data in refs
   const currentMapRef = useRef(null);
   const currentOverlayRef = useRef(null);
-  
-  // Long press tracking
-  const longPressTimer = useRef(null);
-  const animationFrame = useRef(null);
-  const currentHoveredBid = useRef(null);
-  const isLongPressing = useRef(false);
-  const longPressProgress = useRef(0);
-  const LONG_PRESS_DURATION = 800; // Reduced from 1500ms to 800ms
-  const ANIMATION_DURATION = 700; // Reduced from 1000ms to 700ms
-  const lastAnimationTime = useRef(0);
-
-  // Create a simplified version of startLongPress that directly manipulates the DOM
-  const startLongPress = (bidName) => {
-    // Only allow long press for BIDs with project analysis
-    const hasProject = bidName && projectBids.includes(bidName);
-    if (!hasProject) return;
-    
-    // Clear any existing timers
-    if (longPressTimer.current) {
-      clearTimeout(longPressTimer.current);
-      longPressTimer.current = null;
-    }
-    
-    // Set up new long press timer with direct DOM manipulation
-    currentHoveredBid.current = bidName;
-    longPressTimer.current = setTimeout(() => {
-      // Find the tooltip and set up progress bar
-      const tooltip = document.getElementById(tooltipId);
-      if (!tooltip) {
-        console.warn(`Tooltip not found: ${tooltipId}`);
-        return;
-      }
-
-      console.log(`Long press triggered for ${bidName} on ${mapId}`);
-      
-      // Clear any existing progress elements
-      const existingProgress = tooltip.querySelector('.tooltip-progress-container');
-      if (existingProgress) {
-        existingProgress.remove();
-      }
-      
-      // Apply base styling to tooltip
-      tooltip.style.transition = 'transform 0.2s ease-out, opacity 0.2s ease-out';
-      tooltip.style.transform = 'translate(-50%, -100%) scale(1)';
-      tooltip.style.boxShadow = '0 4px 14px rgba(0, 0, 0, 0.15)';
-      
-      // Find tooltip content
-      const tooltipContent = tooltip.querySelector('.tooltip-content');
-      if (!tooltipContent) {
-        console.warn('Tooltip content not found');
-        return;
-      }
-      
-      // Create progress bar container
-      const progressContainer = document.createElement('div');
-      progressContainer.className = 'tooltip-progress-container';
-      progressContainer.style.cssText = 'width:100%;height:6px;background:#e5e7eb;margin-top:8px;border-radius:3px;overflow:hidden;';
-      
-      // Create progress bar
-      const progressBar = document.createElement('div');
-      progressBar.className = 'tooltip-progress';
-      progressBar.style.cssText = 'height:100%;width:0%;background:#10B981;';
-      progressContainer.appendChild(progressBar);
-      
-      // Create text indicator
-      const progressText = document.createElement('div');
-      progressText.style.cssText = 'font-size:13px;font-weight:500;color:#10B981;text-align:center;margin-top:6px;';
-      progressText.textContent = 'Continue holding to view project';
-      
-      // Add to tooltip
-      tooltipContent.appendChild(progressContainer);
-      tooltipContent.appendChild(progressText);
-      
-      // Style tooltip content
-      tooltipContent.style.backgroundColor = 'rgba(240, 253, 250, 0.8)';
-      tooltipContent.style.border = '1px solid rgba(16, 185, 129, 0.3)';
-      
-      // Start animation
-      isLongPressing.current = true;
-      longPressProgress.current = 0;
-      lastAnimationTime.current = 0;
-      animationFrame.current = requestAnimationFrame(animateLongPress);
-      
-    }, LONG_PRESS_DURATION);
-  };
-  
-  // Define cancelLongPress function
-  const cancelLongPress = () => {
-    // Clear any existing timers
-    if (longPressTimer.current) {
-      clearTimeout(longPressTimer.current);
-      longPressTimer.current = null;
-    }
-    
-    if (animationFrame.current) {
-      cancelAnimationFrame(animationFrame.current);
-      animationFrame.current = null;
-    }
-    
-    isLongPressing.current = false;
-    longPressProgress.current = 0;
-    lastAnimationTime.current = 0;
-    currentHoveredBid.current = null;
-    
-    // Reset tooltip styling if tooltip exists
-    const tooltip = document.getElementById(tooltipId);
-    if (tooltip) {
-      tooltip.style.transform = 'translate(-50%, -100%)';
-      tooltip.style.opacity = '1';
-      tooltip.style.boxShadow = '';
-      
-      const tooltipContent = tooltip.querySelector('.tooltip-content');
-      if (tooltipContent) {
-        tooltipContent.style.backgroundColor = '';
-        tooltipContent.style.border = '';
-        
-        // Remove progress elements if they exist
-        const progressContainer = tooltipContent.querySelector('.tooltip-progress-container');
-        const progressText = tooltipContent.querySelector('[style*="font-size:13px"]');
-        
-        if (progressContainer) {
-          progressContainer.remove();
-        }
-        
-        if (progressText) {
-          progressText.remove();
-        }
-      }
-    }
-    
-    console.log(`Long press canceled for map: ${mapId}`);
-  };
-  
-  // Create a simplified version of animateLongPress
-  const animateLongPress = (timestamp) => {
-    if (!isLongPressing.current || !isMounted.current) return;
-    
-    if (!lastAnimationTime.current) lastAnimationTime.current = timestamp;
-    const elapsed = timestamp - lastAnimationTime.current;
-    
-    // Update progress based on elapsed time
-    longPressProgress.current = Math.min(1, longPressProgress.current + (elapsed / ANIMATION_DURATION));
-    lastAnimationTime.current = timestamp;
-    
-    // Get tooltip element
-    const tooltip = document.getElementById(tooltipId);
-    if (tooltip) {
-      // Find progress bar
-      const progressBar = tooltip.querySelector('.tooltip-progress');
-      if (progressBar) {
-        // Update width with fixed pixel values for better browser support
-        const progressWidth = Math.round(longPressProgress.current * 100);
-        progressBar.style.width = `${progressWidth}%`;
-      }
-      
-      // Animate tooltip
-      const scale = 1 + (longPressProgress.current * 0.1);
-      tooltip.style.transform = `translate(-50%, -100%) scale(${scale})`;
-      tooltip.style.opacity = '1';
-    }
-    
-    // If complete, navigate to project
-    if (longPressProgress.current >= 1) {
-      isLongPressing.current = false;
-      
-      // Stop animation frame before navigation to prevent errors after unmount
-      if (animationFrame.current) {
-        cancelAnimationFrame(animationFrame.current);
-        animationFrame.current = null;
-      }
-      
-      // Navigate to project details page directly
-      if (currentHoveredBid.current) {
-        const bidName = currentHoveredBid.current;
-        
-        // Get the slug for this BID
-        const slug = bidToSlugMap[bidName];
-        
-        // Fix URL construction with proper base handling
-        let base = import.meta.env.BASE_URL || '';
-        base = base.endsWith('/') ? base.slice(0, -1) : base;
-        
-        if (slug) {
-          // If we have a slug, navigate directly to the project details page using history API
-          // instead of directly setting window.location to prevent abrupt page transitions
-          const projectUrl = `${base}/projects/${slug}`;
-          console.log(`Navigation triggered to project details: ${bidName} (${slug})`);
-          console.log(`Navigating to: ${projectUrl}`);
-          
-          // Allow cleanup to complete before navigation
-          setTimeout(() => {
-            window.location.href = projectUrl;
-          }, 10);
-          
-          return; // Return early to prevent continued animation
-        } else {
-          // Same approach for fallback navigation
-          const projectsPageUrl = `${base}/projects#${encodeURIComponent(bidName)}`;
-          setTimeout(() => {
-            window.location.href = projectsPageUrl;
-          }, 10);
-          
-          return; // Return early to prevent continued animation
-        }
-      }
-    }
-    
-    // Continue animation if not complete
-    if (isLongPressing.current && isMounted.current) {
-      animationFrame.current = requestAnimationFrame(animateLongPress);
-    }
-  };
 
   // Set up cleanup on unmount
   useEffect(() => {
     // Add these functions to window so they're accessible from the map setup
     window.mapFunctions = window.mapFunctions || {};
-    window.mapFunctions[mapId] = {
-      startLongPress,
-      cancelLongPress,
-      animateLongPress
-    };
+    window.mapFunctions[mapId] = {};
 
     // Create a more reliable BID navigation handler
     const handleBidNavigation = (e: CustomEvent) => {
@@ -366,7 +142,7 @@ function DeckGLMap({
         if (!geojsonData && typeof window !== 'undefined') {
           console.log('GeoJSON data not loaded yet, attempting to load');
           
-          const base = import.meta.env.BASE_URL || '/';
+          const base = getBasePath();
           fetch(`${base}/data/bids.geojson`)
             .then(response => {
               if (!response.ok) throw new Error(`Failed to fetch: ${response.status}`);
@@ -415,28 +191,13 @@ function DeckGLMap({
     console.log(`Added 'map-navigate-to-bid' listener for map: ${mapId}`);
 
     return () => {
-      if (longPressTimer.current) {
-        clearTimeout(longPressTimer.current);
-        longPressTimer.current = null;
-      }
-      
-      if (animationFrame.current) {
-        cancelAnimationFrame(animationFrame.current);
-        animationFrame.current = null;
-      }
-      
-      isLongPressing.current = false;
-      longPressProgress.current = 0;
-      lastAnimationTime.current = 0;
-      currentHoveredBid.current = null;
-      
-      window.removeEventListener('map-navigate-to-bid', handleBidNavigation as EventListener);
-      console.log(`Removed 'map-navigate-to-bid' listener for map: ${mapId}`);
-      
       // Clean up our global references too
       if (window.mapFunctions && window.mapFunctions[mapId]) {
         delete window.mapFunctions[mapId];
       }
+      
+      window.removeEventListener('map-navigate-to-bid', handleBidNavigation as EventListener);
+      console.log(`Removed 'map-navigate-to-bid' listener for map: ${mapId}`);
     };
   }, [mapId, tooltipId, projectBids]);
 
@@ -516,7 +277,7 @@ function DeckGLMap({
         
         let bidData = geojsonData;
         if (!bidData) {
-          const base = import.meta.env.BASE_URL || '/';
+          const base = getBasePath();
           const response = await fetch(`${base}/data/bids.geojson`);
           if (!response.ok) {
             throw new Error(`Failed to fetch GeoJSON: ${response.status} ${response.statusText}`);
@@ -646,9 +407,8 @@ function DeckGLMap({
                 }
               },
               mapId,
-              startLongPress,
-              cancelLongPress,
-              tooltipId // Add tooltipId parameter here
+              tooltipId,
+              bidToSlugMap
             );
 
             // After overlay is created, register it with cleanup manager
@@ -674,9 +434,8 @@ function DeckGLMap({
                 GeoJsonLayer, 
                 tooltip,
                 mapId,
-                startLongPress,
-                cancelLongPress,
-                tooltipId // Add tooltipId parameter here
+                tooltipId,
+                bidToSlugMap
               );
             }
           }
@@ -737,9 +496,8 @@ async function setupMapLayers(
   tooltip, 
   setDeckOverlay, 
   mapId,
-  startLongPress,
-  cancelLongPress,
-  tooltipId // Add tooltipId parameter here
+  tooltipId,
+  bidToSlugMap
 ) {
   try {
     if (!map || !geojsonData) {
@@ -904,6 +662,22 @@ async function setupMapLayers(
       onError: (error) => {
         console.error(`Deck.gl error in map ${mapId}:`, error);
       },
+      onClick: (info) => {
+        // Handle clicks on BID geometries
+        if (!info || !info.object) return;
+        
+        const bidName = info.object.properties?.bidName;
+        if (!bidName) return;
+        
+        const hasProject = projectBids.includes(bidName);
+        
+        // Only navigate if this BID has a project
+        if (hasProject && bidToSlugMap && bidToSlugMap[bidName]) {
+          const projectSlug = bidToSlugMap[bidName];
+          const baseUrl = getBasePath();
+          window.location.href = `${baseUrl}/projects/${projectSlug}`;
+        }
+      },
       onHover: (info) => {
         // Safety check if tooltip still exists
         if (!document.getElementById(tooltipId)) {
@@ -932,28 +706,25 @@ async function setupMapLayers(
         tooltip.style.opacity = '1';
         tooltip.style.transition = 'transform 0.2s ease-out, opacity 0.2s ease-out';
         
-        // Simple tooltip content
         tooltip.innerHTML = `
           <div class="tooltip-content" style="font-family: system-ui, sans-serif; padding: 8px; background: white; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
             <strong>${bidName}</strong>
             ${hasProject ? 
-              '<p style="color: #10B981; margin-top: 4px; margin-bottom: 0;">Has project analysis</p>' : 
+              `<p style="color: #10B981; margin-top: 4px; margin-bottom: 0;">
+                Has project analysis
+                ${bidToSlugMap && bidToSlugMap[bidName] ? 
+                  `<span style="font-size: 12px; margin-left: 4px;">(click to view)</span>` : 
+                  ''}
+              </p>` : 
               '<p style="color: #6B7280; margin-top: 4px; margin-bottom: 0;">No analysis yet</p>'}
           </div>
         `;
-        
-        if (hasProject && typeof startLongPress === 'function') {
-          startLongPress(bidName);
-        }
       },
       onMouseLeave: () => {
         // Safety check if tooltip still exists
         const tooltipElement = document.getElementById(tooltipId);
         if (!tooltipElement) return;
         
-        if (typeof cancelLongPress === 'function') {
-          cancelLongPress();
-        }
         if (tooltip) tooltip.style.display = 'none';
       }
     });
@@ -993,9 +764,8 @@ function updateMapLayers(
   GeoJsonLayer, 
   tooltip, 
   mapId,
-  startLongPress,
-  cancelLongPress,
-  tooltipId // Add tooltipId parameter here
+  tooltipId,
+  bidToSlugMap
 ) {
   try {
     // Check if the map still exists in DOM
@@ -1145,6 +915,22 @@ function updateMapLayers(
         onError: (error) => {
           console.error(`Deck.gl error in map ${mapId}:`, error);
         },
+        onClick: (info) => {
+          // Handle clicks on BID geometries
+          if (!info || !info.object) return;
+          
+          const bidName = info.object.properties?.bidName;
+          if (!bidName) return;
+          
+          const hasProject = projectBids.includes(bidName);
+          
+          // Only navigate if this BID has a project
+          if (hasProject && bidToSlugMap && bidToSlugMap[bidName]) {
+            const projectSlug = bidToSlugMap[bidName];
+            const baseUrl = getBasePath();
+            window.location.href = `${baseUrl}/projects/${projectSlug}`;
+          }
+        },
         onHover: (info) => {
           // Check if tooltip still exists in DOM
           if (!document.getElementById(tooltipId)) {
@@ -1176,23 +962,21 @@ function updateMapLayers(
             <div class="tooltip-content" style="font-family: system-ui, sans-serif; padding: 8px; background: white; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
               <strong>${bidName}</strong>
               ${hasProject ? 
-                '<p style="color: #10B981; margin-top: 4px; margin-bottom: 0;">Has project analysis</p>' : 
+                `<p style="color: #10B981; margin-top: 4px; margin-bottom: 0;">
+                  Has project analysis
+                  ${bidToSlugMap && bidToSlugMap[bidName] ? 
+                    `<span style="font-size: 12px; margin-left: 4px;">(click to view)</span>` : 
+                    ''}
+                </p>` : 
                 '<p style="color: #6B7280; margin-top: 4px; margin-bottom: 0;">No analysis yet</p>'}
             </div>
           `;
-          
-          if (hasProject && typeof startLongPress === 'function') {
-            startLongPress(bidName);
-          }
         },
         onMouseLeave: () => {
           // Safety check if tooltip still exists
           const tooltipElement = document.getElementById(tooltipId);
           if (!tooltipElement) return;
           
-          if (typeof cancelLongPress === 'function') {
-            cancelLongPress();
-          }
           if (tooltip) tooltip.style.display = 'none';
         }
       });
@@ -1206,158 +990,3 @@ function updateMapLayers(
   }
 }
 
-// Update createBidPerimeters with additional error handling
-function createBidPerimeters(geojsonData) {
-  // Check for valid input data
-  if (!geojsonData || !Array.isArray(geojsonData.features)) {
-    console.error("Invalid GeoJSON data structure");
-    return [];
-  }
-  
-  const bidFeatureGroups = {};
-  
-  // Group features by BID name
-  geojsonData.features.forEach(feature => {
-    if (!feature || !feature.properties) return;
-    
-    const bidName = feature.properties.F_ALL_BI_2;
-    if (!bidName) return;
-    
-    if (!bidFeatureGroups[bidName]) {
-      bidFeatureGroups[bidName] = [];
-    }
-    bidFeatureGroups[bidName].push(feature);
-  });
-  
-  const perimeters = [];
-  
-  // Process each BID group
-  Object.entries(bidFeatureGroups).forEach(([bidName, features]) => {
-    try {
-      if (!features || features.length === 0) return;
-      
-      // Skip if first feature is invalid
-      if (!features[0] || !features[0].geometry) {
-        console.warn(`Invalid feature for BID ${bidName}`);
-        return;
-      }
-      
-      // Process each feature with error handling
-      const validFeatures = features.filter(f => f && f.geometry);
-      if (validFeatures.length === 0) return;
-      
-      const bufferedFeatures = validFeatures.map(feature => {
-        try {
-          return turf.buffer(feature, 0.015, {units: 'kilometers'});
-        } catch (err) {
-          console.warn(`Error buffering feature for BID ${bidName}:`, err);
-          return null;
-        }
-      }).filter(Boolean);
-      
-      if (bufferedFeatures.length === 0) return;
-      
-      let combined = bufferedFeatures[0];
-      for (let i = 1; i < bufferedFeatures.length; i++) {
-        try {
-          combined = turf.union(combined, bufferedFeatures[i]);
-        } catch (err) {
-          console.warn(`Error unioning features for BID ${bidName}:`, err);
-          // Continue with current combined shape
-        }
-      }
-      
-      // Only proceed if combined is valid
-      if (!combined || !combined.geometry) return;
-      
-      let perimeterFeature;
-      
-      try {
-        if (combined.geometry.type === 'Polygon') {
-          const outerRing = combined.geometry.coordinates[0];
-          if (!Array.isArray(outerRing)) return;
-          perimeterFeature = turf.lineString(outerRing);
-        } else if (combined.geometry.type === 'MultiPolygon') {
-          const validPolys = combined.geometry.coordinates.filter(
-            poly => Array.isArray(poly) && poly.length > 0 && Array.isArray(poly[0])
-          );
-          if (validPolys.length === 0) return;
-          
-          const lines = validPolys.map(poly => {
-            return turf.lineString(poly[0]);
-          });
-          perimeterFeature = turf.multiLineString(lines.map(l => l.geometry.coordinates));
-        } else {
-          return; // Unsupported geometry type
-        }
-        
-        perimeterFeature.properties = { bidName };
-        perimeters.push(perimeterFeature);
-      } catch (error) {
-        console.error(`Error creating perimeter for BID ${bidName}:`, error);
-      }
-    } catch (error) {
-      console.error(`Error processing perimeter for BID ${bidName}:`, error);
-    }
-  });
-  
-  return perimeters;
-}
-
-function createBidPolygons(geojsonData) {
-  const bidFeatureGroups = {};
-  
-  geojsonData.features.forEach(feature => {
-    const bidName = feature.properties?.F_ALL_BI_2;
-    if (!bidName) return;
-    
-    if (!bidFeatureGroups[bidName]) {
-      bidFeatureGroups[bidName] = [];
-    }
-    bidFeatureGroups[bidName].push(feature);
-  });
-  
-  const polygons = [];
-  
-  Object.entries(bidFeatureGroups).forEach(([bidName, features]) => {
-    try {
-      const bufferedFeatures = features.map(feature => turf.buffer(feature, 0.015, {units: 'kilometers'}));
-      
-      let combined = bufferedFeatures[0];
-      for (let i = 1; i < bufferedFeatures.length; i++) {
-        combined = turf.union(combined, bufferedFeatures[i]);
-      }
-      
-      combined.properties = { bidName };
-      polygons.push(combined);
-    } catch (error) {
-      console.error(`Error processing polygon for BID ${bidName}:`, error);
-    }
-  });
-  
-  return polygons;
-}
-
-function calculateBoundingBox(feature) {
-  let minLng = Infinity;
-  let minLat = Infinity;
-  let maxLng = -Infinity;
-  let maxLat = -Infinity;
-  
-  const processCoordinates = coords => {
-    if (Array.isArray(coords[0]) && typeof coords[0][0] !== 'number') {
-      coords.forEach(processCoordinates);
-    } else if (Array.isArray(coords[0])) {
-      coords.forEach(point => {
-        minLng = Math.min(minLng, point[0]);
-        maxLng = Math.max(maxLng, point[0]);
-        minLat = Math.min(minLat, point[1]);
-        maxLat = Math.max(maxLat, point[1]);
-      });
-    }
-  };
-  
-  processCoordinates(feature.geometry.coordinates);
-  
-  return { minLng, minLat, maxLng, maxLat };
-}

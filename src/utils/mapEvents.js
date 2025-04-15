@@ -83,6 +83,27 @@ class MapEventManager {
     }
     return false;
   }
+
+  // Helper method to navigate directly to a BID project
+  navigateToBidProject(bidName, bidToSlugMap) {
+    if (!bidName || !bidToSlugMap || !bidToSlugMap[bidName]) {
+      console.warn(`MapEventManager: Cannot navigate to BID project: missing slug for ${bidName}`);
+      return false;
+    }
+    
+    try {
+      const projectSlug = bidToSlugMap[bidName];
+      const baseUrl = typeof window !== 'undefined' && window.BIDMapContext?.getBasePath ? 
+        window.BIDMapContext.getBasePath() : '/';
+      
+      console.log(`MapEventManager: Navigating to BID project ${bidName} (${projectSlug})`);
+      window.location.href = `${baseUrl}/bids/${projectSlug}`;
+      return true;
+    } catch (error) {
+      console.error(`MapEventManager: Error navigating to BID project ${bidName}:`, error);
+      return false;
+    }
+  }
 }
 
 // Create a singleton instance

@@ -287,34 +287,6 @@ function ensureMapFunctions() {
     return () => {}; // Return empty function as fallback
   };
   
-  // Initialize debug functions
-  window.debugLongPress = {
-    start: (bidName) => {
-      console.log(`DEBUG: Starting long press for ${bidName}`);
-      const tooltip = document.getElementById('deck-tooltip-home-page-map');
-      if (tooltip) {
-        const content = tooltip.querySelector('.tooltip-content');
-        if (content) {
-          const debug = document.createElement('div');
-          debug.style.cssText = 'background:#10B981;height:6px;width:0%;transition:width 1s linear;margin-top:8px;';
-          debug.classList.add('debug-progress');
-          content.appendChild(debug);
-          
-          setTimeout(() => {
-            const bar = tooltip.querySelector('.debug-progress');
-            if (bar) bar.style.width = '100%';
-          }, 50);
-          
-          // After animation completes, navigate
-          setTimeout(() => {
-            const base = import.meta.env.BASE_URL || '/';
-            console.log(`DEBUG: Navigation would go to ${base}/projects#${bidName}`);
-          }, 1000);
-        }
-      }
-    }
-  };
-  
   // Monitor map initialization with retries
   let retryCount = 0;
   const maxRetries = 10;
@@ -345,22 +317,6 @@ function ensureMapFunctions() {
   
   // Start checking for map initialization
   checkMapInitialized();
-  
-  // Add debug event listener for monitoring long press progress
-  window.addEventListener('mousemove', (e) => {
-    // Check if we're hovering over a BID on the map
-    const tooltip = document.getElementById('deck-tooltip-home-page-map');
-    if (tooltip && tooltip.style.display === 'block') {
-      const progressBar = tooltip.querySelector('.tooltip-progress');
-      if (progressBar) {
-        const width = progressBar.style.width;
-        if (width && parseInt(width) > 0) {
-          // Log progress bar updates to console
-          console.log(`Home page progress: ${width}`);
-        }
-      }
-    }
-  }, { passive: true });
 }
 
 // Setup map navigation pills with better error handling

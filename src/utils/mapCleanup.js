@@ -179,8 +179,11 @@ class MapCleanupManager {
       // Remove the overlay first
       if (overlay) {
         try {
-          map.removeControl(overlay);
-          console.log(`Removed overlay from map: ${id}`);
+          // Check if the overlay is still a control on the map
+          if (map._controls && map._controls.includes(overlay)) {
+            map.removeControl(overlay);
+            console.log(`Removed overlay from map: ${id}`);
+          }
         } catch (e) {
           console.warn(`Failed to remove overlay from map ${id}:`, e);
         }
@@ -196,13 +199,18 @@ class MapCleanupManager {
       
       // Check if the map container still exists
       const mapContainer = document.getElementById(`map-container-${id}`);
+      const mapElement = document.getElementById(`maplibre-map-${id}`);
+      
       if (!mapContainer) {
         console.log(`Map container for ${id} not found, skipping remove()`);
       } else {
-        // Container exists, attempt to safely remove the map
+        // More careful removal of map instance
         try {
-          // Check if the map's internal structure is still intact
-          if (map._canvas && map.getContainer() && typeof map.remove === 'function') {
+          // First detach the map from its container so React can handle the DOM
+          const originalContainer = map.getContainer();
+          
+          // Only remove if the map's canvas is still connected to the DOM
+          if (map._canvas && map._canvas.parentNode) {
             map.remove();
             console.log(`Map ${id} removed`);
           } else {
