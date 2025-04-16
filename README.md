@@ -6,7 +6,7 @@ This is the official website for the BIDSpec (Business Improvement District) pro
 
 Project pages are stored in src/content/projects/BID_NAME.md. Your BID should already have a file for it created. In this file, you will see a header at the top with metadata for your BID (general info about the BID, etc.). Also of note are the *component* fields. These correspond to the visualizations to be rendered for your Insight, Transformation, Prediction, and/or Consensus portions of your analysis. Put code for your visualizations in /src/components/groups/BID_NAME/ , and reference them appropriately in the header of your markdown file. 
 
-Please do NOT change the first-level section titles (#Insight Analysis, etc.). I have regex that searches for these headers and puts the interactive components in the correct location. 
+Please do NOT change the first-level section titles (#Insight Analysis, etc.). I have regex that searches for these headers and puts the interactive components in the correct location. Feel free to add your own second-level (##) and third-level (###) headers. 
 
 
 ## About BIDSpec
