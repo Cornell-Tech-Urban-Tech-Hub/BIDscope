@@ -10,6 +10,8 @@ Please do NOT change the first-level section titles (#Insight Analysis, etc.). I
 
 **Please do not push directly to the repo. Instead, add your content and code on branches, and submit pull requests. I will review code and approve pull requests.** 
 
+**We will not incorporate server-side rendering (SSR). All loading of interactive components should be client-side, so that everything can be wholly contained in the repository. If this isn't possible for your visualization, a video demo will suffice (upload to YouTube and embed, etc.)**
+
 If you need to add extra modules to the project, please email me at mwf62@cornell.edu, and I can install them into the project environment.
 
 ## Development
