@@ -12,6 +12,8 @@ Please do NOT change the first-level section titles (#Insight Analysis, etc.). I
 
 **We will not incorporate server-side rendering (SSR). All loading of interactive components should be client-side, so that everything can be wholly contained in the repository. If this isn't possible for your visualization, a video demo will suffice (upload to YouTube and embed, etc.)**
 
+I highly encourage the use of AI-assisted development tools (a la GitHub CoPilot pro, which is free with the student developer pack), if you are unfamiliar with geospatial front-end development. Albeit through trial and error, this website is largely developed with CoPilot (the Claude 3.7 thinking model). 
+
 If you need to add extra modules to the project, please email me at mwf62@cornell.edu, and I can install them into the project environment.
 
 ## Development
