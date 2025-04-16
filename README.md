@@ -8,6 +8,10 @@ Project pages are stored in src/content/projects/BID_NAME.md. Your BID should al
 
 Please do NOT change the first-level section titles (#Insight Analysis, etc.). I have regex that searches for these headers and puts the interactive components in the correct location. Feel free to add your own second-level (##) and third-level (###) headers. 
 
+**Please do not push directly to the repo. Instead, add your content and code on branches, and submit pull requests. I will review code and approve pull requests.** 
+
+If you need to add extra modules to the project, please email me at mwf62@cornell.edu, and I can install them into the project environment.
+
 ## Development
 
 ### Commands
