@@ -8,11 +8,6 @@ Project pages are stored in src/content/projects/BID_NAME.md. Your BID should al
 
 Please do NOT change the first-level section titles (#Insight Analysis, etc.). I have regex that searches for these headers and puts the interactive components in the correct location. Feel free to add your own second-level (##) and third-level (###) headers. 
 
-
-## About BIDSpec
-
-BIDSpec is a comprehensive analysis platform for Business Improvement Districts, providing insights into how these special assessment districts function, their economic impact, and their role in urban development. The project combines geospatial data visualization, economic analysis, and policy research to create a holistic understanding of BIDs across various cities.
-
 ## Development
 
 ### Commands
@@ -37,30 +32,6 @@ This website is built using Astro, a modern static site generator that delivers 
 ### TailwindCSS
 
 The site uses TailwindCSS for styling, a utility-first CSS framework that enables rapid UI development.
-
-### Components
-
-The website features several custom components:
-- Interactive maps showing BID locations and boundaries
-- Data visualization tools for BID financial analysis
-- Project showcase highlighting specific BID case studies
-- Comparative analysis of BID structures across different cities
-
-## Project Structure
-
-- `/src/pages/` - Page templates including the main index
-- `/src/components/` - UI components organized by function
-- `/src/layouts/` - Layout templates for consistent page structure
-- `/public/` - Static assets like images, logos, and geospatial data
-
-## Deployment
-
-The site is deployed at [urban.tech.cornell.edu/bidspec](https://urban.tech.cornell.edu/bidspec) via GitHub Pages.
-
-## Team
-
-- Matt Franchi - Computer Science PhD Candidate
-- [Additional team members]
 
 ## Contact
 
