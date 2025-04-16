@@ -13,13 +13,16 @@ export default defineConfig({
     ssr: {
       noExternal: ['maplibre-gl', '@deck.gl/core', '@deck.gl/layers', '@deck.gl/mapbox']
     },
-    optimizeDeps: {
-      include: ['maplibre-gl', '@deck.gl/core', '@deck.gl/layers', '@deck.gl/mapbox'],
-    },
     build: {
+      dynamicImportVarsOptions: {
+        warnOnError: true,
+      },
       commonjsOptions: {
         include: [/node_modules/]
       }
+    },
+    optimizeDeps: {
+      include: ['maplibre-gl', '@deck.gl/core', '@deck.gl/layers', '@deck.gl/mapbox'],
     }
   },
 });

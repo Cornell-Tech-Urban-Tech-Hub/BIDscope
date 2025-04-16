@@ -93,11 +93,51 @@ class MapEventManager {
     
     try {
       const projectSlug = bidToSlugMap[bidName];
-      const baseUrl = typeof window !== 'undefined' && window.BIDMapContext?.getBasePath ? 
-        window.BIDMapContext.getBasePath() : '/';
       
-      console.log(`MapEventManager: Navigating to BID project ${bidName} (${projectSlug})`);
-      window.location.href = `${baseUrl}/bids/${projectSlug}`;
+      // Get base path using same method as in MapVisualizer
+      const getBasePath = () => {
+        // Check for base path in Astro configuration
+        if (typeof import.meta !== 'undefined' && import.meta.env?.BASE_URL) {
+          return import.meta.env.BASE_URL;
+        }
+        
+        // Fallback approach for client-side detection
+        if (typeof document !== 'undefined') {
+          const baseElement = document.querySelector('base');
+          if (baseElement && baseElement.href) {
+            try {
+              const url = new URL(baseElement.href);
+              const pathParts = url.pathname.split('/').filter(Boolean);
+              if (pathParts.length > 0) {
+                return `/${pathParts.join('/')}`;
+              }
+            } catch (e) {
+              console.warn('Error parsing base URL:', e);
+            }
+          }
+          
+          // Check for Astro's script data
+          const astroData = document.querySelector('script[data-astro-repo-base]');
+          if (astroData && astroData.dataset.astroRepoBase) {
+            return astroData.dataset.astroRepoBase;
+          }
+        }
+        
+        // Final fallback - try to get from window location for GitHub Pages
+        if (typeof window !== 'undefined') {
+          const pathParts = window.location.pathname.split('/');
+          if (pathParts.length > 1 && pathParts[1] === 'BIDspec') {
+            return '/BIDspec';
+          }
+        }
+        
+        return '/';
+      };
+      
+      const baseUrl = getBasePath();
+      
+      console.log(`MapEventManager: Navigating to BID project ${bidName} (${projectSlug}) at ${baseUrl}/projects/${projectSlug}`);
+      window.location.href = `${baseUrl}/projects/${projectSlug}`;
       return true;
     } catch (error) {
       console.error(`MapEventManager: Error navigating to BID project ${bidName}:`, error);

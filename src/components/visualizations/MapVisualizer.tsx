@@ -6,6 +6,8 @@ import { MapProvider, useMapContext } from './MapContext';
 import mapCleanupManager from '../../utils/mapCleanup';
 // Import utility functions from mapUtils.js
 import { createBidPerimeters, createBidPolygons, calculateBoundingBox, getBasePath } from '../../utils/mapUtils';
+// Import the map event manager
+import mapEventManager from '../../utils/mapEvents';
 
 interface MapVisualizerProps {
   projectBids: string[];
@@ -28,6 +30,9 @@ export default function MapVisualizer({
   // Use ref instead of state for zoom level to prevent re-renders
   const zoomLevelRef = useRef(initialZoom);
   
+  // Add loading state to control transitions
+  const [mapLoading, setMapLoading] = useState(true);
+  
   const handleZoom = (newZoom: number) => {
     // Update the ref without triggering a re-render
     zoomLevelRef.current = newZoom;
@@ -41,16 +46,35 @@ export default function MapVisualizer({
   // Use different height for home page map
   const mapHeight = mapId === 'home-page-map' ? '55vh' : height;
 
+  // Handle when map has finished loading to trigger fade-in
+  const handleMapLoaded = () => {
+    setTimeout(() => {
+      setMapLoading(false);
+    }, 300); // Small delay to ensure map has rendered properly
+  };
+
   return (
     <MapProvider>
       <div className="relative">
+        {/* Loading skeleton overlay that fades out when map is ready */}
+        <div 
+          className={`absolute inset-0 bg-card rounded-lg border flex items-center justify-center z-10 transition-opacity duration-500 ${mapLoading ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+          style={{ height: mapHeight }}
+          aria-hidden={!mapLoading}
+        >
+          <div className="flex flex-col items-center space-y-4">
+            <div className="w-10 h-10 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+            <p className="text-sm text-muted-foreground">Loading map visualization...</p>
+          </div>
+        </div>
+        
         <div 
           id={mapContainerId} 
-          className="w-full bg-card rounded-lg border relative"
+          className={`w-full bg-card rounded-lg border relative transition-opacity duration-500 ${mapLoading ? 'opacity-0' : 'opacity-100'}`}
           style={{ height: mapHeight }}
         ></div>
         {/* Restore the caption text - make it shorter for the home page */}
-        <p className={`text-center text-sm text-muted-foreground ${mapId === 'home-page-map' ? 'mt-2' : 'mt-4'}`}>
+        <p className={`text-center text-sm text-muted-foreground ${mapId === 'home-page-map' ? 'mt-2' : 'mt-4'} ${mapLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-500`}>
           Interactive map of NYC Business Improvement Districts
           {focusBid && <span className="font-medium"> • Focused on: {focusBid}</span>}
         </p>
@@ -64,6 +88,7 @@ export default function MapVisualizer({
           mapLibreId={mapLibreId}
           tooltipId={tooltipId}
           bidToSlugMap={bidToSlugMap}
+          onMapLoaded={handleMapLoaded}
         />
       </div>
     </MapProvider>
@@ -81,6 +106,7 @@ interface DeckGLMapProps {
   mapLibreId: string;
   tooltipId: string;
   bidToSlugMap: Record<string, string>;
+  onMapLoaded?: () => void;
 }
 
 function DeckGLMap({ 
@@ -92,7 +118,8 @@ function DeckGLMap({
   mapContainerId,
   mapLibreId,
   tooltipId,
-  bidToSlugMap
+  bidToSlugMap,
+  onMapLoaded
 }: DeckGLMapProps) {
   // Only execute client-side
   if (typeof window === 'undefined') return null;
@@ -118,9 +145,15 @@ function DeckGLMap({
   // Flag to track if the map is currently zooming
   const isZooming = useRef(false);
   
+  // Track active navigation
+  const isNavigatingToBid = useRef(false);
+  
   // Store instance-specific data in refs
   const currentMapRef = useRef(null);
   const currentOverlayRef = useRef(null);
+  
+  // Track if map has loaded for transition effects
+  const mapLoadedRef = useRef(false);
 
   // Set up cleanup on unmount
   useEffect(() => {
@@ -128,15 +161,26 @@ function DeckGLMap({
     window.mapFunctions = window.mapFunctions || {};
     window.mapFunctions[mapId] = {};
 
-    // Create a more reliable BID navigation handler
-    const handleBidNavigation = (e: CustomEvent) => {
+    // Create a more reliable BID navigation handler using mapEventManager
+    const handleBidNavigation = (bidName, options) => {
       try {
-        if (!e.detail) return;
-        
-        const { mapId: eventMapId, bidName } = e.detail;
-        if (eventMapId !== mapId || !bidName || !currentMapRef.current) return;
+        if (!bidName || !currentMapRef.current) return;
         
         console.log(`Navigation requested to BID: ${bidName} on map: ${mapId}`);
+        
+        // Set navigating state to add visual effects
+        isNavigatingToBid.current = true;
+        
+        // Add active state to selected BID for visual feedback
+        if (typeof document !== 'undefined' && currentOverlayRef.current) {
+          document.body.classList.add('map-navigating');
+          
+          // Reset after animation completes
+          setTimeout(() => {
+            document.body.classList.remove('map-navigating');
+            isNavigatingToBid.current = false;
+          }, 1500); // Match duration of map animation
+        }
         
         // If we don't have geojsonData yet, try to get it
         if (!geojsonData && typeof window !== 'undefined') {
@@ -150,19 +194,20 @@ function DeckGLMap({
             })
             .then(data => {
               setGeojsonData(data);
-              navigateToBid(data, bidName);
+              navigateToBid(data, bidName, options);
             })
             .catch(error => console.error('Error loading BID data:', error));
         } else {
-          navigateToBid(geojsonData, bidName);
+          navigateToBid(geojsonData, bidName, options);
         }
       } catch (error) {
         console.error('Error handling BID navigation:', error);
+        isNavigatingToBid.current = false;
       }
     };
     
-    // Helper function to navigate to a BID
-    const navigateToBid = (data: any, bidName: string) => {
+    // Helper function to navigate to a BID with enhanced transitions
+    const navigateToBid = (data: any, bidName: string, options?: any) => {
       if (!data || !bidName || !currentMapRef.current) return;
       
       const bidFeature = data.features.find(
@@ -172,32 +217,92 @@ function DeckGLMap({
       if (bidFeature && bidFeature.geometry) {
         const bbox = calculateBoundingBox(bidFeature);
         
-        // Animate to this BID
+        // Calculate appropriate zoom level based on BID size
+        let zoomLevel = 14; // Default zoom level
+        
+        // Check if dynamic zoom is requested
+        const useDynamicZoom = options?.dynamicZoom === true;
+        
+        if (useDynamicZoom) {
+          // Calculate the size of the BID's bounding box
+          const latDiff = Math.abs(bbox.maxLat - bbox.minLat);
+          const lngDiff = Math.abs(bbox.maxLng - bbox.minLng);
+          
+          // Determine zoom level based on size - larger BIDs get lower zoom values
+          if (Math.max(latDiff, lngDiff) > 0.03) {
+            zoomLevel = 13; // Large BID
+          } else if (Math.max(latDiff, lngDiff) > 0.015) {
+            zoomLevel = 14; // Medium BID
+          } else {
+            zoomLevel = 15; // Small BID
+          }
+          
+          console.log(`Calculated dynamic zoom for ${bidName}: ${zoomLevel}`);
+        }
+        
+        // Animate to this BID with improved easing
         currentMapRef.current.flyTo({
           center: [
             (bbox.minLng + bbox.maxLng) / 2,
             (bbox.minLat + bbox.maxLat) / 2
           ],
-          zoom: 14,
-          duration: 1200,
-          essential: true
+          zoom: zoomLevel,
+          duration: 1500,
+          essential: true,
+          curve: 1.5, // More pronounced ease-out curve
+          easing(t) {
+            return t < 0.5 
+              ? 4 * t * t * t 
+              : 1 - Math.pow(-2 * t + 2, 3) / 2; // Cubic easing
+          },
+          // Add animation complete handler
+          animate: true
         });
+        
+        // Dispatch event when navigation starts for UI feedback
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('map-navigation-started', {
+            detail: { bidName, mapId }
+          }));
+        }
+        
+        // Highlight the corresponding pill if on home page
+        if (mapId === 'home-page-map') {
+          setTimeout(() => {
+            const pillSelector = `.map-nav-pill[data-bid="${bidName}"]`;
+            const pill = document.querySelector(pillSelector);
+            if (pill) {
+              document.querySelectorAll('.map-nav-pill').forEach(p => 
+                p.classList.remove('active'));
+              pill.classList.add('active');
+            }
+          }, 0);
+        }
       }
     };
     
-    // Ensure we're using the right event name and properly cleaning up
-    window.removeEventListener('map-navigate-to-bid', handleBidNavigation as EventListener);
-    window.addEventListener('map-navigate-to-bid', handleBidNavigation as EventListener);
-    console.log(`Added 'map-navigate-to-bid' listener for map: ${mapId}`);
+    // Register with mapEventManager instead of using direct event listeners
+    const registrationSuccess = mapEventManager.registerNavigationHandler(mapId, handleBidNavigation);
+    console.log(`Registered navigation handler for map: ${mapId}, success: ${registrationSuccess}`);
+    
+    window.addEventListener('map-navigate-to-bid', (e: any) => {
+      if (e.detail?.mapId === mapId) {
+        // Pass any additional options like dynamicZoom
+        handleBidNavigation(e.detail.bidName, {
+          dynamicZoom: e.detail.dynamicZoom === true
+        });
+      }
+    });
 
     return () => {
-      // Clean up our global references too
+      // Clean up our global references
       if (window.mapFunctions && window.mapFunctions[mapId]) {
         delete window.mapFunctions[mapId];
       }
       
-      window.removeEventListener('map-navigate-to-bid', handleBidNavigation as EventListener);
-      console.log(`Removed 'map-navigate-to-bid' listener for map: ${mapId}`);
+      // Unregister from mapEventManager
+      mapEventManager.unregisterHandler(mapId);
+      console.log(`Unregistered navigation handler for map: ${mapId}`);
     };
   }, [mapId, tooltipId, projectBids]);
 
@@ -373,12 +478,36 @@ function DeckGLMap({
             }
           });
           
+          // Add loading complete handler
+          map.on('load', () => {
+            // Mark the map as loaded for transitions
+            mapLoadedRef.current = true;
+            
+            // Notify parent component that map is ready for fade-in
+            if (onMapLoaded && typeof onMapLoaded === 'function') {
+              onMapLoaded();
+            }
+            
+            // Dispatch event that map is loaded
+            if (typeof window !== 'undefined') {
+              window.dispatchEvent(new CustomEvent('map-loaded', {
+                detail: { mapId }
+              }));
+            }
+          });
+          
           const handleExternalZoom = (e: CustomEvent) => {
             if (e.detail?.mapId === mapId && e.detail?.zoom && map) {
               map.flyTo({
                 center: [viewState.longitude, viewState.latitude],
                 zoom: e.detail.zoom,
-                duration: 1500
+                duration: 1500,
+                curve: 1.5, // More pronounced ease-out curve
+                easing(t) {
+                  return t < 0.5 
+                    ? 4 * t * t * t 
+                    : 1 - Math.pow(-2 * t + 2, 3) / 2; // Cubic easing
+                }
               });
             }
           };
@@ -421,7 +550,13 @@ function DeckGLMap({
             map.flyTo({
               center: [viewState.longitude, viewState.latitude],
               zoom: map.getZoom(),
-              duration: 1000
+              duration: 1000,
+              curve: 1.5, // Improved easing
+              easing(t) {
+                return t < 0.5 
+                  ? 4 * t * t * t 
+                  : 1 - Math.pow(-2 * t + 2, 3) / 2; // Cubic easing
+              }
             });
             
             if (currentOverlayRef.current && bidData) {
@@ -483,6 +618,24 @@ function DeckGLMap({
   }, [projectBids, focusBid, mapContainerId, mapLibreId, tooltipId, mapId]);
   
   return null;
+}
+
+// Enhanced tooltip style with animations
+function getEnhancedTooltipStyle(isActive = false) {
+  return {
+    backgroundColor: 'white',
+    borderRadius: '8px',
+    boxShadow: isActive 
+      ? '0 4px 14px rgba(0,0,0,0.15), 0 0 0 2px rgba(16, 185, 129, 0.4)' 
+      : '0 2px 10px rgba(0,0,0,0.1)',
+    padding: '10px 14px',
+    fontSize: '14px',
+    lineHeight: '1.5',
+    transition: 'all 0.2s ease',
+    transform: isActive ? 'translateY(-5px)' : 'translateY(0)',
+    opacity: 1,
+    border: isActive ? '1px solid rgba(16, 185, 129, 0.6)' : '1px solid rgba(0,0,0,0.05)'
+  };
 }
 
 // Update setupMapLayers function to handle layer creation more safely
@@ -586,6 +739,12 @@ async function setupMapLayers(
           },
           updateTriggers: {
             getFillColor: [projectBids.join(','), focusBid]
+          },
+          transitions: {
+            getFillColor: {
+              duration: 300,
+              easing: t => t * (2 - t) // Ease out
+            }
           }
         })
       );
@@ -626,6 +785,16 @@ async function setupMapLayers(
           updateTriggers: {
             getLineColor: [projectBids.join(','), focusBid],
             getLineWidth: [projectBids.join(','), focusBid]
+          },
+          transitions: {
+            getLineColor: {
+              duration: 500,
+              easing: t => t * (2 - t) // Ease out
+            },
+            getLineWidth: {
+              duration: 300,
+              easing: t => t * (2 - t) // Ease out
+            }
           }
         })
       );
@@ -671,11 +840,21 @@ async function setupMapLayers(
         
         const hasProject = projectBids.includes(bidName);
         
+        // Add visual feedback on click
+        if (typeof document !== 'undefined') {
+          // Add a pulse animation class to body that can be targeted by CSS
+          document.body.classList.add('map-interaction');
+          
+          // Remove the class after the animation completes
+          setTimeout(() => {
+            document.body.classList.remove('map-interaction');
+          }, 500);
+        }
+        
         // Only navigate if this BID has a project
         if (hasProject && bidToSlugMap && bidToSlugMap[bidName]) {
-          const projectSlug = bidToSlugMap[bidName];
-          const baseUrl = getBasePath();
-          window.location.href = `${baseUrl}/projects/${projectSlug}`;
+          // Use mapEventManager to navigate to project instead of direct location change
+          mapEventManager.navigateToBidProject(bidName, bidToSlugMap);
         }
       },
       onHover: (info) => {
@@ -701,22 +880,57 @@ async function setupMapLayers(
         tooltip.style.display = 'block';
         tooltip.style.left = `${info.x}px`;
         tooltip.style.top = `${info.y}px`;
-        tooltip.style.transform = 'translate(-50%, -100%)';
-        tooltip.style.marginTop = '-20px';
-        tooltip.style.opacity = '1';
-        tooltip.style.transition = 'transform 0.2s ease-out, opacity 0.2s ease-out';
+        tooltip.style.transform = 'translate(-50%, -100%) translateY(-10px)';
+        tooltip.style.marginTop = '-10px';
+        tooltip.style.opacity = '0';
+        // Smoother transition for tooltip appearance
+        tooltip.style.transition = 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease-out';
+        
+        // Use requestAnimationFrame to ensure the transition happens
+        requestAnimationFrame(() => {
+          tooltip.style.opacity = '1';
+          tooltip.style.transform = 'translate(-50%, -100%) translateY(0)';
+        });
         
         tooltip.innerHTML = `
-          <div class="tooltip-content" style="font-family: system-ui, sans-serif; padding: 8px; background: white; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+          <div class="tooltip-content" style="
+            font-family: system-ui, sans-serif; 
+            padding: 10px 14px; 
+            background: white; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border: ${hasProject ? '1px solid rgba(16, 185, 129, 0.2)' : '1px solid rgba(0,0,0,0.05)'};
+            transition: all 0.2s ease;
+          ">
             <strong>${bidName}</strong>
             ${hasProject ? 
-              `<p style="color: #10B981; margin-top: 4px; margin-bottom: 0;">
+              `<p style="
+                color: #10B981; 
+                margin-top: 4px; 
+                margin-bottom: 0;
+                display: flex;
+                align-items: center;
+              ">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" style="width: 14px; height: 14px; margin-right: 4px;">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
+                </svg>
                 Has project analysis
                 ${bidToSlugMap && bidToSlugMap[bidName] ? 
-                  `<span style="font-size: 12px; margin-left: 4px;">(click to view)</span>` : 
+                  `<span style="font-size: 12px; margin-left: 4px; opacity: 0.8;">(click to view)</span>` : 
                   ''}
               </p>` : 
-              '<p style="color: #6B7280; margin-top: 4px; margin-bottom: 0;">No analysis yet</p>'}
+              `<p style="
+                color: #6B7280; 
+                margin-top: 4px; 
+                margin-bottom: 0;
+                display: flex;
+                align-items: center;
+              ">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" style="width: 14px; height: 14px; margin-right: 4px; opacity: 0.5;">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
+                </svg>
+                No analysis yet
+              </p>`}
           </div>
         `;
       },
@@ -725,7 +939,16 @@ async function setupMapLayers(
         const tooltipElement = document.getElementById(tooltipId);
         if (!tooltipElement) return;
         
-        if (tooltip) tooltip.style.display = 'none';
+        if (tooltip) {
+          // Add a fade-out transition
+          tooltip.style.opacity = '0';
+          tooltip.style.transform = 'translate(-50%, -100%) translateY(-5px)';
+          
+          // Remove from DOM after transition completes
+          setTimeout(() => {
+            if (tooltip) tooltip.style.display = 'none';
+          }, 200);
+        }
       }
     });
     
@@ -926,9 +1149,8 @@ function updateMapLayers(
           
           // Only navigate if this BID has a project
           if (hasProject && bidToSlugMap && bidToSlugMap[bidName]) {
-            const projectSlug = bidToSlugMap[bidName];
-            const baseUrl = getBasePath();
-            window.location.href = `${baseUrl}/projects/${projectSlug}`;
+            // Use mapEventManager to navigate to project instead of direct location change
+            mapEventManager.navigateToBidProject(bidName, bidToSlugMap);
           }
         },
         onHover: (info) => {

@@ -17,6 +17,7 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/markdown-component": "^1.0.5",
     "@astrojs/react": "^4.2.0",
     "@astrojs/rss": "^4.0.11",
     "@astrojs/sitemap": "^3.2.1",
@@ -35,6 +36,7 @@
     "leaflet": "^1.9.4",
     "lucide-react": "^0.475.0",
     "maplibre-gl": "^5.2.0",
+    "marked": "^15.0.8",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "satori": "^0.5.0",

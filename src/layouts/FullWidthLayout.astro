@@ -1,0 +1,128 @@
+---
+import BaseNavigation from '@components/layout/BaseNavigation.astro';
+import BaseFooter from '@components/layout/BaseFooter.astro';
+import BaseHead from '../components/layout/BaseHead.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  classList?: string;
+  pageTitle?: string;
+  ogImage?: URL;
+}
+
+const { title, description, classList, pageTitle, ogImage } = Astro.props;
+const base = import.meta.env.BASE_URL || '/';
+---
+
+<html lang='en' class='h-full scroll-smooth'>
+  <BaseHead ogImage={ogImage} title={title} description={description} />
+
+  <body class:list={['min-h-screen flex flex-col overflow-x-visible', classList]}>
+    <header class="site-header">
+      <div class="header-container">
+        <a href={`${base}/`} class="site-branding">
+          <span class="text-2xl font-bold tracking-tight text-primary">BIDSpec</span>
+        </a>
+        <nav class="site-navigation">
+          <a href={`${base}/`}>Home</a>
+          <a href={`${base}/projects`}>Projects</a>
+        </nav>
+        <button id="mobile-menu-button" class="mobile-menu-button">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <div id="mobile-menu" class="mobile-menu">
+      <div class="mobile-menu-header">
+        <span class="text-2xl font-bold text-primary">BIDSpec</span>
+        <button id="mobile-menu-close" class="mobile-menu-button">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <nav class="mobile-menu-nav">
+        <a href={`${base}/`}>Home</a>
+        <a href={`${base}/projects`}>Projects</a>
+      </nav>
+    </div>
+
+    <main class="site-main overflow-x-visible">
+      <!-- Full-width content slot without container constraints -->
+      <slot />
+    </main>
+    
+    <footer class="site-footer">
+      <BaseFooter />
+    </footer>
+    
+    <script>
+      // Function to initialize or reinitialize header behaviors
+      function initializeHeaderBehaviors() {
+        const header = document.querySelector('.site-header');
+        
+        const handleScroll = () => {
+          if (window.scrollY > 10) {
+            header?.classList.add('scrolled');
+          } else {
+            header?.classList.remove('scrolled');
+          }
+        };
+        
+        handleScroll();
+        window.removeEventListener('scroll', handleScroll);
+        window.addEventListener('scroll', handleScroll);
+        
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenuClose = document.getElementById('mobile-menu-close');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        const openMenu = () => {
+          mobileMenu?.classList.add('open');
+          document.body.style.overflow = 'hidden';
+        };
+        
+        const closeMenu = () => {
+          mobileMenu?.classList.remove('open');
+          document.body.style.overflow = '';
+        };
+        
+        if (mobileMenuButton) {
+          const newButton = mobileMenuButton.cloneNode(true);
+          mobileMenuButton.parentNode?.replaceChild(newButton, mobileMenuButton);
+          newButton.addEventListener('click', openMenu);
+        }
+        
+        if (mobileMenuClose) {
+          const newCloseButton = mobileMenuClose.cloneNode(true);
+          mobileMenuClose.parentNode?.replaceChild(newCloseButton, mobileMenuClose);
+          newCloseButton.addEventListener('click', closeMenu);
+        }
+        
+        const fadeElements = document.querySelectorAll('.fade-in');
+        
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+            }
+          });
+        }, { threshold: 0.1 });
+        
+        fadeElements.forEach(element => {
+          observer.observe(element);
+        });
+      }
+      
+      initializeHeaderBehaviors();
+      document.addEventListener('astro:page-load', initializeHeaderBehaviors);
+      document.addEventListener('astro:after-swap', initializeHeaderBehaviors);
+      window.addEventListener('load', initializeHeaderBehaviors);
+    </script>
+  </body>
+</html>

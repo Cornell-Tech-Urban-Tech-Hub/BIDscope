@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@astrojs/markdown-component':
+        specifier: ^1.0.5
+        version: 1.0.5
       '@astrojs/react':
         specifier: ^4.2.0
         version: 4.2.1(@types/node@22.13.13)(@types/react-dom@19.0.4(@types/react@19.0.12))(@types/react@19.0.12)(jiti@1.21.7)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -62,6 +65,9 @@ importers:
       maplibre-gl:
         specifier: ^5.2.0
         version: 5.2.0
+      marked:
+        specifier: ^15.0.8
+        version: 15.0.8
       react:
         specifier: ^19.0.0
         version: 19.0.0
@@ -147,6 +153,9 @@ packages:
 
   '@astrojs/internal-helpers@0.6.1':
     resolution: {integrity: sha512-l5Pqf6uZu31aG+3Lv8nl/3s4DbUzdlxTWDof4pEpto6GUJNhhCbelVi9dEyurOVyqaelwmS9oSyOWOENSfgo9A==}
+
+  '@astrojs/markdown-component@1.0.5':
+    resolution: {integrity: sha512-e7pzVfEZmjyZMmKGwLbfds36idAt9Yi8c0N0VQw2cVEgK8QdQecZLc07JvUSugoZxINtoVA0Afpm8EcIP52Ncw==}
 
   '@astrojs/markdown-remark@6.3.1':
     resolution: {integrity: sha512-c5F5gGrkczUaTVgmMW9g1YMJGzOtRvjjhw6IfGuxarM6ct09MpwysP10US729dy07gg8y+ofVifezvP3BNsWZg==}
@@ -3511,6 +3520,11 @@ packages:
     engines: {node: '>= 18'}
     hasBin: true
 
+  marked@15.0.8:
+    resolution: {integrity: sha512-rli4l2LyZqpQuRve5C0rkn6pj3hT8EWPC+zkAxFTAJLxRbENfTAhEQq9itrmf1Y81QtAX5D/MYlGlIomNgj9lA==}
+    engines: {node: '>= 18'}
+    hasBin: true
+
   math-intrinsics@1.1.0:
     resolution: {integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==}
     engines: {node: '>= 0.4'}
@@ -4930,6 +4944,8 @@ snapshots:
   '@astrojs/compiler@2.11.0': {}
 
   '@astrojs/internal-helpers@0.6.1': {}
+
+  '@astrojs/markdown-component@1.0.5': {}
 
   '@astrojs/markdown-remark@6.3.1':
     dependencies:
@@ -9681,6 +9697,8 @@ snapshots:
   markdown-table@3.0.4: {}
 
   marked@15.0.7: {}
+
+  marked@15.0.8: {}
 
   math-intrinsics@1.1.0: {}
 

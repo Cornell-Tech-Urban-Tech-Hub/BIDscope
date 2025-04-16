@@ -18,7 +18,7 @@ revisionMode: true
 tags: ["Commercial Hub", "Education", "Cultural District", "Urban Development"]
 
 # Visualization Component References - empty arrays to be filled by students
-insightComponents: []
+insightComponents: ["/src/components/groups/_matt_demo/RobotabilityMap.jsx"]
 transformationComponents: []
 predictionComponents: []
 consensusComponents: []

@@ -1,10 +1,7 @@
 ---
 import Layout from '../../layouts/Default.astro';
 import ProjectCard from '../../components/projects/ProjectCard.astro';
-import MapVisualizer from '../../components/visualizations/MapVisualizer.js'; // Fix the import to use .tsx
 import { getCollection } from 'astro:content';
-import fs from 'node:fs';
-import path from 'node:path';
 
 // Fetch all projects
 const allProjects = await getCollection('projects');
@@ -13,26 +10,6 @@ const allProjects = await getCollection('projects');
 const sortedProjects = allProjects.sort((a, b) => 
   b.data.publishDate.getTime() - a.data.publishDate.getTime()
 );
-
-// Extract BID names for the map
-const projectBids = allProjects.map(project => project.data.bidName);
-
-// Create a mapping from BID names to project slugs
-const bidToSlugMap = Object.fromEntries(
-  allProjects.map(project => [project.data.bidName, project.slug])
-);
-
-// Get valid BID names from the GeoJSON file for validation
-let mapBidNames = [];
-try {
-  const geojsonPath = path.join(process.cwd(), 'public', 'data', 'bids.geojson');
-  const geojsonData = JSON.parse(fs.readFileSync(geojsonPath, 'utf8'));
-  mapBidNames = geojsonData.features
-    .map(feature => feature.properties.F_ALL_BI_2)
-    .filter(Boolean);
-} catch (error) {
-  console.error('Error loading BID map data:', error);
-}
 
 // Get unique boroughs for filter
 const boroughs = [...new Set(sortedProjects.map(project => project.data.borough))];
@@ -45,21 +22,6 @@ const boroughs = [...new Set(sortedProjects.map(project => project.data.borough)
       <p class="projects-description">
         Explore in-depth analysis of Business Improvement Districts across NYC
       </p>
-    </div>
-
-    <!-- Map visualization - add a unique mapId and pass bidToSlugMap -->
-    <div class="map-section">
-      <h2 class="map-title">BID Map</h2>
-      <div class="relative rounded-xl overflow-hidden border">
-        <MapVisualizer 
-          client:only="react" 
-          projectBids={projectBids} 
-          height="450px" 
-          mapId="projects-page-map"
-          bidToSlugMap={bidToSlugMap}
-          disableLongPress={true}
-        />
-      </div>
     </div>
 
     <!-- Filters -->
@@ -80,7 +42,6 @@ const boroughs = [...new Set(sortedProjects.map(project => project.data.borough)
       {sortedProjects.map(project => (
         <ProjectCard 
           project={project} 
-          hasBidOnMap={mapBidNames.includes(project.data.bidName)}
         />
       ))}
     </div>

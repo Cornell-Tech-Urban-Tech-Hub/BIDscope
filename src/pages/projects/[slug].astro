@@ -1,11 +1,13 @@
 ---
-import Layout from '../../layouts/Default.astro';
+import FullWidthLayout from '../../layouts/FullWidthLayout.astro';
 import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
 import MapVisualizer from '../../components/visualizations/MapVisualizer.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import '../../styles/projects.css';
+import DynamicComponentLoader from '../../components/visualizations/DynamicComponentLoader.jsx';
+import { marked } from 'marked'; // Import marked for markdown parsing
 
 // Define getStaticPaths to tell Astro which paths to generate
 export async function getStaticPaths() {
@@ -54,8 +56,6 @@ function formatDate(date) {
   });
 }
 
-console.log('REvision mode:', entry.data.revisionMode);
-
 // Check for visualization components or revision mode
 const isRevisionMode = entry.data.revisionMode === true;
 const hasInsightViz = (entry.data.insightComponents && entry.data.insightComponents.length > 0) || isRevisionMode;
@@ -63,68 +63,109 @@ const hasTransformationViz = (entry.data.transformationComponents && entry.data.
 const hasPredictionViz = (entry.data.predictionComponents && entry.data.predictionComponents.length > 0) || isRevisionMode;
 const hasConsensusViz = (entry.data.consensusComponents && entry.data.consensusComponents.length > 0) || isRevisionMode;
 
-// Helper to create visualization section title icon
-const getSectionIcon = (type) => {
-  switch(type) {
-    case 'insight':
-      return `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>`;
-    case 'transformation':
-      return `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9Z"/><path d="m3 9 2.45-4.9A2 2 0 0 1 7.24 3h9.52a2 2 0 0 1 1.8 1.1L21 9"/><path d="M12 3v6"/></svg>`;
-    case 'prediction':
-      return `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h10"/><path d="M9 4v16"/><path d="M14 9l3 3-3 3"/><path d="M19 12h3"/></svg>`;
-    case 'consensus':
-      return `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><line x1="6" x2="6" y1="2" y2="4"/><line x1="10" x2="10" y1="2" y2="4"/><line x1="14" x2="14" y1="2" y2="4"/></svg>`;
-    default:
-      return '';
-  }
+// Process visualization components
+const insightVizComponents = entry.data.insightComponents || [];
+const transformationVizComponents = entry.data.transformationComponents || [];
+const predictionVizComponents = entry.data.predictionComponents || [];
+const consensusVizComponents = entry.data.consensusComponents || [];
+
+// Import the raw markdown content
+let rawContent = '';
+let parsedSections = {
+  intro: '',
+  insight: '',
+  transformation: '',
+  prediction: '',
+  consensus: '',
+  additional: ''
 };
 
-// Detect section types in markdown content
-const hasInsightSection = headings.some(h => h.text.toLowerCase().includes('insight'));
-const hasTransformationSection = headings.some(h => h.text.toLowerCase().includes('transformation'));
-const hasPredictionSection = headings.some(h => h.text.toLowerCase().includes('prediction'));
-const hasConsensusSection = headings.some(h => h.text.toLowerCase().includes('consensus'));
-
-// Import the raw markdown content so we can parse and inject components
-const rawContent = await fs.promises.readFile(path.join(process.cwd(), 'src/content/projects', `${entry.slug}.md`), 'utf8');
-const contentSections = {};
-
-// Extract section content to inject visualization components
-function extractSectionContent(content) {
-  const sectionRegexes = {
-    'insight': /## Insight Analysis[\s\S]*?(?=## \w+|$)/i,
-    'transformation': /## Transformation Analysis[\s\S]*?(?=## \w+|$)/i,
-    'prediction': /## Prediction Analysis[\s\S]*?(?=## \w+|$)/i, 
-    'consensus': /## Consensus Analysis[\s\S]*?(?=## \w+|$)/i,
-  };
-  
-  Object.keys(sectionRegexes).forEach(section => {
-    const match = content.match(sectionRegexes[section]);
-    if (match) {
-      contentSections[section] = match[0];
-    } else {
-      contentSections[section] = '';
+try {
+  if (fs.existsSync(path.join(process.cwd(), 'src/content/projects', `${entry.slug}.md`))) {
+    rawContent = await fs.promises.readFile(path.join(process.cwd(), 'src/content/projects', `${entry.slug}.md`), 'utf8');
+    
+    // Filter out any metadata header sections from the markdown before processing
+    rawContent = rawContent.replace(/^---[\s\S]*?---\s*/m, ''); // Remove frontmatter if present
+    
+    // Extract the introduction (content before the first heading)
+    const introMatch = rawContent.match(/^([\s\S]*?)(?=# Insight Analysis|$)/);
+    if (introMatch) {
+      // Filter out any metadata-like content from intro
+      let introContent = introMatch[1].trim();
+      // Remove lines that look like metadata (e.g., "BID Name: Downtown")
+      introContent = introContent.replace(/^.+:.+$/gm, '').trim();
+      
+      // Only add section title and parse if there's actual content
+      if (introContent) {
+        // Add a wrapper heading if none exists to improve formatting
+        if (!introContent.match(/^#\s/m)) {
+          introContent = `## Project Overview\n\n${introContent}`;
+        }
+        
+        parsedSections.intro = marked.parse(introContent);
+      }
     }
-  });
+    
+    // Extract section contents
+    const sectionMatches = {
+      insight: rawContent.match(/# Insight Analysis([\s\S]*?)(?=# Transformation Analysis|# Prediction Analysis|# Consensus Analysis|## Additional Resources|$)/i),
+      transformation: rawContent.match(/# Transformation Analysis([\s\S]*?)(?=# Insight Analysis|# Prediction Analysis|# Consensus Analysis|## Additional Resources|$)/i),
+      prediction: rawContent.match(/# Prediction Analysis([\s\S]*?)(?=# Insight Analysis|# Transformation Analysis|# Consensus Analysis|## Additional Resources|$)/i),
+      consensus: rawContent.match(/# Consensus Analysis([\s\S]*?)(?=# Insight Analysis|# Transformation Analysis|# Prediction Analysis|## Additional Resources|$)/i),
+    };
+    
+    // Store matched content with proper markdown parsing
+    Object.keys(sectionMatches).forEach(section => {
+      if (sectionMatches[section] && sectionMatches[section][1]) {
+        // Parse the full section including the heading
+        const sectionContent = sectionMatches[section][0].trim();
+        // Only store if there's actual content beyond the heading
+        if (sectionContent.length > (`# ${section} Analysis`).length) {
+          parsedSections[section] = marked.parse(sectionContent);
+        } else {
+          parsedSections[section] = '';
+        }
+      } else {
+        parsedSections[section] = '';
+      }
+    });
+    
+    // Skip processing the Additional Resources section - will use the template version instead
+    const additionalMatch = rawContent.match(/## Additional Resources([\s\S]*?)$/i);
+    if (additionalMatch && additionalMatch[1] && additionalMatch[1].trim()) {
+      // Only parse if there's content beyond the heading
+      const additionalContent = additionalMatch[0].trim();
+      if (additionalContent.length > "## Additional Resources".length) {
+        parsedSections.additional = marked.parse(additionalContent);
+      } else {
+        parsedSections.additional = '';
+      }
+    } else {
+      parsedSections.additional = '';
+    }
+  }
+} catch (error) {
+  console.error('Error parsing markdown content:', error);
 }
 
-// Only try to extract sections if the file exists
-if (fs.existsSync(path.join(process.cwd(), 'src/content/projects', `${entry.slug}.md`))) {
-  extractSectionContent(rawContent);
+// Function to check if a section has actual content (not just HTML tags)
+function hasContent(html) {
+  if (!html) return false;
+  // Remove HTML tags and check if there's text content
+  const textContent = html.replace(/<[^>]*>/g, '').trim();
+  return textContent.length > 0;
 }
 ---
 
-<Layout 
+<FullWidthLayout 
   title={`${entry.data.title} | BIDSpec`}
   description={entry.data.description}
 >
-  <div class="container mx-auto px-4 py-12">
-    <div class="mb-8">
-      <a href={`${base}/projects`} class="text-primary hover:underline flex items-center gap-2">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>
-        Back to Projects
-      </a>
-    </div>
+  <div class="max-w-5xl mx-auto px-4 py-12">
+    <a href={`${base}/projects`} class="text-primary hover:underline flex items-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>
+      Back to Projects
+    </a>
 
     <article class="max-w-5xl mx-auto">
       <header class="project-header">
@@ -187,250 +228,217 @@ if (fs.existsSync(path.join(process.cwd(), 'src/content/projects', `${entry.slug
         </div>
       </div>
 
-      <div id="project-content" class="project-content prose prose-lg max-w-none">
+      <div id="project-content" class="project-content prose prose-lg max-w-none overflow-visible">
         <!-- Add a marker to indicate content is ready -->
         <div id="content-marker" data-revision-mode={isRevisionMode.toString()} style="display:none;"></div>
         
-        <Content />
+        <!-- Introduction Section -->
+        {hasContent(parsedSections.intro) && (
+          <div class="content-section intro-section">
+            <Fragment set:html={parsedSections.intro} />
+          </div>
+        )}
         
-        <script>
-          // Completely separate script execution from Astro's hydration
-          (function() {
-            // Get revision mode from the marker element to ensure correct value
-            const contentMarker = document.getElementById('content-marker');
-            const isRevisionMode = contentMarker ? contentMarker.getAttribute('data-revision-mode') === 'true' : false;
+        <!-- Insight Section with Visualizations -->
+        {hasContent(parsedSections.insight) || hasInsightViz ? (
+          <div class="content-section insight-section">
+            {hasContent(parsedSections.insight) && (
+              <Fragment set:html={parsedSections.insight} />
+            )}
             
-            // Check if visualizations have already been added
-            let visualizationsAdded = false;
-            
-            // Function to initialize visualizations
-            function initVisualizations() {
-              if (visualizationsAdded) return;
-              
-              // Read component data from global window object (set below)
-              const insightComponents = window.__projectData?.insightComponents || [];
-              const transformationComponents = window.__projectData?.transformationComponents || [];
-              const predictionComponents = window.__projectData?.predictionComponents || [];
-              const consensusComponents = window.__projectData?.consensusComponents || [];
-              
-              // Determine which sections should have visualizations
-              const hasInsightViz = insightComponents.length > 0 || isRevisionMode;
-              const hasTransformationViz = transformationComponents.length > 0 || isRevisionMode;
-              const hasPredictionViz = predictionComponents.length > 0 || isRevisionMode;
-              const hasConsensusViz = consensusComponents.length > 0 || isRevisionMode;
-              
-              // First, check if we're in revision mode, if not and no components exist, exit
-              if (!isRevisionMode && 
-                  insightComponents.length === 0 && 
-                  transformationComponents.length === 0 && 
-                  predictionComponents.length === 0 && 
-                  consensusComponents.length === 0) {
-                return;
-              }
-              
-              // Function to create visualization containers
-              function createVisualizationContainer(component, index, title, isPlaceholder = false) {
-                const container = document.createElement('div');
-                container.className = 'viz-container mt-6 mb-8';
-                
-                const titleEl = document.createElement('h3');
-                titleEl.className = 'viz-title';
-                titleEl.textContent = `${title} Visualization ${index + 1}`;
-                container.appendChild(titleEl);
-                
-                const frame = document.createElement('div');
-                frame.className = 'viz-frame';
-                
-                const placeholder = document.createElement('div');
-                placeholder.className = 'viz-placeholder';
-                
-                const text = document.createElement('p');
-                
-                if (isPlaceholder) {
-                  text.innerHTML = `<strong>Revision Mode:</strong> Add ${title.toLowerCase()} visualization component here`;
-                  placeholder.classList.add('draft-placeholder');
-                } else {
-                  text.textContent = `Visualization component: ${component}`;
-                }
-                
-                placeholder.appendChild(text);
-                frame.appendChild(placeholder);
-                container.appendChild(frame);
-                
-                return container;
-              }
-              
-              // More aggressive heading search
-              function findHeadingElement(searchText) {
-                // Try direct heading match first
-                const allHeadings = Array.from(document.querySelectorAll('.project-content h1, .project-content h2'));
-                
-                // Look for exact matches first
-                let heading = allHeadings.find(h => 
-                  h.textContent.trim() === `${searchText} Analysis` || 
-                  h.textContent.trim() === searchText
-                );
-                
-                // If no exact match, try includes
-                if (!heading) {
-                  heading = allHeadings.find(h => 
-                    h.textContent.toLowerCase().includes(searchText.toLowerCase())
-                  );
-                }
-                
-                return heading;
-              }
-              
-              // Add visualization placeholders or components to each section
-              function addVisualizationsToSection(sectionName, components, count = 2) {
-                const heading = findHeadingElement(sectionName);
-                
-                if (!heading) {
-                  console.warn(`Could not find heading for ${sectionName}`);
-                  return;
-                }
-                
-                // Create a wrapper for this section and insert after the heading
-                const wrapper = document.createElement('div');
-                wrapper.className = `${sectionName.toLowerCase()}-section-wrapper`;
-                heading.after(wrapper);
-                
-                // Get the paragraph content that belongs to this section
-                let currentElement = wrapper.nextElementSibling;
-                const elementsToMove = [];
-                
-                // Collect all elements until the next heading
-                while (currentElement && 
-                      !currentElement.matches('h1, h2') && 
-                      currentElement.tagName !== 'H1' && 
-                      currentElement.tagName !== 'H2') {
-                  elementsToMove.push(currentElement);
-                  currentElement = currentElement.nextElementSibling;
-                }
-                
-                // Move the elements into the wrapper
-                elementsToMove.forEach(element => {
-                  wrapper.appendChild(element);
-                });
-                
-                // Add visualization row at the beginning of the section
-                const vizRow = document.createElement('div');
-                vizRow.className = 'viz-row';
-                
-                if (components.length > 0) {
-                  components.forEach((component, index) => {
-                    vizRow.appendChild(createVisualizationContainer(component, index, sectionName));
-                  });
-                } else if (isRevisionMode) {
-                  for (let i = 0; i < count; i++) {
-                    vizRow.appendChild(createVisualizationContainer('', i, sectionName, true));
-                  }
-                }
-                
-                if (vizRow.children.length > 0) {
-                  // Insert at the beginning of the wrapper
-                  wrapper.prepend(vizRow);
-                }
-              }
-              
-              // Add visualizations to each section
-              if (hasInsightViz) {
-                addVisualizationsToSection('Insight', insightComponents);
-              }
-              
-              if (hasTransformationViz) {
-                addVisualizationsToSection('Transformation', transformationComponents);
-              }
-              
-              if (hasPredictionViz) {
-                addVisualizationsToSection('Prediction', predictionComponents, 1);
-              }
-              
-              if (hasConsensusViz) {
-                addVisualizationsToSection('Consensus', consensusComponents);
-              }
-              
-              visualizationsAdded = true;
-              console.log('Visualizations added successfully');
-            }
-            
-            // Astro content may need more time to render fully
-            // Use a combination of techniques with increasing delays
-            
-            function attemptInit() {
-              const contentEl = document.getElementById('project-content');
-              const hasHeadings = document.querySelector('.project-content h1, .project-content h2');
-              
-              if (contentEl && hasHeadings) {
-                initVisualizations();
-              } else {
-                // Set up a waiting strategy with multiple attempts
-                console.log('Content or headings not ready, will retry');
-                setupContentCheck();
-              }
-            }
-            
-            function setupContentCheck() {
-              // Try multiple approaches with increasing delays
-              const delays = [100, 300, 600, 1000, 2000]; // Milliseconds
-              let attemptCount = 0;
-              
-              function checkAndInitialize() {
-                const contentEl = document.getElementById('project-content');
-                const hasHeadings = document.querySelector('.project-content h1, .project-content h2');
-                
-                if (contentEl && hasHeadings) {
-                  initVisualizations();
-                  return true;
-                }
-                
-                if (attemptCount < delays.length) {
-                  console.log(`Attempt ${attemptCount + 1} failed, trying again in ${delays[attemptCount]}ms`);
-                  setTimeout(checkAndInitialize, delays[attemptCount]);
-                  attemptCount++;
-                  return false;
-                }
-                
-                console.warn('Failed to find content after multiple attempts');
-                return false;
-              }
-              
-              checkAndInitialize();
-            }
-            
-            // Start the process once DOM is initially loaded
-            if (document.readyState === 'loading') {
-              document.addEventListener('DOMContentLoaded', attemptInit);
-            } else {
-              attemptInit();
-            }
-            
-            // Also try on window load as a final attempt
-            window.addEventListener('load', () => {
-              if (!visualizationsAdded) {
-                console.log('Trying initialization on window load');
-                initVisualizations();
-              }
-            });
-          })();
-        </script>
+            {hasInsightViz && (
+              <div class="viz-section-wrapper overflow-visible w-full">
+                <div class="viz-row full-width-components mt-6 mb-8">
+                  {insightVizComponents.length > 0 ? (
+                    insightVizComponents.map((component, i) => (
+                      <div class="viz-container full-width">
+                        <h3 class="viz-title">Insight Visualization {i + 1}</h3>
+                        <div class="viz-frame" data-component-id={`insight-viz-${i}`}>
+                          <a href={`${base}/components/${entry.slug}-insightComponents-${i}`} class="fullscreen-link" title="View Full Screen">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <path d="M8 3H5a2 2 0 0 0-2 2v3"></path>
+                              <path d="M21 8V5a2 2 0 0 0-2-2h-3"></path>
+                              <path d="M3 16v3a2 2 0 0 0 2 2h3"></path>
+                              <path d="M16 21h3a2 2 0 0 0 2-2v-3"></path>
+                            </svg>
+                            View Full Screen
+                          </a>
+                          <div class="viz-component-wrapper">
+                            <DynamicComponentLoader client:only="react" componentPath={component} fullWidth={true} />
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  ) : isRevisionMode && (
+                    <div class="viz-container full-width">
+                      <h3 class="viz-title">Insight Visualization 1</h3>
+                      <div class="viz-frame" data-component-id="insight-viz-draft">
+                        <div class="viz-component-wrapper">
+                          <div class="viz-placeholder draft-placeholder">
+                            <p><strong>Revision Mode:</strong> Add insight visualization component here</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        ) : null}
         
-        <script define:vars={{ 
-          insightComponents: entry.data.insightComponents || [],
-          transformationComponents: entry.data.transformationComponents || [],
-          predictionComponents: entry.data.predictionComponents || [],
-          consensusComponents: entry.data.consensusComponents || [],
-        }}>
-          // Store project data in a global object to avoid hydration issues
-          window.__projectData = {
-            insightComponents: insightComponents,
-            transformationComponents: transformationComponents,
-            predictionComponents: predictionComponents,
-            consensusComponents: consensusComponents
-          };
-        </script>
+        <!-- Transformation Section with Visualizations -->
+        {hasContent(parsedSections.transformation) || hasTransformationViz ? (
+          <div class="content-section transformation-section">
+            {hasContent(parsedSections.transformation) && (
+              <Fragment set:html={parsedSections.transformation} />
+            )}
+            
+            {hasTransformationViz && (
+              <div class="viz-section-wrapper overflow-visible w-full">
+                <div class="viz-row full-width-components mt-6 mb-8">
+                  {transformationVizComponents.length > 0 ? (
+                    transformationVizComponents.map((component, i) => (
+                      <div class="viz-container full-width">
+                        <h3 class="viz-title">Transformation Visualization {i + 1}</h3>
+                        <div class="viz-frame" data-component-id={`transformation-viz-${i}`}>
+                          <a href={`${base}/components/${entry.slug}-transformationComponents-${i}`} class="fullscreen-link" title="View Full Screen">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <path d="M8 3H5a2 2 0 0 0-2 2v3"></path>
+                              <path d="M21 8V5a2 2 0 0 0-2-2h-3"></path>
+                              <path d="M3 16v3a2 2 0 0 0 2 2h3"></path>
+                              <path d="M16 21h3a2 2 0 0 0 2-2v-3"></path>
+                            </svg>
+                            View Full Screen
+                          </a>
+                          <div class="viz-component-wrapper">
+                            <DynamicComponentLoader client:only="react" componentPath={component} fullWidth={true} />
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  ) : isRevisionMode && (
+                    <div class="viz-container full-width">
+                      <h3 class="viz-title">Transformation Visualization 1</h3>
+                      <div class="viz-frame" data-component-id="transformation-viz-draft">
+                        <div class="viz-component-wrapper">
+                          <div class="viz-placeholder draft-placeholder">
+                            <p><strong>Revision Mode:</strong> Add transformation visualization component here</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        ) : null}
+        
+        <!-- Prediction Section with Visualizations -->
+        {hasContent(parsedSections.prediction) || hasPredictionViz ? (
+          <div class="content-section prediction-section">
+            {hasContent(parsedSections.prediction) && (
+              <Fragment set:html={parsedSections.prediction} />
+            )}
+            
+            {hasPredictionViz && (
+              <div class="viz-section-wrapper overflow-visible w-full">
+                <div class="viz-row full-width-components mt-6 mb-8">
+                  {predictionVizComponents.length > 0 ? (
+                    predictionVizComponents.map((component, i) => (
+                      <div class="viz-container full-width">
+                        <h3 class="viz-title">Prediction Visualization {i + 1}</h3>
+                        <div class="viz-frame" data-component-id={`prediction-viz-${i}`}>
+                          <a href={`${base}/components/${entry.slug}-predictionComponents-${i}`} class="fullscreen-link" title="View Full Screen">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <path d="M8 3H5a2 2 0 0 0-2 2v3"></path>
+                              <path d="M21 8V5a2 2 0 0 0-2-2h-3"></path>
+                              <path d="M3 16v3a2 2 0 0 0 2 2h3"></path>
+                              <path d="M16 21h3a2 2 0 0 0 2-2v-3"></path>
+                            </svg>
+                            View Full Screen
+                          </a>
+                          <div class="viz-component-wrapper">
+                            <DynamicComponentLoader client:only="react" componentPath={component} fullWidth={true} />
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  ) : isRevisionMode && (
+                    <div class="viz-container full-width">
+                      <h3 class="viz-title">Prediction Visualization 1</h3>
+                      <div class="viz-frame" data-component-id="prediction-viz-draft">
+                        <div class="viz-component-wrapper">
+                          <div class="viz-placeholder draft-placeholder">
+                            <p><strong>Revision Mode:</strong> Add prediction visualization component here</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        ) : null}
+        
+        <!-- Consensus Section with Visualizations -->
+        {hasContent(parsedSections.consensus) || hasConsensusViz ? (
+          <div class="content-section consensus-section">
+            {hasContent(parsedSections.consensus) && (
+              <Fragment set:html={parsedSections.consensus} />
+            )}
+            
+            {hasConsensusViz && (
+              <div class="viz-section-wrapper overflow-visible w-full">
+                <div class="viz-row full-width-components mt-6 mb-8">
+                  {consensusVizComponents.length > 0 ? (
+                    consensusVizComponents.map((component, i) => (
+                      <div class="viz-container full-width">
+                        <h3 class="viz-title">Consensus Visualization {i + 1}</h3>
+                        <div class="viz-frame" data-component-id={`consensus-viz-${i}`}>
+                          <a href={`${base}/components/${entry.slug}-consensusComponents-${i}`} class="fullscreen-link" title="View Full Screen">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <path d="M8 3H5a2 2 0 0 0-2 2v3"></path>
+                              <path d="M21 8V5a2 2 0 0 0-2-2h-3"></path>
+                              <path d="M3 16v3a2 2 0 0 0 2 2h3"></path>
+                              <path d="M16 21h3a2 2 0 0 0 2-2v-3"></path>
+                            </svg>
+                            View Full Screen
+                          </a>
+                          <div class="viz-component-wrapper">
+                            <DynamicComponentLoader client:only="react" componentPath={component} fullWidth={true} />
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  ) : isRevisionMode && (
+                    <div class="viz-container full-width">
+                      <h3 class="viz-title">Consensus Visualization 1</h3>
+                      <div class="viz-frame" data-component-id="consensus-viz-draft">
+                        <div class="viz-component-wrapper">
+                          <div class="viz-placeholder draft-placeholder">
+                            <p><strong>Revision Mode:</strong> Add consensus visualization component here</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        ) : null}
+        
+        <!-- Additional Resources -->
+        {hasContent(parsedSections.additional) && (
+          <div class="content-section additional-section">
+            <Fragment set:html={parsedSections.additional} />
+          </div>
+        )}
       </div>
-
+      
       {(entry.data.dataSource || (entry.data.visualizationTechniques && entry.data.visualizationTechniques.length > 0)) && (
         <div class="data-sources-panel">
           <h3 class="data-sources-title">Data & Methodology</h3>
@@ -456,28 +464,4 @@ if (fs.existsSync(path.join(process.cwd(), 'src/content/projects', `${entry.slug
       )}
     </article>
   </div>
-</Layout>
-
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const analysisHeaders = document.querySelectorAll('.analysis-header');
-    
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -100px 0px'
-    };
-    
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, observerOptions);
-    
-    analysisHeaders.forEach(header => {
-      observer.observe(header);
-    });
-  });
-</script>
+</FullWidthLayout>

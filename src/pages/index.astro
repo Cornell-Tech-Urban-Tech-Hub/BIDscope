@@ -33,7 +33,7 @@ const base = import.meta.env.BASE_URL || '/';
       </div>
       
       <!-- Map added to hero section with navigation pills on sides -->
-      <div class="relative rounded-2xl overflow-hidden border border-muted/30 shadow-xl flex-1 mx-auto w-full max-w-[95%] mb-16">
+      <div class="relative rounded-2xl overflow-hidden border border-muted/30 shadow-xl flex-1 mx-auto w-full max-w-[95%] mb-6">
         <!-- Left side navigation pills -->
         <div class="map-nav-pills map-nav-pills-left">
           {projectBids.slice(0, Math.ceil(projectBids.length/2)).map(bid => (
@@ -58,15 +58,18 @@ const base = import.meta.env.BASE_URL || '/';
             projectBids={projectBids} 
             mapId="home-page-map" 
             bidToSlugMap={bidToSlugMap}
+            initialZoom={11}
           />
         </div>
       </div>
       
-      <div class="mt-6 mb-8 flex flex-wrap justify-center gap-4">
-        <a href={`${base}/projects`} class="button">View Projects</a>
+      <!-- Button placed back in first container but as standalone element -->
+      <div class="relative mt-4 mb-8 flex justify-center">
+        <a href={`${base}/projects`} class="button hero-button">View Projects</a>
       </div>
     </div>
-    <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent"></div>
+    
+    <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent pointer-events-none"></div>
   </section>
 
   <!-- About Section -->
@@ -185,14 +188,9 @@ const base = import.meta.env.BASE_URL || '/';
       <div class="bg-card rounded-xl p-6 border border-border">
         <div class="text-sm text-muted-foreground mb-2">May 2025</div>
         <h3 class="text-xl font-bold mb-2">Spring 2025 Cohort Completes BID Analyses</h3>
-        <p class="text-muted-foreground">The Spring 2025 cohort has completed their analysis of five different NYC BIDs: Downtown Brooklyn, DUMBO Improvement District, 5th Avenue in Brooklyn, Long Island City, and the West Village.</p>
+        <p class="text-muted-foreground">The Spring 2025 cohort has completed their analysis of five different NYC BIDs: the Downtown Brooklyn Partnership, DUMBO Improvement District, 5th Avenue in Brooklyn, Long Island City, and the West Village.</p>
       </div>
-      
-      <div class="bg-card rounded-xl p-6 border border-border mt-4">
-        <div class="text-sm text-muted-foreground mb-2">April 2025</div>
-        <h3 class="text-xl font-bold mb-2">Interactive Map Experience Enhanced</h3>
-        <p class="text-muted-foreground">We've optimized our BID Map Explorer for better performance and smoother interactions, allowing you to navigate NYC's Business Improvement Districts more seamlessly than ever.</p>
-      </div>
+
     </div>
   </section>
   
@@ -244,11 +242,39 @@ function initializePage() {
     // Ensure map functionality is properly initialized
     ensureMapFunctions();
     
-    // Set up map pill navigation
+    // Set up map pill navigation with staggered animations
     setupMapPills();
+    
+    // Add staggered animation delays to pills
+    animateMapPills();
   } else {
     console.log('Not on home page, skipping map initialization');
   }
+}
+
+// Set staggered animation delays for map pills
+function animateMapPills() {
+  const leftPills = document.querySelectorAll('.map-nav-pills-left .map-nav-pill');
+  const rightPills = document.querySelectorAll('.map-nav-pills-right .map-nav-pill');
+  
+  leftPills.forEach((pill, i) => {
+    pill.style.setProperty('--delay', `${i}`);
+    // Don't set opacity to 0 directly to avoid pills disappearing during transitions
+    // Instead use classes to control the animation state
+    pill.classList.add('animating-in');
+  });
+  
+  rightPills.forEach((pill, i) => {
+    pill.style.setProperty('--delay', `${i}`);
+    pill.classList.add('animating-in');
+  });
+  
+  // Force opacity to be applied after a small delay to ensure animation works
+  setTimeout(() => {
+    document.querySelectorAll('.animating-in').forEach(pill => {
+      pill.style.opacity = '0'; // Now safe to set opacity for initial animation
+    });
+  }, 10);
 }
 
 // Function to check if element is in viewport and apply transition
@@ -317,6 +343,13 @@ function ensureMapFunctions() {
   
   // Start checking for map initialization
   checkMapInitialized();
+  
+  // Add listener for map-loaded event
+  window.addEventListener('map-loaded', (event) => {
+    if (event.detail?.mapId === 'home-page-map') {
+      console.log('Map loaded event received');
+    }
+  });
 }
 
 // Setup map navigation pills with better error handling
@@ -357,6 +390,11 @@ function attachPillListeners(pills) {
     const newPill = pill.cloneNode(true);
     pill.parentNode.replaceChild(newPill, pill);
     
+    // Preserve opacity from original pill to avoid flicker
+    if (pill.style.opacity) {
+      newPill.style.opacity = pill.style.opacity;
+    }
+    
     newPill.addEventListener('click', (e) => {
       e.preventDefault();
       const pillBidName = newPill.getAttribute('data-bid');
@@ -364,28 +402,72 @@ function attachPillListeners(pills) {
       
       console.log(`Pill clicked: ${pillBidName}`);
       
+      // Add pulse animation to the pill
+      newPill.classList.add('map-pulse');
+      
       // Highlight the active pill first
-      document.querySelectorAll('.map-nav-pill').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.map-nav-pill').forEach(p => {
+        p.classList.remove('active');
+        // Ensure all pills remain visible
+        p.style.opacity = '0.85';
+      });
+      
+      // Make active pill fully visible
       newPill.classList.add('active');
+      newPill.style.opacity = '1';
       
       // Make sure DOM updates before navigation event
       requestAnimationFrame(() => {
-        // Create navigation event with clear logging
-        try {
-          const event = new CustomEvent('map-navigate-to-bid', {
-            detail: {
-              mapId: 'home-page-map',
-              bidName: pillBidName
-            }
-          });
+        // Add temporary class to body to enable transition effects
+        document.body.classList.add('map-navigating');
+        
+        // Remove the class and pulse after animation completes
+        setTimeout(() => {
+          document.body.classList.remove('map-navigating');
+          newPill.classList.remove('map-pulse');
           
-          console.log(`Dispatching map navigation event for ${pillBidName}`);
-          window.dispatchEvent(event);
-        } catch (error) {
-          console.error('Error dispatching navigation event:', error);
-        }
+          // Keep pills visible after animation
+          document.querySelectorAll('.map-nav-pill:not(.active)').forEach(p => {
+            p.style.opacity = '0.85';
+          });
+        }, 1500);
+        
+        // Pass dynamic zoom parameter based on BID data
+        // This zoom value will be used by the map component instead of a hardcoded value
+        const event = new CustomEvent('map-navigate-to-bid', {
+          detail: {
+            mapId: 'home-page-map',
+            bidName: pillBidName,
+            dynamicZoom: true  // Enable dynamic zoom calculation based on BID size
+          }
+        });
+        
+        console.log(`Dispatching map navigation event for ${pillBidName}`);
+        window.dispatchEvent(event);
       });
     });
+  });
+  
+  // Add listener for navigation started event
+  window.addEventListener('map-navigation-started', (event) => {
+    const { bidName, mapId } = event.detail || {};
+    if (mapId !== 'home-page-map' || !bidName) return;
+    
+    // Find and highlight the matching pill
+    const pillSelector = `.map-nav-pill[data-bid="${bidName}"]`;
+    const pill = document.querySelector(pillSelector);
+    if (pill) {
+      document.querySelectorAll('.map-nav-pill').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      pill.classList.add('map-pulse');
+      
+      // Ensure pill is visible by scrolling to it if needed
+      pill.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      
+      setTimeout(() => {
+        pill.classList.remove('map-pulse');
+      }, 1500);
+    }
   });
 }
 
@@ -400,11 +482,37 @@ if (!document.getElementById('fade-in-styles')) {
     .fade-in {
       opacity: 0;
       transform: translateY(20px);
-      transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
     }
     .fade-in.animated {
       opacity: 1;
       transform: translateY(0);
+    }
+    
+    /* Enhanced hover effects for tooltips */
+    .map-tooltip {
+      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.1));
+    }
+    
+    /* Keyframe animation for navigation feedback */
+    @keyframes navigationPulse {
+      0% { background-color: rgba(16, 185, 129, 0.05); }
+      50% { background-color: rgba(16, 185, 129, 0.15); }
+      100% { background-color: rgba(16, 185, 129, 0); }
+    }
+    
+    body.map-navigating .map-nav-pill.active {
+      animation: navigationPulse 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+      opacity: 1 !important; /* Ensure active pill stays visible */
+    }
+    
+    /* Ensure all pills stay visible during navigation */
+    .map-nav-pill {
+      transition: opacity 0.2s ease-out;
+    }
+    
+    .animating-in {
+      opacity: 0;
     }
   `;
   document.head.appendChild(styleSheet);

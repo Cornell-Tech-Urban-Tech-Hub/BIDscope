@@ -13,6 +13,7 @@ class MapCleanupManager {
     this.lastCleanupTime = 0;
     this.cleanupThrottleTime = 1000; // Throttle cleanups to once per second
     this.inCleanupProcess = false; // Flag to prevent recursive cleanups
+    this.isFullscreenActive = false; // Add flag to track fullscreen state
   }
 
   setupCleanupHooks() {
@@ -20,6 +21,12 @@ class MapCleanupManager {
     
     // Track scrolling state to prevent cleanup during scroll with improved debounce
     window.addEventListener('scroll', () => {
+      // Don't register scrolling events when in fullscreen mode
+      if (this.isFullscreenActive) {
+        console.log('Ignoring scroll event during fullscreen mode');
+        return;
+      }
+      
       this.isScrolling = true;
       
       // Clear any existing timeout
@@ -32,6 +39,9 @@ class MapCleanupManager {
         this.isScrolling = false;
       }, 250); // Increased from 150ms to 250ms for better detection
     }, { passive: true });
+    
+    // Add a mutation observer to detect fullscreen mode changes
+    this.setupFullscreenObserver();
     
     // Use the navigation API if available, but be more selective
     if ('navigation' in window) {
@@ -58,12 +68,23 @@ class MapCleanupManager {
     
     // For regular page unload events, always clean up
     window.addEventListener('beforeunload', () => {
+      // Only clean up if not in fullscreen mode
+      if (this.isFullscreenActive) {
+        console.log('Page unloading during fullscreen, deferring cleanup');
+        return;
+      }
       console.log('Page unloading, cleaning up maps');
       this.safeCleanupAll();
     });
     
     // Add Astro-specific navigation hooks if using Astro, but be more selective
     document.addEventListener('astro:before-swap', () => {
+      // Don't clean up during fullscreen mode
+      if (this.isFullscreenActive) {
+        console.log('Ignoring astro:before-swap event during fullscreen');
+        return;
+      }
+      
       if (this.isScrolling || this.inCleanupProcess) {
         console.log('Ignoring astro:before-swap event during scrolling or cleanup');
         return;
@@ -88,6 +109,36 @@ class MapCleanupManager {
       console.log('View transition starting: preparing maps');
       this.prepareForTransition();
     });
+  }
+
+  // Add a new method to detect fullscreen mode
+  setupFullscreenObserver() {
+    // Use MutationObserver to detect when fullscreen mode is activated/deactivated
+    if (typeof MutationObserver !== 'undefined') {
+      const observer = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+          if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+            const body = document.body;
+            if (body.classList.contains('fullscreen-active')) {
+              this.isFullscreenActive = true;
+              console.log('Fullscreen mode detected, pausing map cleanup');
+            } else if (this.isFullscreenActive) {
+              this.isFullscreenActive = false;
+              console.log('Fullscreen mode exited, resuming normal operation');
+              // Add a delay before re-enabling cleanup to prevent flicker
+              setTimeout(() => {
+                this.isFullscreenActive = false;
+              }, 500);
+            }
+          }
+        }
+      });
+      
+      // Start observing the body element for class changes
+      if (typeof document !== 'undefined') {
+        observer.observe(document.body, { attributes: true });
+      }
+    }
   }
 
   // Add throttling check to prevent rapid multiple cleanups
@@ -126,7 +177,7 @@ class MapCleanupManager {
 
   // Wrapper for cleanupAll that prevents reentrant issues
   safeCleanupAll() {
-    // Don't clean up during scrolling or if already in cleanup
+    // Don't clean up during scrolling, cleanup process, or fullscreen mode
     if (this.isScrolling) {
       console.log('Ignoring cleanup request during scrolling');
       return false;
@@ -134,6 +185,11 @@ class MapCleanupManager {
 
     if (this.inCleanupProcess) {
       console.log('Already in cleanup process, ignoring duplicate request');
+      return false;
+    }
+    
+    if (this.isFullscreenActive) {
+      console.log('Ignoring cleanup request during fullscreen mode');
       return false;
     }
     
