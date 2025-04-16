@@ -13,7 +13,7 @@
 ## 11AM 
 ### I will go around and review the outlines of the website page for each group. 
 
-## 11:30-11:45 Break 
+## 11:50-12:00 Break 
 
-## 11:45-class end
+## 12:00-class end
 ### We will workshop getting components working in the project environment. Let's save text for outside of class, as it should be a fairly easy port of your final slide deck. 
