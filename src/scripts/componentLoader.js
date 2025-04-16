@@ -2,6 +2,11 @@
 
 export async function loadComponent(componentPath) {
   try {
+    // Special handling for iframe format (iframe:URL)
+    if (componentPath.startsWith('iframe:')) {
+      return createIframeElement(componentPath.substring(7));
+    }
+    
     // Detect file type based on extension
     const fileExtension = componentPath.split('.').pop().toLowerCase();
     
@@ -25,6 +30,10 @@ export async function loadComponent(componentPath) {
       // Special handlers for embeds
       case 'youtube':
         return createYouTubeEmbed(componentPath);
+      
+      // Iframe configuration file
+      case 'iframe':
+        return handleIframeConfig(componentPath);
       
       // React/TypeScript component files
       case 'jsx':
@@ -90,4 +99,53 @@ function extractYouTubeId(url) {
   const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
   const match = url.match(regExp);
   return (match && match[2].length === 11) ? match[2] : null;
+}
+
+// Helper function to create a generic iframe element
+function createIframeElement(url, options = {}) {
+  const iframe = document.createElement('iframe');
+  iframe.src = url;
+  
+  // Apply default settings
+  iframe.width = options.width || "100%";
+  iframe.height = options.height || "500px";
+  iframe.frameBorder = options.frameBorder || "0";
+  
+  // Security settings
+  if (options.sandbox !== false) {
+    iframe.sandbox = options.sandbox || "allow-scripts allow-same-origin allow-forms";
+  }
+  
+  // Additional attributes
+  if (options.allowFullscreen) {
+    iframe.allowFullscreen = true;
+  }
+  
+  if (options.title) {
+    iframe.title = options.title;
+  }
+  
+  // Add any custom styles
+  if (options.style) {
+    Object.assign(iframe.style, options.style);
+  }
+  
+  return iframe;
+}
+
+// Handle iframe config files (.iframe)
+async function handleIframeConfig(configPath) {
+  try {
+    const normalizedPath = configPath.replace(/^src\//, '../');
+    const config = await import(/* @vite-ignore */ normalizedPath);
+    
+    if (!config.url) {
+      throw new Error('Iframe configuration must contain a URL');
+    }
+    
+    return createIframeElement(config.url, config);
+  } catch (error) {
+    console.error(`Failed to load iframe config: ${configPath}`, error);
+    return null;
+  }
 }
