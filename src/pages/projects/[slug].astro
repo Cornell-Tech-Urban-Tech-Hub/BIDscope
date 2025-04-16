@@ -256,10 +256,10 @@ function isImagePath(path) {
             
             {hasInsightViz && (
               <div class="viz-section-wrapper overflow-visible">
-                <div class="viz-row full-width-components mt-6 mb-8">
+                <div class="viz-row components-stack mt-6 mb-8">
                   {insightVizComponents.length > 0 ? (
                     insightVizComponents.map((component, i) => (
-                      <div class="viz-container full-width">
+                      <div class="viz-container">
                         <h3 class="viz-title">Insight Visualization {i + 1}</h3>
                         <div class="viz-frame" data-component-id={`insight-viz-${i}`}>
                           <a href={`${base}/components/${entry.slug}-insightComponents-${i}`} class="fullscreen-link" title="View Full Screen">
@@ -273,16 +273,16 @@ function isImagePath(path) {
                           </a>
                           <div class="viz-component-wrapper">
                             {isImagePath(component) ? (
-                              <AstroImageLoader src={component} alt={`Insight visualization ${i + 1}`} class="full-width" />
+                              <AstroImageLoader src={component} alt={`Insight visualization ${i + 1}`} />
                             ) : (
-                              <DynamicComponentLoader client:only="react" componentPath={component} fullWidth={true} />
+                              <DynamicComponentLoader client:only="react" componentPath={component} />
                             )}
                           </div>
                         </div>
                       </div>
                     ))
                   ) : isRevisionMode && (
-                    <div class="viz-container full-width">
+                    <div class="viz-container">
                       <h3 class="viz-title">Insight Visualization 1</h3>
                       <div class="viz-frame" data-component-id="insight-viz-draft">
                         <div class="viz-component-wrapper">
@@ -308,11 +308,13 @@ function isImagePath(path) {
             
             {hasTransformationViz && (
               <div class="viz-section-wrapper overflow-visible">
-                <div class="viz-row full-width-components mt-6 mb-8">
+                <div class="viz-row components-stack mt-6 mb-8">
                   {transformationVizComponents.length > 0 ? (
                     transformationVizComponents.map((component, i) => (
-                      <div class="viz-container full-width">
-                        <h3 class="viz-title">Transformation Visualization {i + 1}</h3>
+                      <div class="viz-container">
+                        <h3 class="viz-title">
+                          <span>Transformation Visualization {i + 1}</span>
+                        </h3>
                         <div class="viz-frame" data-component-id={`transformation-viz-${i}`}>
                           <a href={`${base}/components/${entry.slug}-transformationComponents-${i}`} class="fullscreen-link" title="View Full Screen">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -325,17 +327,19 @@ function isImagePath(path) {
                           </a>
                           <div class="viz-component-wrapper">
                             {isImagePath(component) ? (
-                              <AstroImageLoader src={component} alt={`Transformation visualization ${i + 1}`} class="full-width" />
+                              <AstroImageLoader src={component} alt={`Transformation visualization ${i + 1}`} />
                             ) : (
-                              <DynamicComponentLoader client:only="react" componentPath={component} fullWidth={true} />
+                              <DynamicComponentLoader client:only="react" componentPath={component} />
                             )}
                           </div>
                         </div>
                       </div>
                     ))
                   ) : isRevisionMode && (
-                    <div class="viz-container full-width">
-                      <h3 class="viz-title">Transformation Visualization 1</h3>
+                    <div class="viz-container">
+                      <h3 class="viz-title">
+                        <span>Transformation Visualization 1</span>
+                      </h3>
                       <div class="viz-frame" data-component-id="transformation-viz-draft">
                         <div class="viz-component-wrapper">
                           <div class="viz-placeholder draft-placeholder">
@@ -360,10 +364,10 @@ function isImagePath(path) {
             
             {hasPredictionViz && (
               <div class="viz-section-wrapper overflow-visible">
-                <div class="viz-row full-width-components mt-6 mb-8">
+                <div class="viz-row components-stack mt-6 mb-8">
                   {predictionVizComponents.length > 0 ? (
                     predictionVizComponents.map((component, i) => (
-                      <div class="viz-container full-width">
+                      <div class="viz-container">
                         <h3 class="viz-title">Prediction Visualization {i + 1}</h3>
                         <div class="viz-frame" data-component-id={`prediction-viz-${i}`}>
                           <a href={`${base}/components/${entry.slug}-predictionComponents-${i}`} class="fullscreen-link" title="View Full Screen">
@@ -377,16 +381,16 @@ function isImagePath(path) {
                           </a>
                           <div class="viz-component-wrapper">
                             {isImagePath(component) ? (
-                              <AstroImageLoader src={component} alt={`Prediction visualization ${i + 1}`} class="full-width" />
+                              <AstroImageLoader src={component} alt={`Prediction visualization ${i + 1}`} />
                             ) : (
-                              <DynamicComponentLoader client:only="react" componentPath={component} fullWidth={true} />
+                              <DynamicComponentLoader client:only="react" componentPath={component} />
                             )}
                           </div>
                         </div>
                       </div>
                     ))
                   ) : isRevisionMode && (
-                    <div class="viz-container full-width">
+                    <div class="viz-container">
                       <h3 class="viz-title">Prediction Visualization 1</h3>
                       <div class="viz-frame" data-component-id="prediction-viz-draft">
                         <div class="viz-component-wrapper">
@@ -412,10 +416,10 @@ function isImagePath(path) {
             
             {hasConsensusViz && (
               <div class="viz-section-wrapper overflow-visible">
-                <div class="viz-row full-width-components mt-6 mb-8">
+                <div class="viz-row components-stack mt-6 mb-8">
                   {consensusVizComponents.length > 0 ? (
                     consensusVizComponents.map((component, i) => (
-                      <div class="viz-container full-width">
+                      <div class="viz-container">
                         <h3 class="viz-title">Consensus Visualization {i + 1}</h3>
                         <div class="viz-frame" data-component-id={`consensus-viz-${i}`}>
                           <a href={`${base}/components/${entry.slug}-consensusComponents-${i}`} class="fullscreen-link" title="View Full Screen">
@@ -429,16 +433,16 @@ function isImagePath(path) {
                           </a>
                           <div class="viz-component-wrapper">
                             {isImagePath(component) ? (
-                              <AstroImageLoader src={component} alt={`Consensus visualization ${i + 1}`} class="full-width" />
+                              <AstroImageLoader src={component} alt={`Consensus visualization ${i + 1}`} />
                             ) : (
-                              <DynamicComponentLoader client:only="react" componentPath={component} fullWidth={true} />
+                              <DynamicComponentLoader client:only="react" componentPath={component} />
                             )}
                           </div>
                         </div>
                       </div>
                     ))
                   ) : isRevisionMode && (
-                    <div class="viz-container full-width">
+                    <div class="viz-container">
                       <h3 class="viz-title">Consensus Visualization 1</h3>
                       <div class="viz-frame" data-component-id="consensus-viz-draft">
                         <div class="viz-component-wrapper">

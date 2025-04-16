@@ -34,7 +34,6 @@ try {
   }
   
   // Use dynamic import to get the image
-  // The @ alias is configured in tsconfig.json to point to the src directory
   const imageModule = await import(`../../${importPath}`);
   imagePath = imageModule.default;
 } catch (error) {
@@ -43,29 +42,45 @@ try {
 }
 ---
 
-{imagePath ? (
-  <Image 
-    src={imagePath} 
-    alt={alt} 
-    width={width}
-    height={height}
-    class={className}
-  />
-) : (
-  <div class="error-message" style="color: red; padding: 1rem; border: 1px solid red; border-radius: 4px;">
-    <p>Failed to load image: {src}</p>
-    <p>Make sure the image exists and the path is correct</p>
-  </div>
-)}
+<div class="astro-image-container">
+  {imagePath ? (
+    <Image 
+      src={imagePath} 
+      alt={alt} 
+      width={width}
+      height={height}
+      class={`astro-image ${className}`}
+    />
+  ) : (
+    <div class="error-message">
+      <p>Failed to load image: {src}</p>
+      <p>Make sure the image exists and the path is correct</p>
+    </div>
+  )}
+</div>
 
 <style>
-  img {
+  .astro-image-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+  
+  .astro-image {
     max-width: 100%;
     height: auto;
     display: block;
+    margin: 0 auto;
   }
   
   .error-message {
+    color: red;
+    padding: 1rem;
+    border: 1px solid red;
+    border-radius: 4px;
     margin: 1rem 0;
+    text-align: center;
   }
 </style>

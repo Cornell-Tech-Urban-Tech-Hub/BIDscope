@@ -1,5 +1,5 @@
 ---
-title: "Robotability Project"
+title: "[DEMO] Robotability Project"
 description: "Analysis of urban space robotability and its implications for urban planning and design."
 publishDate: 2023-11-01
 updatedDate: 2023-11-15
@@ -17,10 +17,10 @@ draft: false
 revisionMode: true
 tags: ["Robotics", "Urban Design", "Accessibility", "Smart Cities", "Automation"]
 
-insightComponents: []
+insightComponents: ["/src/components/groups/_matt_demo/RobotabilityMap.jsx"]
 transformationComponents: ["/src/components/groups/_matt_demo/robo_1.png"]
 predictionComponents: []
-consensusComponents: ["/src/components/groups/_matt_demo/robo_0.png"]
+consensusComponents: ["/src/components/groups/_matt_demo/robo_0.png", "https://www.youtube.com/embed/o52MZ1AHyjA"]
 
 dataSource: "Urban spatial data, Robot navigation metrics, Accessibility maps, Street network data"
 visualizationTechniques: ["Spatial Analysis", "Heatmaps", "Network Analysis", "Accessibility Scoring", "Comparative Urbanism"]

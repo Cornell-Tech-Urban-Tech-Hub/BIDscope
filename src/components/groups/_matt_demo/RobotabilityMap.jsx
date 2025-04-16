@@ -289,8 +289,8 @@ const RobotabilityMap = () => {
       try {
         // Load both datasets in parallel
         const [sidewalksRes, censusRes] = await Promise.all([
-          fetch('/data/sidewalks.geojson'),
-          fetch('/data/census.geojson')
+          fetch('/src/components/groups/_matt_demo/sidewalks.geojson'),
+          fetch('/src/components/groups/_matt_demo/census.geojson')
         ]);
 
         const [sidewalksData, censusData] = await Promise.all([
@@ -462,7 +462,7 @@ const RobotabilityMap = () => {
           "
         >
           <img 
-            src="/favicon.png" 
+            src="/src/components/groups/_matt_demo/trashbot.png" 
             alt="Home" 
             className="w-24 h-24 rounded-full object-cover"
           />

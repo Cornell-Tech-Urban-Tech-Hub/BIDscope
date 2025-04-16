@@ -2,6 +2,11 @@
 
 export async function loadComponent(componentPath) {
   try {
+    // Special handling for YouTube URLs
+    if (componentPath.includes('youtube.com') || componentPath.includes('youtu.be')) {
+      return createYouTubeEmbed(componentPath);
+    }
+    
     // Special handling for iframe format (iframe:URL)
     if (componentPath.startsWith('iframe:')) {
       return createIframeElement(componentPath.substring(7));
@@ -86,31 +91,82 @@ function createVideoElement(path) {
   return video;
 }
 
-// Helper function for YouTube embeds
+// Helper function for YouTube embeds - IMPROVED VERSION
 function createYouTubeEmbed(path) {
-  // Expect path format: youtube:VIDEO_ID or a full URL
-  const videoId = path.includes('youtube:') 
-    ? path.split('youtube:')[1]
-    : extractYouTubeId(path);
+  // Extract the video ID from various YouTube URL formats
+  const videoId = extractYouTubeId(path);
     
-  if (!videoId) return null;
+  if (!videoId) {
+    console.error('Could not extract YouTube video ID from:', path);
+    return createErrorElement(`Invalid YouTube URL: ${path}`);
+  }
   
+  // Create a container div for the embed
+  const container = document.createElement('div');
+  container.className = 'youtube-embed-container';
+  container.style.position = 'relative';
+  container.style.width = '100%';
+  container.style.height = '0';
+  container.style.paddingBottom = '56.25%'; // 16:9 aspect ratio
+  container.style.overflow = 'hidden';
+  container.style.marginBottom = '1rem';
+  
+  // Create the iframe
   const iframe = document.createElement('iframe');
   iframe.src = `https://www.youtube.com/embed/${videoId}`;
-  iframe.width = "560";
-  iframe.height = "315";
-  iframe.frameBorder = "0";
-  iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+  iframe.title = 'YouTube video player';
+  iframe.frameBorder = '0';
+  iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
   iframe.allowFullscreen = true;
   
-  return iframe;
+  // Style the iframe for responsive embed
+  iframe.style.position = 'absolute';
+  iframe.style.top = '0';
+  iframe.style.left = '0';
+  iframe.style.width = '100%';
+  iframe.style.height = '100%';
+  
+  // Add iframe to container
+  container.appendChild(iframe);
+  
+  return container;
 }
 
-// Helper to extract YouTube ID from various URL formats
+// Helper to extract YouTube ID from various URL formats - IMPROVED VERSION
 function extractYouTubeId(url) {
-  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-  const match = url.match(regExp);
-  return (match && match[2].length === 11) ? match[2] : null;
+  // Handle youtu.be short links
+  if (url.includes('youtu.be/')) {
+    const idMatch = url.match(/youtu\.be\/([^?&#]+)/);
+    return idMatch ? idMatch[1] : null;
+  }
+  
+  // Handle standard youtube.com links
+  if (url.includes('youtube.com/')) {
+    // Watch URLs
+    if (url.includes('watch')) {
+      const urlParams = new URLSearchParams(url.split('?')[1] || '');
+      return urlParams.get('v');
+    }
+    
+    // Embed URLs
+    if (url.includes('/embed/')) {
+      const idMatch = url.match(/\/embed\/([^?&#]+)/);
+      return idMatch ? idMatch[1] : null;
+    }
+    
+    // Shortened URLs
+    if (url.includes('/v/')) {
+      const idMatch = url.match(/\/v\/([^?&#]+)/);
+      return idMatch ? idMatch[1] : null;
+    }
+  }
+  
+  // Handle case where the raw video ID is passed
+  if (/^[a-zA-Z0-9_-]{11}$/.test(url)) {
+    return url;
+  }
+  
+  return null;
 }
 
 // Helper function to create a generic iframe element
