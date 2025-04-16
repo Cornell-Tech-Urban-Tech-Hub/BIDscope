@@ -228,18 +228,17 @@
 
 /* Full-width visualization containers - IMPROVED FOR COMPONENT RENDERING */
 .viz-container.full-width {
-  width: 100vw;
+  width: 100%;
   position: relative;
-  left: 50%;
-  transform: translateX(-50%);
-  border-radius: 0;
-  box-shadow: none;
-  border-left: none;
-  border-right: none;
-  max-width: none;
+  left: 0;
+  transform: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  max-width: 1200px;
   overflow-x: visible;
-  margin-left: 0;
-  margin-right: 0;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .viz-container.full-width .viz-frame {
@@ -265,7 +264,7 @@
   width: 100%;
   height: 100%;
   padding: 0 1rem; /* Reduced horizontal padding */
-  max-width: 1500px; /* Limit maximum width for very large screens */
+  max-width: 1200px; /* Reduced from 1500px to 1200px */
   margin: 0 auto; /* Center the content */
   box-sizing: border-box;
   overflow: visible;
@@ -274,9 +273,9 @@
 /* Ensure the viz-section-wrapper breaks out of any parent constraints */
 .viz-section-wrapper {
   position: relative;
-  width: 100vw;
-  left: 50%;
-  transform: translateX(-50%);
+  width: 100%;
+  left: 0;
+  transform: none;
   overflow: visible;
   max-width: none;
   margin: 2rem 0;
@@ -303,7 +302,7 @@
 
 /* Ensure content inside full-width stays reasonably centered */
 .viz-container.full-width .viz-component-wrapper {
-  max-width: 90%;
+  max-width: 80%; /* Reduced from 90% to 80% */
   width: 100%;
   padding: 1rem 0;
 }
