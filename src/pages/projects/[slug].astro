@@ -7,6 +7,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import '../../styles/projects.css';
 import DynamicComponentLoader from '../../components/visualizations/DynamicComponentLoader.jsx';
+import AstroImageLoader from '../../components/visualizations/AstroImageLoader.astro';
 import { marked } from 'marked'; // Import marked for markdown parsing
 
 // Define getStaticPaths to tell Astro which paths to generate
@@ -155,6 +156,13 @@ function hasContent(html) {
   const textContent = html.replace(/<[^>]*>/g, '').trim();
   return textContent.length > 0;
 }
+
+// Helper function to check if a path is an image
+function isImagePath(path) {
+  if (!path) return false;
+  const ext = path.split('.').pop().toLowerCase();
+  return ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'].includes(ext);
+}
 ---
 
 <FullWidthLayout 
@@ -264,7 +272,11 @@ function hasContent(html) {
                             View Full Screen
                           </a>
                           <div class="viz-component-wrapper">
-                            <DynamicComponentLoader client:only="react" componentPath={component} fullWidth={true} />
+                            {isImagePath(component) ? (
+                              <AstroImageLoader src={component} alt={`Insight visualization ${i + 1}`} class="full-width" />
+                            ) : (
+                              <DynamicComponentLoader client:only="react" componentPath={component} fullWidth={true} />
+                            )}
                           </div>
                         </div>
                       </div>
@@ -312,7 +324,11 @@ function hasContent(html) {
                             View Full Screen
                           </a>
                           <div class="viz-component-wrapper">
-                            <DynamicComponentLoader client:only="react" componentPath={component} fullWidth={true} />
+                            {isImagePath(component) ? (
+                              <AstroImageLoader src={component} alt={`Transformation visualization ${i + 1}`} class="full-width" />
+                            ) : (
+                              <DynamicComponentLoader client:only="react" componentPath={component} fullWidth={true} />
+                            )}
                           </div>
                         </div>
                       </div>
@@ -360,7 +376,11 @@ function hasContent(html) {
                             View Full Screen
                           </a>
                           <div class="viz-component-wrapper">
-                            <DynamicComponentLoader client:only="react" componentPath={component} fullWidth={true} />
+                            {isImagePath(component) ? (
+                              <AstroImageLoader src={component} alt={`Prediction visualization ${i + 1}`} class="full-width" />
+                            ) : (
+                              <DynamicComponentLoader client:only="react" componentPath={component} fullWidth={true} />
+                            )}
                           </div>
                         </div>
                       </div>
@@ -408,7 +428,11 @@ function hasContent(html) {
                             View Full Screen
                           </a>
                           <div class="viz-component-wrapper">
-                            <DynamicComponentLoader client:only="react" componentPath={component} fullWidth={true} />
+                            {isImagePath(component) ? (
+                              <AstroImageLoader src={component} alt={`Consensus visualization ${i + 1}`} class="full-width" />
+                            ) : (
+                              <DynamicComponentLoader client:only="react" componentPath={component} fullWidth={true} />
+                            )}
                           </div>
                         </div>
                       </div>

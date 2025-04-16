@@ -1,69 +1,96 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import { loadComponent } from '../../scripts/componentLoader.js';
 
-// Enhanced component loader for full-width visualizations
-const DynamicComponentLoader = ({ componentPath, fullWidth = true, ...props }) => {
+const DynamicComponentLoader = ({ componentPath, fullWidth = false }) => {
   const [Component, setComponent] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isAstroImage, setIsAstroImage] = useState(false);
+  const containerRef = useRef(null);
 
   useEffect(() => {
     let isMounted = true;
     
-    async function loadComponent() {
+    const loadAndRenderComponent = async () => {
+      if (!componentPath) {
+        setLoading(false);
+        return;
+      }
+      
       try {
-        // Remove the "src/" prefix since imports are relative to src directory
-        const normalizedPath = componentPath.replace(/^src\//, '../');
-        const module = await import(/* @vite-ignore */ normalizedPath);
+        setLoading(true);
+        const result = await loadComponent(componentPath);
         
-        if (isMounted) {
-          setComponent(() => module.default);
-          setLoading(false);
+        if (!isMounted) return;
+        
+        // Check if this is an Astro Image (handled by parent component)
+        if (result && result.type === 'astro-image') {
+          setIsAstroImage(true);
+          setComponent(null);
+        } else if (result instanceof Element) {
+          // If loadComponent returned a DOM element (like an img or iframe)
+          if (containerRef.current) {
+            // Clear previous content
+            containerRef.current.innerHTML = '';
+            containerRef.current.appendChild(result);
+          }
+          setComponent(null); // No React component to render
+        } else {
+          // It's a React component
+          setIsAstroImage(false);
+          setComponent(() => result);
         }
+        setError(null);
       } catch (err) {
+        console.error("Failed to load component:", err);
         if (isMounted) {
-          console.error('Error loading component:', err);
-          setError(err);
+          setError(`Failed to load ${componentPath}: ${err.message}`);
+          setIsAstroImage(false);
+        }
+      } finally {
+        if (isMounted) {
           setLoading(false);
         }
       }
-    }
-
-    loadComponent();
+    };
+    
+    loadAndRenderComponent();
     
     return () => {
       isMounted = false;
     };
   }, [componentPath]);
 
-  const containerStyles = {
-    width: '100%',
-    height: '100%',
-    minHeight: '500px',
-    ...(fullWidth ? { maxWidth: 'none', position: 'relative' } : {})
-  };
-
   if (loading) {
+    return <div className="viz-loading">Loading visualization...</div>;
+  }
+
+  if (error) {
+    return <div className="viz-error">{error}</div>;
+  }
+
+  // For Astro images, return a placeholder that will be replaced
+  if (isAstroImage) {
     return (
-      <div className="loading-indicator" style={containerStyles}>
-        <div>Loading visualization...</div>
+      <div className={`astro-image-placeholder ${fullWidth ? 'full-width' : ''}`} data-path={componentPath}>
+        {/* This will be replaced by Astro's Image component */}
+        <div style={{ textAlign: 'center', padding: '2rem' }}>Image loading via Astro...</div>
       </div>
     );
   }
 
-  if (error || !Component) {
+  // For DOM elements (rendered via ref)
+  if (!Component) {
     return (
-      <div className="error-placeholder" style={containerStyles}>
-        <p>Error loading visualization component. Please check the console for details.</p>
-      </div>
+      <div 
+        ref={containerRef} 
+        className={`viz-container-dom ${fullWidth ? 'full-width' : ''}`}
+      />
     );
   }
 
-  // Wrap in a div that ensures the component gets the correct sizing
-  return (
-    <div className={`viz-component-container ${fullWidth ? 'full-width-viz' : ''}`} style={containerStyles}>
-      <Component {...props} fullWidth={fullWidth} />
-    </div>
-  );
+  // For React components
+  return <Component />;
 };
 
 export default DynamicComponentLoader;

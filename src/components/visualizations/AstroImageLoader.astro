@@ -1,0 +1,71 @@
+---
+// AstroImageLoader.astro - A component that loads and optimizes images using Astro's Image component
+import { Image } from 'astro:assets';
+
+// Define props with TypeScript for type safety
+interface Props {
+  src: string;
+  alt?: string;
+  width?: number;
+  height?: number;
+  class?: string;
+}
+
+// Destructure the props with defaults
+const { src, alt = '', width = 800, height = 600, class: className = '' } = Astro.props;
+
+// Process the image path
+let imagePath;
+try {
+  // Handle paths that include /src/ by removing that part
+  // and any leading slash to make it relative to project root
+  let importPath = src;
+  
+  // Remove /src/ prefix if present (common in your file paths)
+  if (importPath.includes('/src/')) {
+    importPath = importPath.replace('/src/', '');
+  } else if (importPath.startsWith('src/')) {
+    importPath = importPath.replace('src/', '');
+  }
+  
+  // Remove any leading slash
+  if (importPath.startsWith('/')) {
+    importPath = importPath.substring(1);
+  }
+  
+  // Use dynamic import to get the image
+  // The @ alias is configured in tsconfig.json to point to the src directory
+  const imageModule = await import(`../../${importPath}`);
+  imagePath = imageModule.default;
+} catch (error) {
+  console.error(`Failed to import image: ${src}`, error);
+  console.error("Import error details:", error);
+}
+---
+
+{imagePath ? (
+  <Image 
+    src={imagePath} 
+    alt={alt} 
+    width={width}
+    height={height}
+    class={className}
+  />
+) : (
+  <div class="error-message" style="color: red; padding: 1rem; border: 1px solid red; border-radius: 4px;">
+    <p>Failed to load image: {src}</p>
+    <p>Make sure the image exists and the path is correct</p>
+  </div>
+)}
+
+<style>
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+  
+  .error-message {
+    margin: 1rem 0;
+  }
+</style>

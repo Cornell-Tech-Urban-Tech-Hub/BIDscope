@@ -10,9 +10,20 @@ export async function loadComponent(componentPath) {
     // Detect file type based on extension
     const fileExtension = componentPath.split('.').pop().toLowerCase();
     
+    // For images within src directory, let Astro handle it specially
+    if (['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'].includes(fileExtension) && 
+        (componentPath.includes('/src/') || componentPath.startsWith('src/'))) {
+      // Instead of trying to create an image element directly,
+      // return an object that signals this is an image to be processed by Astro
+      return {
+        type: 'astro-image',
+        path: componentPath
+      };
+    }
+    
     // Handle different file types
     switch (fileExtension) {
-      // Image handling
+      // Image handling (for images not in src directory)
       case 'jpg':
       case 'jpeg':
       case 'png':
@@ -41,8 +52,8 @@ export async function loadComponent(componentPath) {
       case 'js':
       case 'ts':
         // Use the import() function to dynamically load the component
-        const normalizedPath = componentPath.replace(/^src\//, '../');
-        const module = await import(/* @vite-ignore */ normalizedPath);
+        const jsPath = componentPath.replace(/^src\//, '../');
+        const module = await import(/* @vite-ignore */ jsPath);
         return module.default;
         
       // Default: try to load as a JavaScript module
@@ -54,7 +65,7 @@ export async function loadComponent(componentPath) {
     }
   } catch (error) {
     console.error(`Failed to load component: ${componentPath}`, error);
-    return null;
+    return createErrorElement(`Failed to load: ${componentPath}`);
   }
 }
 
@@ -63,6 +74,7 @@ function createImageElement(path) {
   const img = document.createElement('img');
   img.src = path;
   img.loading = 'lazy';
+  img.style.maxWidth = '100%';
   return img;
 }
 
@@ -133,10 +145,22 @@ function createIframeElement(url, options = {}) {
   return iframe;
 }
 
+// Helper to create an error message element
+function createErrorElement(message) {
+  const div = document.createElement('div');
+  div.className = 'viz-error';
+  div.textContent = message;
+  div.style.padding = '1rem';
+  div.style.color = 'red';
+  div.style.border = '1px solid red';
+  div.style.borderRadius = '4px';
+  return div;
+}
+
 // Handle iframe config files (.iframe)
 async function handleIframeConfig(configPath) {
   try {
-    const normalizedPath = configPath.replace(/^src\//, '../');
+    const normalizedPath = configPath.replace(/^src\//, '/');
     const config = await import(/* @vite-ignore */ normalizedPath);
     
     if (!config.url) {
@@ -146,6 +170,22 @@ async function handleIframeConfig(configPath) {
     return createIframeElement(config.url, config);
   } catch (error) {
     console.error(`Failed to load iframe config: ${configPath}`, error);
-    return null;
+    return createErrorElement(`Failed to load iframe config: ${configPath}`);
   }
+}
+
+// Helper function to normalize paths for the browser
+function normalizePath(path) {
+  // If this is a path to an asset in the src directory, 
+  // don't modify it - it will be handled by Astro's special import
+  if (path.includes('/src/') || path.startsWith('src/')) {
+    return path;
+  }
+  
+  // If path does not start with a slash or http, add one
+  if (!path.startsWith('/') && !path.startsWith('http')) {
+    return '/' + path;
+  }
+  
+  return path;
 }
