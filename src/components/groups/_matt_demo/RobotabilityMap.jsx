@@ -3,6 +3,58 @@ import maplibregl from 'maplibre-gl';
 import { GeoJsonLayer } from '@deck.gl/layers';
 import { MapboxOverlay } from '@deck.gl/mapbox';
 
+// Define VideoPlayer component outside the main component to avoid recreation on each render
+const VideoPlayer = React.memo(({ deployment, isVisible = true, onClose }) => {
+  const embedUrl = `https://www.youtube-nocookie.com/embed/${deployment.videoId}?start=${deployment.startTime}&end=${deployment.endTime}&rel=0&modestbranding=1&autoplay=1&enablejsapi=1`;
+  const iframeRef = useRef(null);
+  
+  // Handle visibility changes
+  useEffect(() => {
+    const iframe = iframeRef.current;
+    if (iframe) {
+      if (!isVisible) {
+        // Post message to pause the video
+        iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+      } else {
+        // Post message to play the video
+        iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+      }
+    }
+  }, [isVisible]);
+
+  if (!isVisible) return null; // Don't render if not visible
+
+  return (
+    <div className="bg-white rounded-lg overflow-hidden">
+      <div className="p-3 border-b">
+        <div className="flex justify-between items-center">
+          <h3 className="text-sm font-medium">{deployment.name}</h3>
+          <button 
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-700"
+          >
+            ✕
+          </button>
+        </div>
+      </div>
+      <div className="relative aspect-video">
+        <iframe
+          ref={iframeRef}
+          key={`${deployment.videoId}-${deployment.startTime}`}
+          src={`${embedUrl}&origin=${window.location.origin}`}
+          title={deployment.name}
+          className="w-full h-full"
+          style={{ minHeight: '200px' }}
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowFullScreen
+          sandbox="allow-same-origin allow-scripts allow-presentation allow-popups allow-popups-to-escape-sandbox"
+        />
+      </div>
+    </div>
+  );
+});
+
 const COLORS = [
   [165, 0, 38],    // Dark red
   [215, 48, 39],   // Red
@@ -17,16 +69,48 @@ const COLORS = [
   [0, 104, 55]     // Dark green
 ];
 
-const RobotabilityMap = () => {
+const DEPLOYMENTS = {
+  'Elmhurst, Queens': {
+    coords: [40.738536, -73.887267],
+    videoId: 'o52MZ1AHyjA',
+    startTime: 44,
+    endTime: 62
+  },
+  'Sutton Place, Manhattan': {
+    coords: [40.758890, -73.958457],
+    videoId: 'o52MZ1AHyjA',
+    startTime: 21,
+    endTime: 43
+  },
+  'Herald Square, Manhattan': {
+    coords: [40.748422, -73.988275],
+    videoId: 'o52MZ1AHyjA',
+    startTime: 63,
+    endTime: 83
+  },
+  'Jackson Heights, Queens': {
+    coords: [40.747379, -73.889690],
+    videoId: 'o52MZ1AHyjA',
+    startTime: 85,
+    endTime: 100
+  }
+};
 
+// Dictionary to give layers nice names 
+const layerNames = {
+  sidewalkScores: 'Sidewalk Scores',
+  censusBlocks: 'Census Blocks',
+  deploymentLocations: 'Deployment Locations'
+};
+
+const RobotabilityMap = () => {
   const mapContainer = useRef(null);
   const [map, setMap] = useState(null);
   const [deckgl, setDeckgl] = useState(null);
   const [firstLabelLayerId, setFirstLabelLayerId] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-
-  // Add a ref for the sidebar
   const sidebarRef = useRef(null);
+  const tooltipRef = useRef(null);
   const [sidebarWidth, setSidebarWidth] = useState(0);
   const [mapData, setMapData] = useState({
     sidewalks: null,
@@ -39,100 +123,8 @@ const RobotabilityMap = () => {
   });
   const [selectedDeployment, setSelectedDeployment] = useState('');
   const [activeVideo, setActiveVideo] = useState(null);
-  const [hoverInfo, setHoverInfo] = useState(null);
 
-  const DEPLOYMENTS = {
-    'Elmhurst, Queens': {
-      coords: [40.738536, -73.887267],
-      videoId: 'o52MZ1AHyjA',
-      startTime: 44,
-      endTime: 62
-    },
-    'Sutton Place, Manhattan': {
-      coords: [40.758890, -73.958457],
-      videoId: 'o52MZ1AHyjA',
-      startTime: 21,
-      endTime: 43
-    },
-    'Herald Square, Manhattan': {
-      coords: [40.748422, -73.988275],
-      videoId: 'o52MZ1AHyjA',
-      startTime: 63,
-      endTime: 83
-    },
-    'Jackson Heights, Queens': {
-      coords: [40.747379, -73.889690],
-      videoId: 'o52MZ1AHyjA',
-      startTime: 85,
-      endTime: 100
-    }
-  };
-
-  const VideoPlayer = React.memo(({ deployment, isVisible = true }) => {
-    const embedUrl = `https://www.youtube-nocookie.com/embed/${deployment.videoId}?start=${deployment.startTime}&end=${deployment.endTime}&rel=0&modestbranding=1&autoplay=1&enablejsapi=1`;
-    const iframeRef = useRef(null);
-    
-    // Handle visibility changes
-    useEffect(() => {
-      const iframe = iframeRef.current;
-      if (iframe) {
-        if (!isVisible) {
-          // Post message to pause the video
-          iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
-        } else {
-          // Post message to play the video
-          iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-        }
-      }
-    }, [isVisible]);
-  
-    if (!isVisible) return null; // Don't render if not visible
-  
-    return (
-      <div className="bg-white rounded-lg overflow-hidden">
-        <div className="p-3 border-b">
-          <div className="flex justify-between items-center">
-            <h3 className="text-sm font-medium">{deployment.name}</h3>
-            <button 
-              onClick={() => setActiveVideo(null)}
-              className="text-gray-500 hover:text-gray-700"
-            >
-              ✕
-            </button>
-          </div>
-        </div>
-        <div className="relative aspect-video">
-          <iframe
-            ref={iframeRef}
-            key={`${deployment.videoId}-${deployment.startTime}`}
-            src={`${embedUrl}&origin=${window.location.origin}`}
-            title={deployment.name}
-            className="w-full h-full"
-            style={{ minHeight: '200px' }}
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowFullScreen
-            sandbox="allow-same-origin allow-scripts allow-presentation allow-popups allow-popups-to-escape-sandbox"
-          />
-        </div>
-      </div>
-    );
-  }, (prevProps, nextProps) => {
-    return prevProps.deployment.name === nextProps.deployment.name && 
-           prevProps.isVisible === nextProps.isVisible;
-  });
-
-  // dictionary to give layers nice names 
-  const layerNames = {
-    sidewalkScores: 'Sidewalk Scores',
-    censusBlocks: 'Census Blocks',
-    deploymentLocations: 'Deployment Locations'
-  };
-
-  // Create a new ref for the tooltip
-  const tooltipRef = useRef(null);
-
-  // In your map initialization:
+  // Update sidebar width
   useEffect(() => {
     const updateSidebarWidth = () => {
       if (sidebarRef.current) {
@@ -145,11 +137,10 @@ const RobotabilityMap = () => {
     return () => window.removeEventListener('resize', updateSidebarWidth);
   }, []);
 
-  // Update the map initialization effect
+  // Initialize map
   useEffect(() => {
     if (!mapContainer.current) return;
 
-    // Initialize map
     const mapInstance = new maplibregl.Map({
       container: mapContainer.current,
       style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
@@ -173,7 +164,7 @@ const RobotabilityMap = () => {
     };
   }, []);
 
-  // Separate effect for DeckGL and tooltip setup
+  // Setup DeckGL and tooltip
   useEffect(() => {
     if (!map) return;
 
@@ -235,8 +226,104 @@ const RobotabilityMap = () => {
     };
   }, [map, isSidebarOpen, sidebarWidth]);
 
+  // Load data
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        // Get base URL for proper path resolution in production
+        const baseUrl = document.querySelector('meta[name="astro:base"]')?.getAttribute('content') || '';
+        
+        // Fix paths with baseUrl if needed
+        const sidewalksPath = baseUrl 
+          ? `${baseUrl}/src/components/groups/_matt_demo/sidewalks.geojson`
+          : '/src/components/groups/_matt_demo/sidewalks.geojson';
+          
+        const censusPath = baseUrl 
+          ? `${baseUrl}/src/components/groups/_matt_demo/census.geojson`
+          : '/src/components/groups/_matt_demo/census.geojson';
+        
+        console.log(`Loading data from: ${sidewalksPath} and ${censusPath}`);
+        
+        // Load both datasets in parallel
+        const [sidewalksRes, censusRes] = await Promise.all([
+          fetch(sidewalksPath),
+          fetch(censusPath)
+        ]);
+
+        if (!sidewalksRes.ok) {
+          throw new Error(`Failed to load sidewalks data: ${sidewalksRes.status} ${sidewalksRes.statusText}`);
+        }
+        
+        if (!censusRes.ok) {
+          throw new Error(`Failed to load census data: ${censusRes.status} ${censusRes.statusText}`);
+        }
+
+        const [sidewalksData, censusData] = await Promise.all([
+          sidewalksRes.json(),
+          censusRes.json()
+        ]);
+
+        console.log('Data loaded successfully');
+        setMapData({
+          sidewalks: sidewalksData,
+          censusBlocks: censusData
+        });
+      } catch (error) {
+        console.error('Error loading map data:', error);
+      }
+    };
+
+    loadData();
+  }, []);
+
+  // Create rings for each deployment location
+  const createDeploymentRings = useCallback(() => {
+    const features = [];
+    const numRings = 15;
+    const maxRadius = 0.004; // roughly 400 meters
+    const maxHeight = 250;
+
+    Object.entries(DEPLOYMENTS).forEach(([name, info]) => {
+      for (let i = 0; i < numRings; i++) {
+        const progress = i / (numRings - 1);
+        const radius = Math.cos(progress * Math.PI / 2) * maxRadius;
+        const height = Math.sin(progress * Math.PI / 2) * maxHeight;
+
+        // Create a circle for each ring
+        const points = 32; // number of points to approximate circle
+        const coords = [];
+        for (let j = 0; j <= points; j++) {
+          const angle = (j / points) * Math.PI * 2;
+          const lng = info.coords[1] + Math.cos(angle) * radius;
+          const lat = info.coords[0] + Math.sin(angle) * radius;
+          coords.push([lng, lat]);
+        }
+
+        features.push({
+          type: 'Feature',
+          properties: {
+            name,
+            video: info.video,
+            height,
+            opacity: 0.3 * (1 - progress),  // fade out as it goes up
+            level: i
+          },
+          geometry: {
+            type: 'Polygon',
+            coordinates: [coords]
+          }
+        });
+      }
+    });
+
+    return {
+      type: 'FeatureCollection',
+      features
+    };
+  }, []);
+
   // Deployment click handler
-  const handleDeploymentSelect = React.useCallback((deploymentName) => {
+  const handleDeploymentSelect = useCallback((deploymentName) => {
     if (deploymentName && DEPLOYMENTS[deploymentName]) {
       const [lat, lng] = DEPLOYMENTS[deploymentName].coords;
       
@@ -260,7 +347,7 @@ const RobotabilityMap = () => {
     }
   }, [map, activeVideo]);
 
-  const handleDeploymentClick = ({object}) => {
+  const handleDeploymentClick = useCallback(({object}) => {
     if(object?.properties?.name) {
       const deploymentName = object.properties.name;
       const deployment = DEPLOYMENTS[deploymentName];
@@ -281,34 +368,7 @@ const RobotabilityMap = () => {
         });
       }
     }
-  };
-
-  // Load data
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        // Load both datasets in parallel
-        const [sidewalksRes, censusRes] = await Promise.all([
-          fetch('/src/components/groups/_matt_demo/sidewalks.geojson'),
-          fetch('/src/components/groups/_matt_demo/census.geojson')
-        ]);
-
-        const [sidewalksData, censusData] = await Promise.all([
-          sidewalksRes.json(),
-          censusRes.json()
-        ]);
-
-        setMapData({
-          sidewalks: sidewalksData,
-          censusBlocks: censusData
-        });
-      } catch (error) {
-        console.error('Error loading data:', error);
-      }
-    };
-
-    loadData();
-  }, []);
+  }, [map, activeVideo]);
 
   // Update layers when visibility changes or data loads
   useEffect(() => {
@@ -332,52 +392,6 @@ const RobotabilityMap = () => {
     }
 
     if (visibleLayers.deploymentLocations) {
-      // Create rings for each deployment location
-      const createDeploymentRings = () => {
-        const features = [];
-        const numRings = 15;
-        const maxRadius = 0.004; // roughly 400 meters
-        const maxHeight = 250;
-
-        Object.entries(DEPLOYMENTS).forEach(([name, info]) => {
-          for (let i = 0; i < numRings; i++) {
-            const progress = i / (numRings - 1);
-            const radius = Math.cos(progress * Math.PI / 2) * maxRadius;
-            const height = Math.sin(progress * Math.PI / 2) * maxHeight;
-
-            // Create a circle for each ring
-            const points = 32; // number of points to approximate circle
-            const coords = [];
-            for (let j = 0; j <= points; j++) {
-              const angle = (j / points) * Math.PI * 2;
-              const lng = info.coords[1] + Math.cos(angle) * radius;
-              const lat = info.coords[0] + Math.sin(angle) * radius;
-              coords.push([lng, lat]);
-            }
-
-            features.push({
-              type: 'Feature',
-              properties: {
-                name,
-                video: info.video,
-                height,
-                opacity: 0.3 * (1 - progress),  // fade out as it goes up
-                level: i
-              },
-              geometry: {
-                type: 'Polygon',
-                coordinates: [coords]
-              }
-            });
-          }
-        });
-
-        return {
-          type: 'FeatureCollection',
-          features
-        };
-      };
-
       layers.push(
         new GeoJsonLayer({
           id: 'deployment-zones',
@@ -434,130 +448,130 @@ const RobotabilityMap = () => {
 
     // Update deck.gl layers
     deckgl.setProps({ layers });
+  }, [deckgl, mapData, visibleLayers, map, firstLabelLayerId, createDeploymentRings, handleDeploymentClick]);
 
-    }, [deckgl, mapData, visibleLayers, map, firstLabelLayerId]);
+  const handleSidebarToggle = useCallback(() => {
+    setIsSidebarOpen(prev => !prev);
+    // Add small delay to allow state to update
+    setTimeout(() => {
+      if (sidebarRef.current) {
+        setSidebarWidth(sidebarRef.current.offsetWidth);
+      }
+    }, 300);
+  }, []);
 
-    // Add debug logging to track state changes
-    const handleSidebarToggle = () => {
-      console.log('Before toggle:', isSidebarOpen);
-      setIsSidebarOpen(prev => !prev);
-      // Add small delay to allow state to update
-      setTimeout(() => {
-        console.log('After toggle:', isSidebarOpen);
-        if (sidebarRef.current) {
-          setSidebarWidth(sidebarRef.current.offsetWidth);
-        }
-      }, 300);
-    };
+  const handleCloseVideo = useCallback(() => {
+    setActiveVideo(null);
+  }, []);
 
-    return (
-      <div className="h-screen w-full flex flex-col lt-md:flex-col md:flex-row relative">
-        {/* Home Button. Put to the right of the sidebar toggle button */}
-        <a
-          href="/"
+  return (
+    <div className="h-screen w-full flex flex-col lt-md:flex-col md:flex-row relative" style={{ minHeight: '500px' }}>
+      {/* Home Button. Put to the right of the sidebar toggle button */}
+      <a
+        href="/"
+        className="
+          absolute top-4 right-4
+          flex flex-col items-center
+          bg-white rounded-lg p-2 shadow-lg z-30
+        "
+      >
+        <img 
+          src="/src/components/groups/_matt_demo/trashbot.png" 
+          alt="Home" 
+          className="w-24 h-24 rounded-full object-cover"
+        />
+        <span className="poppins text-sm mt-1">Home</span>
+      </a>
+
+      {/* Controls Container - Sidebar on desktop, Top section on mobile */}
+      <div 
+        ref={sidebarRef} 
+        className={`
+          absolute left-0 top-0
+          md:h-full lt-md:h-auto 
+          bg-white shadow-lg z-10
+          transition-all duration-300
+          lt-md:w-full
+          md:w-[32rem]
+          ${!isSidebarOpen ? 'md:-translate-x-full' : ''}
+        `}
+      >
+        {/* Sidebar Toggle Button - Only on desktop */}
+        <button
+          onClick={handleSidebarToggle}
           className="
-            absolute top-4 right-4
-            flex flex-col items-center
-            bg-white rounded-lg p-2 shadow-lg z-30
+            md:block lt-md:hidden
+            absolute -right-14 top-4
+            bg-white rounded-lg p-2
+            shadow-lg z-30
           "
         >
-          <img 
-            src="/src/components/groups/_matt_demo/trashbot.png" 
-            alt="Home" 
-            className="w-24 h-24 rounded-full object-cover"
-          />
-          <span className="poppins text-sm mt-1">Home</span>
-        </a>
-  
-        {/* Controls Container - Sidebar on desktop, Top section on mobile */}
-        <div 
-          ref={sidebarRef} 
-          className={`
-            absolute left-0 top-0
-            md:h-full lt-md:h-auto 
-            bg-white shadow-lg z-10
-            transition-all duration-300
-            lt-md:w-full
-            md:w-[32rem]
-            ${!isSidebarOpen ? 'md:-translate-x-full' : ''}
-          `}
-        >
-          {/* Sidebar Toggle Button - Only on desktop */}
-          <button
-            onClick={handleSidebarToggle}
-            className="
-              md:block lt-md:hidden
-              absolute -right-14 top-4
-              bg-white rounded-lg p-2
-              shadow-lg z-30
-            "
-          >
-            <span className="poppins text-xl">
-              {isSidebarOpen ? '←' : '→'}
-            </span>
-          </button>
-  
-          {/* Sidebar Content */}
-          <div className={`
-            p-4 overflow-x-hidden
-            transition-all duration-300
-            ${!isSidebarOpen ? 'md:opacity-0 md:invisible md:w-0 md:-translate-x-full' : 'md:opacity-100 md:visible md:w-auto md:translate-x-0'}
-          `}>
-            <div className="mb-4">
-              <h3 className="poppins text-xl font-semibold italic mb-4">Robotability Proof-of-Concept</h3>
-              <p className="poppins mb-4">New York City, September 2024</p>
-              <select 
-                className="poppins w-full p-2 border rounded"
-                value={selectedDeployment}
-                onChange={(e) => {
-                  setSelectedDeployment(e.target.value);
-                  if (e.target.value) {
-                    handleDeploymentSelect(e.target.value);
-                  } else {
-                    setActiveVideo(null);
-                  }
-                }}
-              >
-                <option value="">Select Deployment</option>
-                {Object.keys(DEPLOYMENTS).map(name => (
-                  <option key={name} value={name}>{name}</option>
-                ))}
-              </select>
+          <span className="poppins text-xl">
+            {isSidebarOpen ? '←' : '→'}
+          </span>
+        </button>
+
+        {/* Sidebar Content */}
+        <div className={`
+          p-4 overflow-x-hidden
+          transition-all duration-300
+          ${!isSidebarOpen ? 'md:opacity-0 md:invisible md:w-0 md:-translate-x-full' : 'md:opacity-100 md:visible md:w-auto md:translate-x-0'}
+        `}>
+          <div className="mb-4">
+            <h3 className="poppins text-xl font-semibold italic mb-4">Robotability Proof-of-Concept</h3>
+            <p className="poppins mb-4">New York City, September 2024</p>
+            <select 
+              className="poppins w-full p-2 border rounded"
+              value={selectedDeployment}
+              onChange={(e) => {
+                setSelectedDeployment(e.target.value);
+                if (e.target.value) {
+                  handleDeploymentSelect(e.target.value);
+                } else {
+                  setActiveVideo(null);
+                }
+              }}
+            >
+              <option value="">Select Deployment</option>
+              {Object.keys(DEPLOYMENTS).map(name => (
+                <option key={name} value={name}>{name}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="mb-4">
+            <h3 className="poppins text-lg font-semibold mb-2">Layers</h3>
+            <div className="
+              flex flex-wrap gap-4 
+              lt-md:justify-start md:flex-col
+            ">
+              {Object.entries(visibleLayers).map(([key, value]) => (
+                <label 
+                  key={key} 
+                  className="
+                    poppins flex items-center 
+                    lt-md:w-[calc(50%-0.5rem)] md:w-full
+                  "
+                >
+                  <input
+                    type="checkbox"
+                    checked={value}
+                    onChange={() => {
+                      setVisibleLayers(prev => ({
+                        ...prev,
+                        [key]: !prev[key]
+                      }));
+                    }}
+                    className="mr-2"
+                  />
+                  {layerNames[key]}
+                </label>
+              ))}
             </div>
-  
-            <div className="mb-4">
-              <h3 className="poppins text-lg font-semibold mb-2">Layers</h3>
-              <div className="
-                flex flex-wrap gap-4 
-                lt-md:justify-start md:flex-col
-              ">
-                {Object.entries(visibleLayers).map(([key, value]) => (
-                  <label 
-                    key={key} 
-                    className="
-                      poppins flex items-center 
-                      lt-md:w-[calc(50%-0.5rem)] md:w-full
-                    "
-                  >
-                    <input
-                      type="checkbox"
-                      checked={value}
-                      onChange={() => {
-                        setVisibleLayers(prev => ({
-                          ...prev,
-                          [key]: !prev[key]
-                        }));
-                      }}
-                      className="mr-2"
-                    />
-                    {layerNames[key]}
-                  </label>
-                ))}
-              </div>
-            </div>
-  
-            {/* Score Legend - Only visible on desktop */}
-            <div className="lt-md:hidden md:block mb-8">
+          </div>
+
+          {/* Score Legend - Only visible on desktop */}
+          <div className="lt-md:hidden md:block mb-8">
             <h4 className="poppins text-lg font-semibold mb-2">Score Legend</h4>
             <div className="bg-gray-100 p-4 rounded flex flex-wrap justify-center gap-1">
               {COLORS.map((color, i) => (
@@ -574,53 +588,57 @@ const RobotabilityMap = () => {
           </div>
 
           {/* Video Player - Only visible on desktop */}
-          {/* Desktop video in sidebar */}
           {activeVideo && (
             <div className="lt-md:hidden md:block mt-8">
               <VideoPlayer 
                 deployment={activeVideo} 
-                isVisible={isSidebarOpen && window.innerWidth >= 768} 
+                isVisible={isSidebarOpen && window.innerWidth >= 768}
+                onClose={handleCloseVideo}
               />
             </div>
           )}
-          </div>
         </div>
-  
-        {/* Map Container */}
-        <div className={`
-          relative
-          transition-all duration-300
-          ${!isSidebarOpen ? 'md:w-full' : 'md:w-[calc(100%-32rem)] md:ml-[32rem]'}
-          lt-md:w-full
-          lt-md:flex-1
-        `}>
-          <div 
-            ref={mapContainer} 
-            className="absolute inset-0"
-            style={{
-              width: '100%',
-              height: '100%'
-            }}
+      </div>
+
+      {/* Map Container */}
+      <div className={`
+        relative
+        transition-all duration-300
+        ${!isSidebarOpen ? 'md:w-full' : 'md:w-[calc(100%-32rem)] md:ml-[32rem]'}
+        lt-md:w-full
+        lt-md:flex-1
+      `}
+      style={{ minHeight: '500px' }}
+      >
+        <div 
+          ref={mapContainer} 
+          className="absolute inset-0"
+          style={{
+            width: '100%',
+            height: '100%',
+            minHeight: '500px'
+          }}
+        />
+      </div>
+
+      {/* Video Footer - Only visible on mobile when video is active */}
+      {activeVideo && (
+        <div className="
+          lt-md:block md:hidden
+          w-full bg-white shadow-lg
+          border-t border-gray-200
+          h-auto max-h-[40vh]
+          z-20
+        ">
+          <VideoPlayer 
+            deployment={activeVideo} 
+            isVisible={window.innerWidth < 768}
+            onClose={handleCloseVideo}
           />
         </div>
-  
-        {/* Video Footer - Only visible on mobile when video is active */}
-        {/* Mobile video footer */}
-        {activeVideo && (
-          <div className="
-            lt-md:block md:hidden
-            w-full bg-white shadow-lg
-            border-t border-gray-200
-            h-auto max-h-[40vh]
-            z-20
-          ">
-            <VideoPlayer 
-              deployment={activeVideo} 
-              isVisible={window.innerWidth < 768}
-            />
-          </div>
-        )}
-      </div>
-    );
-  };
+      )}
+    </div>
+  );
+};
+
 export default RobotabilityMap;

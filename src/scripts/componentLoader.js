@@ -229,19 +229,3 @@ async function handleIframeConfig(configPath) {
     return createErrorElement(`Failed to load iframe config: ${configPath}`);
   }
 }
-
-// Helper function to normalize paths for the browser
-function normalizePath(path) {
-  // If this is a path to an asset in the src directory, 
-  // don't modify it - it will be handled by Astro's special import
-  if (path.includes('/src/') || path.startsWith('src/')) {
-    return path;
-  }
-  
-  // If path does not start with a slash or http, add one
-  if (!path.startsWith('/') && !path.startsWith('http')) {
-    return '/' + path;
-  }
-  
-  return path;
-}
