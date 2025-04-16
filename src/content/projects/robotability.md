@@ -17,10 +17,10 @@ draft: false
 revisionMode: true
 tags: ["Robotics", "Urban Design", "Accessibility", "Smart Cities", "Automation"]
 
-insightComponents: ["/src/components/groups/_matt_demo/RobotabilityMap.jsx"]
-transformationComponents: ["/src/components/groups/_matt_demo/robo_1.png"]
+insightComponents: ["../../components/groups/_matt_demo/RobotabilityMap.jsx"]
+transformationComponents: ["../../components/groups/_matt_demo/robo_1.png"]
 predictionComponents: []
-consensusComponents: ["/src/components/groups/_matt_demo/robo_0.png", "https://www.youtube.com/embed/o52MZ1AHyjA"]
+consensusComponents: ["../../components/groups/_matt_demo/robo_0.png", "https://www.youtube.com/embed/o52MZ1AHyjA"]
 
 dataSource: "Urban spatial data, Robot navigation metrics, Accessibility maps, Street network data"
 visualizationTechniques: ["Spatial Analysis", "Heatmaps", "Network Analysis", "Accessibility Scoring", "Comparative Urbanism"]

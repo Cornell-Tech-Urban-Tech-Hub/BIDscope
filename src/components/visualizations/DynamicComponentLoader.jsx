@@ -9,9 +9,12 @@ const DynamicComponentLoader = ({ componentPath, fullWidth = false }) => {
   const [isYouTubeEmbed, setIsYouTubeEmbed] = useState(false);
   const [youTubeId, setYouTubeId] = useState(null);
   const containerRef = useRef(null);
+  // Use a stable id to prevent remounting issues
+  const [stableId] = useState(() => Math.random().toString(36).slice(2, 10));
 
   useEffect(() => {
     let isMounted = true;
+    console.log(`[${stableId}] Loading component path: ${componentPath}`);
     
     const loadAndRenderComponent = async () => {
       if (!componentPath) {
@@ -34,7 +37,9 @@ const DynamicComponentLoader = ({ componentPath, fullWidth = false }) => {
       
       try {
         setLoading(true);
+        // Keep the relative path exactly as specified
         const result = await loadComponent(componentPath);
+        console.log(`[${stableId}] Component loaded successfully:`, typeof result);
         
         if (!isMounted) return;
         
@@ -57,7 +62,7 @@ const DynamicComponentLoader = ({ componentPath, fullWidth = false }) => {
         }
         setError(null);
       } catch (err) {
-        console.error("Failed to load component:", err);
+        console.error(`[${stableId}] Failed to load component:`, err);
         if (isMounted) {
           setError(`Failed to load ${componentPath}: ${err.message}`);
           setIsAstroImage(false);
@@ -74,7 +79,7 @@ const DynamicComponentLoader = ({ componentPath, fullWidth = false }) => {
     return () => {
       isMounted = false;
     };
-  }, [componentPath]);
+  }, [componentPath, stableId]);
 
   if (loading) {
     return <div className="viz-loading">Loading visualization...</div>;
@@ -133,8 +138,12 @@ const DynamicComponentLoader = ({ componentPath, fullWidth = false }) => {
     );
   }
 
-  // For React components
-  return <Component />;
+  // For React components - properly handle with stable ID
+  if (Component) {
+    return React.createElement(Component, { key: stableId });
+  }
+
+  return null;
 };
 
 export default DynamicComponentLoader;

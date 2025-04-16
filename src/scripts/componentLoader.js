@@ -2,6 +2,8 @@
 
 export async function loadComponent(componentPath) {
   try {
+    console.log(`Loading component with path: ${componentPath}`);
+    
     // Special handling for YouTube URLs
     if (componentPath.includes('youtube.com') || componentPath.includes('youtu.be')) {
       return createYouTubeEmbed(componentPath);
@@ -12,17 +14,25 @@ export async function loadComponent(componentPath) {
       return createIframeElement(componentPath.substring(7));
     }
     
+    // Handle relative paths starting with ../../
+    let processedPath = componentPath;
+    if (componentPath.startsWith('../../')) {
+      // Leave as-is - we'll handle it directly in import statements
+      console.log(`Using relative path as specified: ${componentPath}`);
+      processedPath = componentPath;
+    }
+    
     // Detect file type based on extension
-    const fileExtension = componentPath.split('.').pop().toLowerCase();
+    const fileExtension = processedPath.split('.').pop().toLowerCase();
     
     // For images within src directory, let Astro handle it specially
     if (['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'].includes(fileExtension) && 
-        (componentPath.includes('/src/') || componentPath.startsWith('src/'))) {
+        (processedPath.includes('/src/') || processedPath.startsWith('src/') || processedPath.startsWith('../../'))) {
       // Instead of trying to create an image element directly,
       // return an object that signals this is an image to be processed by Astro
       return {
         type: 'astro-image',
-        path: componentPath
+        path: processedPath
       };
     }
     
@@ -35,42 +45,41 @@ export async function loadComponent(componentPath) {
       case 'gif':
       case 'svg':
       case 'webp':
-        return createImageElement(componentPath);
+        return createImageElement(processedPath);
       
       // Video handling
       case 'mp4':
       case 'webm':
       case 'ogg':
-        return createVideoElement(componentPath);
+        return createVideoElement(processedPath);
         
       // Special handlers for embeds
       case 'youtube':
-        return createYouTubeEmbed(componentPath);
+        return createYouTubeEmbed(processedPath);
       
       // Iframe configuration file
       case 'iframe':
-        return handleIframeConfig(componentPath);
+        return handleIframeConfig(processedPath);
       
       // React/TypeScript component files
       case 'jsx':
       case 'tsx':
       case 'js':
-      case 'ts':
-        // Use the import() function to dynamically load the component
-        const jsPath = componentPath.replace(/^src\//, '../');
-        const module = await import(/* @vite-ignore */ jsPath);
+      case 'ts': 
+        // Use the relative path directly for dynamic import - important!
+        console.log(`Importing JSX/TSX component: ${processedPath}`);
+        const module = await import(/* @vite-ignore */ processedPath);
         return module.default;
         
       // Default: try to load as a JavaScript module
       default:
         console.warn(`Unknown file type: ${fileExtension}, attempting to load as module`);
-        const defaultPath = componentPath.replace(/^src\//, '../');
-        const defaultModule = await import(/* @vite-ignore */ defaultPath);
+        const defaultModule = await import(/* @vite-ignore */ processedPath);
         return defaultModule.default;
     }
   } catch (error) {
     console.error(`Failed to load component: ${componentPath}`, error);
-    return createErrorElement(`Failed to load: ${componentPath}`);
+    return createErrorElement(`Failed to load: ${componentPath} (${error.message})`);
   }
 }
 
