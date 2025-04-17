@@ -2,6 +2,9 @@
 
 export async function loadComponent(componentPath) {
   try {
+    // Get the base URL from environment
+    const baseUrl = import.meta.env.BASE_URL || '/';
+    
     console.log(`Loading component with path: ${componentPath}`);
     
     // Special handling for YouTube URLs
@@ -14,12 +17,18 @@ export async function loadComponent(componentPath) {
       return createIframeElement(componentPath.substring(7));
     }
     
-    // Handle relative paths starting with ../../
+    // Process path with base URL if needed
     let processedPath = componentPath;
+    
+    // If path starts with /src/ and isn't an external URL, prepend the base URL
+    if (processedPath.startsWith('/src/') && !processedPath.startsWith('http')) {
+      processedPath = `${baseUrl.replace(/\/$/, '')}${processedPath}`;
+      console.log(`Adjusted path with base URL: ${processedPath}`);
+    }
+    
+    // Handle relative paths starting with ../../
     if (componentPath.startsWith('../../')) {
-      // Leave as-is - we'll handle it directly in import statements
       console.log(`Using relative path as specified: ${componentPath}`);
-      processedPath = componentPath;
     }
     
     // Detect file type based on extension
@@ -28,8 +37,7 @@ export async function loadComponent(componentPath) {
     // For images within src directory, let Astro handle it specially
     if (['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'].includes(fileExtension) && 
         (processedPath.includes('/src/') || processedPath.startsWith('src/') || processedPath.startsWith('../../'))) {
-      // Instead of trying to create an image element directly,
-      // return an object that signals this is an image to be processed by Astro
+      // Pass the processed path that includes the base URL if needed
       return {
         type: 'astro-image',
         path: processedPath
@@ -66,7 +74,7 @@ export async function loadComponent(componentPath) {
       case 'tsx':
       case 'js':
       case 'ts': 
-        // Use the relative path directly for dynamic import - important!
+        // Use the processed path for dynamic import
         console.log(`Importing JSX/TSX component: ${processedPath}`);
         const module = await import(/* @vite-ignore */ processedPath);
         return module.default;
