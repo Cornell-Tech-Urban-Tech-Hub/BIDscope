@@ -20,6 +20,14 @@ export async function loadComponent(componentPath) {
     // Process path with base URL if needed
     let processedPath = componentPath;
     
+    // Convert /src paths to /components for production
+    if (processedPath.startsWith('/src/components/')) {
+      // Replace /src/components with /components for production access
+      processedPath = processedPath.replace('/src/components/', '/components/');
+      processedPath = `${baseUrl.replace(/\/$/, '')}${processedPath}`;
+      console.log(`Adjusted component path for production: ${processedPath}`);
+    }
+
     // If path starts with /src/ and isn't an external URL, prepend the base URL
     if (processedPath.startsWith('/src/') && !processedPath.startsWith('http')) {
       processedPath = `${baseUrl.replace(/\/$/, '')}${processedPath}`;
