@@ -20,23 +20,31 @@ export async function loadComponent(componentPath) {
     // Process path with base URL if needed
     let processedPath = componentPath;
     
+    // Handle component paths that start with /components directly
+    if (processedPath.startsWith('/components/')) {
+      processedPath = `${baseUrl.replace(/\/$/, '')}${processedPath}`;
+      console.log(`Adjusted component path for production: ${processedPath}`);
+    }
+    
     // Convert /src paths to /components for production
-    if (processedPath.startsWith('/src/components/')) {
+    else if (processedPath.startsWith('/src/components/')) {
       // Replace /src/components with /components for production access
       processedPath = processedPath.replace('/src/components/', '/components/');
       processedPath = `${baseUrl.replace(/\/$/, '')}${processedPath}`;
       console.log(`Adjusted component path for production: ${processedPath}`);
     }
-
+    
     // If path starts with /src/ and isn't an external URL, prepend the base URL
-    if (processedPath.startsWith('/src/') && !processedPath.startsWith('http')) {
+    else if (processedPath.startsWith('/src/') && !processedPath.startsWith('http')) {
       processedPath = `${baseUrl.replace(/\/$/, '')}${processedPath}`;
       console.log(`Adjusted path with base URL: ${processedPath}`);
     }
     
-    // Handle relative paths starting with ../../
-    if (componentPath.startsWith('../../')) {
-      console.log(`Using relative path as specified: ${componentPath}`);
+    // Handle relative paths - resolve against base URL for production
+    else if (componentPath.startsWith('../../')) {
+      // Convert relative path to absolute path with base URL
+      processedPath = `${baseUrl.replace(/\/$/, '')}/components/${componentPath.substring(6)}`;
+      console.log(`Converted relative path to absolute: ${processedPath}`);
     }
     
     // Detect file type based on extension
