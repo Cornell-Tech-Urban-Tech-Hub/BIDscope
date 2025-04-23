@@ -1,6 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { loadComponent } from '../../scripts/componentLoader.js';
 
+// Make React available globally for dynamically loaded components
+if (typeof window !== 'undefined') {
+  window.React = React;
+}
+
 const DynamicComponentLoader = ({ componentPath, fullWidth = false }) => {
   const [Component, setComponent] = useState(null);
   const [error, setError] = useState(null);
