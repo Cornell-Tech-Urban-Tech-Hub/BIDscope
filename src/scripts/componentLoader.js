@@ -160,6 +160,42 @@ export async function loadComponent(componentPath) {
 // Helper function to attempt import with different strategies
 async function attemptImport(path) {
   console.log(`Attempting to import: ${path}`);
+  
+  // Check if this is a remote file on GitHub Pages with .jsx or .tsx extension
+  if ((path.includes('.jsx') || path.includes('.tsx')) && 
+      (path.includes('github.io') || path.includes('githubusercontent.com'))) {
+    
+    try {
+      // Use fetch instead of import for JSX/TSX files to avoid MIME type issues
+      const response = await fetch(path);
+      if (!response.ok) throw new Error(`Failed to fetch: ${response.status}`);
+      
+      // Get the source code as text
+      const source = await response.text();
+      
+      // Create a component from the source using a Function constructor
+      // This will execute in global scope
+      const componentSource = `
+        // Convert the source to a component
+        const React = window.React;
+        ${source}
+        // Return the default export if available
+        return Component || default_component || {};
+      `;
+      
+      // Create a function that will execute the component source
+      // This is a workaround for the MIME type issue
+      const createComponent = new Function('Component', 'default_component', componentSource);
+      
+      // Execute and get the component
+      return createComponent(null, null);
+    } catch (error) {
+      console.error(`Failed to fetch and evaluate component: ${path}`, error);
+      throw error;
+    }
+  }
+  
+  // Standard import for other files
   const module = await import(/* @vite-ignore */ path);
   return module.default || module;
 }
