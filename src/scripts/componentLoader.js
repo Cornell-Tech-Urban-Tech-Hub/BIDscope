@@ -80,30 +80,58 @@ export async function loadComponent(componentPath) {
           // For import statements, we need to handle base URL differently
           let importPath = processedPath;
           
-          // If it's an absolute path starting with the base URL, we need to
-          // ensure it's correctly formatted for import
+          // Create versions of the path with and without the src/ prefix
+          const importPaths = [];
+          
+          // If it's an absolute path starting with the base URL
           if (baseUrl !== '/' && importPath.startsWith(baseUrl)) {
-            // For client-side imports, we might need to adjust the path
-            // depending on how the bundler handles imports
             const pathWithoutBase = importPath.substring(baseUrl.length);
             
-            // Try different import strategies
-            try {
-              // Try with the full processed path first
-              return await attemptImport(importPath);
-            } catch (e) {
-              // If that fails, try with path relative to base
-              try {
-                return await attemptImport(`/${pathWithoutBase}`);
-              } catch (e2) {
-                // If that fails too, try with just the path
-                return await attemptImport(pathWithoutBase);
-              }
+            // Try paths with and without src/ prefix
+            if (pathWithoutBase.startsWith('src/')) {
+              // Without src/ prefix (for production)
+              importPaths.push(`${baseUrl}${pathWithoutBase.substring(4)}`);
+              // With src/ prefix (for development)
+              importPaths.push(importPath);
+              // Just the path without base or src/
+              importPaths.push(pathWithoutBase.substring(4));
+              // With leading slash
+              importPaths.push(`/${pathWithoutBase.substring(4)}`);
+            } else {
+              // Normal path
+              importPaths.push(importPath);
+              // Without base
+              importPaths.push(pathWithoutBase);
+              // With leading slash
+              importPaths.push(`/${pathWithoutBase}`);
             }
-          } 
+          } else {
+            // For relative paths
+            if (importPath.startsWith('src/') || importPath.includes('/src/')) {
+              // Try without src/ prefix
+              const withoutSrc = importPath.replace(/\/?src\//, '/');
+              importPaths.push(withoutSrc);
+            }
+            // Always include the original path
+            importPaths.push(importPath);
+          }
           
-          // Regular import for non-baseUrl paths
-          return await attemptImport(importPath);
+          // Try each path strategy in sequence
+          console.log('Attempting import with paths:', importPaths);
+          
+          for (const path of importPaths) {
+            try {
+              const result = await attemptImport(path);
+              console.log(`Successfully imported from: ${path}`);
+              return result;
+            } catch (e) {
+              console.log(`Import attempt failed for path: ${path}`);
+              // Continue to next path
+            }
+          }
+          
+          // If we got here, all import attempts failed
+          throw new Error(`Failed to import component after trying multiple path strategies`);
         } catch (importError) {
           console.error(`Failed to import component: ${processedPath}`, importError);
           throw new Error(`Failed to import component: ${importError.message}`);
