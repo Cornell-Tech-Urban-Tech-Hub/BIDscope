@@ -20,43 +20,28 @@ export async function loadComponent(componentPath) {
     // Process path with base URL if needed
     let processedPath = componentPath;
     
-    // Handle component paths that start with /components directly
-    if (processedPath.startsWith('/components/')) {
-      processedPath = `${baseUrl.replace(/\/$/, '')}${processedPath}`;
-      console.log(`Adjusted component path for production: ${processedPath}`);
+    // If it's a relative path and doesn't already include the base URL, add it
+    if (!processedPath.startsWith('http') && !processedPath.startsWith('//') && 
+        !processedPath.startsWith('/') && !processedPath.startsWith(baseUrl)) {
+      processedPath = `${baseUrl}${processedPath}`;
+    }
+    // For paths starting with '/' but not the baseUrl, add the base URL
+    else if (processedPath.startsWith('/') && baseUrl !== '/' && !processedPath.startsWith(baseUrl)) {
+      processedPath = `${baseUrl}${processedPath.substring(1)}`;
     }
     
-    // Convert /src paths to /components for production
-    else if (processedPath.startsWith('/src/components/')) {
-      // Replace /src/components with /components for production access
-      processedPath = processedPath.replace('/src/components/', '/components/');
-      processedPath = `${baseUrl.replace(/\/$/, '')}${processedPath}`;
-      console.log(`Adjusted component path for production: ${processedPath}`);
-    }
-    
-    // If path starts with /src/ and isn't an external URL, prepend the base URL
-    else if (processedPath.startsWith('/src/') && !processedPath.startsWith('http')) {
-      processedPath = `${baseUrl.replace(/\/$/, '')}${processedPath}`;
-      console.log(`Adjusted path with base URL: ${processedPath}`);
-    }
-    
-    // Handle relative paths - resolve against base URL for production
-    else if (componentPath.startsWith('../../')) {
-      // Convert relative path to absolute path with base URL
-      processedPath = `${baseUrl.replace(/\/$/, '')}/components/${componentPath.substring(6)}`;
-      console.log(`Converted relative path to absolute: ${processedPath}`);
-    }
+    console.log(`Processed path: ${processedPath}`);
     
     // Detect file type based on extension
-    const fileExtension = processedPath.split('.').pop().toLowerCase();
+    const fileExtension = componentPath.split('.').pop().toLowerCase();
     
     // For images within src directory, let Astro handle it specially
     if (['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'].includes(fileExtension) && 
-        (processedPath.includes('/src/') || processedPath.startsWith('src/') || processedPath.startsWith('../../'))) {
-      // Pass the processed path that includes the base URL if needed
+        (componentPath.includes('/src/') || componentPath.startsWith('src/') || componentPath.startsWith('../../'))) {
+      // Pass the original path for Astro to handle
       return {
         type: 'astro-image',
-        path: processedPath
+        path: componentPath
       };
     }
     
@@ -90,21 +75,51 @@ export async function loadComponent(componentPath) {
       case 'tsx':
       case 'js':
       case 'ts': 
-        // Use the processed path for dynamic import
-        console.log(`Importing JSX/TSX component: ${processedPath}`);
-        const module = await import(/* @vite-ignore */ processedPath);
-        return module.default;
-        
-      // Default: try to load as a JavaScript module
-      default:
-        console.warn(`Unknown file type: ${fileExtension}, attempting to load as module`);
-        const defaultModule = await import(/* @vite-ignore */ processedPath);
-        return defaultModule.default;
+        // Using dynamic import to load the component
+        try {
+          // For import statements, we need to handle base URL differently
+          let importPath = processedPath;
+          
+          // If it's an absolute path starting with the base URL, we need to
+          // ensure it's correctly formatted for import
+          if (baseUrl !== '/' && importPath.startsWith(baseUrl)) {
+            // For client-side imports, we might need to adjust the path
+            // depending on how the bundler handles imports
+            const pathWithoutBase = importPath.substring(baseUrl.length);
+            
+            // Try different import strategies
+            try {
+              // Try with the full processed path first
+              return await attemptImport(importPath);
+            } catch (e) {
+              // If that fails, try with path relative to base
+              try {
+                return await attemptImport(`/${pathWithoutBase}`);
+              } catch (e2) {
+                // If that fails too, try with just the path
+                return await attemptImport(pathWithoutBase);
+              }
+            }
+          } 
+          
+          // Regular import for non-baseUrl paths
+          return await attemptImport(importPath);
+        } catch (importError) {
+          console.error(`Failed to import component: ${processedPath}`, importError);
+          throw new Error(`Failed to import component: ${importError.message}`);
+        }
     }
   } catch (error) {
     console.error(`Failed to load component: ${componentPath}`, error);
     return createErrorElement(`Failed to load: ${componentPath} (${error.message})`);
   }
+}
+
+// Helper function to attempt import with different strategies
+async function attemptImport(path) {
+  console.log(`Attempting to import: ${path}`);
+  const module = await import(/* @vite-ignore */ path);
+  return module.default || module;
 }
 
 // Helper function to create an image element
