@@ -1,9 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
+import ReactDOM from 'react-dom';
 import { loadComponent } from '../../scripts/componentLoader.js';
 
-// Make React available globally for dynamically loaded components
+// Make React and ReactDOM available globally for dynamically loaded components
 if (typeof window !== 'undefined') {
   window.React = React;
+  window.ReactDOM = ReactDOM;
 }
 
 const DynamicComponentLoader = ({ componentPath, fullWidth = false }) => {

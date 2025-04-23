@@ -161,43 +161,90 @@ export async function loadComponent(componentPath) {
 async function attemptImport(path) {
   console.log(`Attempting to import: ${path}`);
   
-  // Check if this is a remote file on GitHub Pages with .jsx or .tsx extension
-  if ((path.includes('.jsx') || path.includes('.tsx')) && 
-      (path.includes('github.io') || path.includes('githubusercontent.com'))) {
+  // Special handling for JSX/TSX files on GitHub Pages
+  if ((path.endsWith('.jsx') || path.endsWith('.tsx')) && 
+      (path.includes('github.io') || path.startsWith('/BIDspec/') || path.includes('githubusercontent.com'))) {
+    
+    console.log('Using fetch approach for JSX/TSX file:', path);
     
     try {
-      // Use fetch instead of import for JSX/TSX files to avoid MIME type issues
+      // Use fetch instead of import for JSX files due to MIME type issues
       const response = await fetch(path);
-      if (!response.ok) throw new Error(`Failed to fetch: ${response.status}`);
       
-      // Get the source code as text
-      const source = await response.text();
+      if (!response.ok) {
+        console.error(`Failed to fetch: ${response.status}`, path);
+        throw new Error(`Failed to fetch component: ${response.status}`);
+      }
       
-      // Create a component from the source using a Function constructor
-      // This will execute in global scope
-      const componentSource = `
-        // Convert the source to a component
-        const React = window.React;
-        ${source}
-        // Return the default export if available
-        return Component || default_component || {};
-      `;
+      // Get the JSX content
+      const jsxContent = await response.text();
       
-      // Create a function that will execute the component source
-      // This is a workaround for the MIME type issue
-      const createComponent = new Function('Component', 'default_component', componentSource);
-      
-      // Execute and get the component
-      return createComponent(null, null);
+      // Create a simple component wrapper that will evaluate the JSX
+      // using React's createElement API directly (avoiding JSX parsing issues)
+      return function DynamicJsxComponent() {
+        // Create a container ref to render into
+        const containerRef = React.useRef(null);
+        
+        // Use effect to create and mount the component from source
+        React.useEffect(() => {
+          try {
+            // Use a safe evaluation approach with Function constructor
+            const createComponentFn = new Function('React', `
+              "use strict";
+              // Provide React so JSX can use it
+              const { createElement, useState, useEffect, useRef, useMemo, useCallback } = React;
+              
+              // Create a temporary container to hold the component
+              let Component;
+              
+              // Execute component code
+              ${jsxContent}
+              
+              // Return whichever export was defined
+              return Component || exports?.default || exports || {};
+            `);
+            
+            // Execute the function with React
+            const ComponentClass = createComponentFn(window.React);
+            
+            // Only render if we have a valid component and container
+            if (ComponentClass && containerRef.current) {
+              // If it's a function component, render it
+              const element = window.React.createElement(ComponentClass);
+              window.ReactDOM.render(element, containerRef.current);
+            }
+          } catch (err) {
+            console.error('Error rendering dynamic JSX:', err);
+            if (containerRef.current) {
+              containerRef.current.innerHTML = `<div class="error">Error rendering component: ${err.message}</div>`;
+            }
+          }
+          
+          // Clean up on unmount
+          return () => {
+            if (containerRef.current) {
+              window.ReactDOM.unmountComponentAtNode(containerRef.current);
+            }
+          };
+        }, []);
+        
+        // Return a div that the component will render into
+        return window.React.createElement('div', { ref: containerRef, className: 'dynamic-jsx-container' });
+      };
     } catch (error) {
-      console.error(`Failed to fetch and evaluate component: ${path}`, error);
+      console.error(`Failed to load JSX component:`, error);
       throw error;
     }
   }
   
   // Standard import for other files
-  const module = await import(/* @vite-ignore */ path);
-  return module.default || module;
+  try {
+    const module = await import(/* @vite-ignore */ path);
+    return module.default || module;
+  } catch (error) {
+    console.error(`Import failed for ${path}:`, error);
+    throw error;
+  }
 }
 
 // Helper function to create an image element
