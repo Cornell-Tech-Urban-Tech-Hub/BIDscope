@@ -83,38 +83,52 @@ export async function loadComponent(componentPath) {
           // Create versions of the path with and without the src/ prefix
           const importPaths = [];
           
+          // Normalize baseUrl to ensure it has a trailing slash
+          const normalizedBase = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
+          
           // If it's an absolute path starting with the base URL
           if (baseUrl !== '/' && importPath.startsWith(baseUrl)) {
+            // Extract the path after the base URL
             const pathWithoutBase = importPath.substring(baseUrl.length);
             
             // Try paths with and without src/ prefix
             if (pathWithoutBase.startsWith('src/')) {
-              // Without src/ prefix (for production)
-              importPaths.push(`${baseUrl}${pathWithoutBase.substring(4)}`);
-              // With src/ prefix (for development)
-              importPaths.push(importPath);
-              // Just the path without base or src/
-              importPaths.push(pathWithoutBase.substring(4));
-              // With leading slash
-              importPaths.push(`/${pathWithoutBase.substring(4)}`);
+              // Without src/ prefix (for production environment)
+              importPaths.push(`${normalizedBase}${pathWithoutBase.substring(4)}`);
+              
+              // Just the path without base or src/ - for GitHub Pages
+              const cleanPath = pathWithoutBase.substring(4);
+              if (cleanPath) {
+                importPaths.push(`${normalizedBase}${cleanPath}`);
+              }
             } else {
-              // Normal path
+              // Path already doesn't have src/ prefix
               importPaths.push(importPath);
-              // Without base
-              importPaths.push(pathWithoutBase);
-              // With leading slash
-              importPaths.push(`/${pathWithoutBase}`);
             }
           } else {
-            // For relative paths
-            if (importPath.startsWith('src/') || importPath.includes('/src/')) {
-              // Try without src/ prefix
-              const withoutSrc = importPath.replace(/\/?src\//, '/');
-              importPaths.push(withoutSrc);
+            // For paths that don't start with baseUrl
+            if (importPath.startsWith('src/')) {
+              // Remove src/ prefix and add base
+              importPaths.push(`${normalizedBase}${importPath.substring(4)}`);
+              importPaths.push(importPath.substring(4)); // Try without base too
+            } else if (importPath.includes('/src/')) {
+              // Handle /src/ in the middle of the path
+              importPaths.push(importPath.replace('/src/', '/'));
             }
+            
+            // Try with base URL explicitly added
+            if (!importPath.startsWith('/') && !importPath.startsWith(baseUrl) && 
+                !importPath.startsWith('http')) {
+              importPaths.push(`${normalizedBase}${importPath}`);
+            }
+            
             // Always include the original path
             importPaths.push(importPath);
           }
+          
+          // Ensure the known working path pattern is included for GitHub Pages
+          const componentPathWithoutSrc = componentPath.replace(/^\/?(src\/)?/, '');
+          importPaths.push(`${normalizedBase}${componentPathWithoutSrc}`);
           
           // Try each path strategy in sequence
           console.log('Attempting import with paths:', importPaths);
