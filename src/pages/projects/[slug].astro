@@ -24,7 +24,9 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content, headings } = await entry.render();
 
+// Get base URL correctly - ensuring it ends with a slash for relative paths
 const base = import.meta.env.BASE_URL || '/';
+const baseUrl = base.endsWith('/') ? base : `${base}/`;
 
 // Get BID names from all projects for the map
 const allProjects = await getCollection('projects');
@@ -163,6 +165,25 @@ function isImagePath(path) {
   const ext = path.split('.').pop().toLowerCase();
   return ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'].includes(ext);
 }
+
+// Function to normalize component paths for loading
+function normalizeComponentPath(path) {
+  if (!path) return '';
+  // Handle relative paths that point to the src directory
+  if (path.startsWith('../../') || path.startsWith('../')) {
+    return path;
+  }
+  // Handle absolute paths
+  if (path.startsWith('/')) {
+    return path;
+  }
+  // Handle URLs
+  if (path.startsWith('http')) {
+    return path;
+  }
+  // Default case - ensure path is relative to the base URL
+  return `${baseUrl}${path.startsWith('/') ? path.substring(1) : path}`;
+}
 ---
 
 <FullWidthLayout 
@@ -170,7 +191,7 @@ function isImagePath(path) {
   description={entry.data.description}
 >
   <div class="max-w-5xl mx-auto px-4 py-12">
-    <a href={`${base}/projects`} class="text-primary hover:underline flex items-center gap-2">
+    <a href={`${baseUrl}projects`} class="text-primary hover:underline flex items-center gap-2">
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>
       Back to Projects
     </a>
@@ -262,7 +283,7 @@ function isImagePath(path) {
                       <div class="viz-container">
                         <h3 class="viz-title">Insight Visualization {i + 1}</h3>
                         <div class="viz-frame" data-component-id={`insight-viz-${i}`}>
-                          <a href={`${base}/components/${entry.slug}-insightComponents-${i}`} class="fullscreen-link" title="View Full Screen">
+                          <a href={`${baseUrl}components/${entry.slug}-insightComponents-${i}`} class="fullscreen-link" title="View Full Screen" aria-label={`View Insight Visualization ${i+1} in Full Screen`}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                               <path d="M8 3H5a2 2 0 0 0-2 2v3"></path>
                               <path d="M21 8V5a2 2 0 0 0-2-2h-3"></path>
@@ -275,7 +296,7 @@ function isImagePath(path) {
                             {isImagePath(component) ? (
                               <AstroImageLoader src={component} alt={`Insight visualization ${i + 1}`} />
                             ) : (
-                              <DynamicComponentLoader client:only="react" componentPath={component} />
+                              <DynamicComponentLoader client:only="react" componentPath={normalizeComponentPath(component)} />
                             )}
                           </div>
                         </div>
@@ -316,7 +337,7 @@ function isImagePath(path) {
                           <span>Transformation Visualization {i + 1}</span>
                         </h3>
                         <div class="viz-frame" data-component-id={`transformation-viz-${i}`}>
-                          <a href={`${base}/components/${entry.slug}-transformationComponents-${i}`} class="fullscreen-link" title="View Full Screen">
+                          <a href={`${baseUrl}components/${entry.slug}-transformationComponents-${i}`} class="fullscreen-link" title="View Full Screen" aria-label={`View Transformation Visualization ${i+1} in Full Screen`}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                               <path d="M8 3H5a2 2 0 0 0-2 2v3"></path>
                               <path d="M21 8V5a2 2 0 0 0-2-2h-3"></path>
@@ -329,7 +350,7 @@ function isImagePath(path) {
                             {isImagePath(component) ? (
                               <AstroImageLoader src={component} alt={`Transformation visualization ${i + 1}`} />
                             ) : (
-                              <DynamicComponentLoader client:only="react" componentPath={component} />
+                              <DynamicComponentLoader client:only="react" componentPath={normalizeComponentPath(component)} />
                             )}
                           </div>
                         </div>
@@ -370,7 +391,7 @@ function isImagePath(path) {
                       <div class="viz-container">
                         <h3 class="viz-title">Prediction Visualization {i + 1}</h3>
                         <div class="viz-frame" data-component-id={`prediction-viz-${i}`}>
-                          <a href={`${base}/components/${entry.slug}-predictionComponents-${i}`} class="fullscreen-link" title="View Full Screen">
+                          <a href={`${baseUrl}components/${entry.slug}-predictionComponents-${i}`} class="fullscreen-link" title="View Full Screen" aria-label={`View Prediction Visualization ${i+1} in Full Screen`}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                               <path d="M8 3H5a2 2 0 0 0-2 2v3"></path>
                               <path d="M21 8V5a2 2 0 0 0-2-2h-3"></path>
@@ -383,7 +404,7 @@ function isImagePath(path) {
                             {isImagePath(component) ? (
                               <AstroImageLoader src={component} alt={`Prediction visualization ${i + 1}`} />
                             ) : (
-                              <DynamicComponentLoader client:only="react" componentPath={component} />
+                              <DynamicComponentLoader client:only="react" componentPath={normalizeComponentPath(component)} />
                             )}
                           </div>
                         </div>
@@ -422,7 +443,7 @@ function isImagePath(path) {
                       <div class="viz-container">
                         <h3 class="viz-title">Consensus Visualization {i + 1}</h3>
                         <div class="viz-frame" data-component-id={`consensus-viz-${i}`}>
-                          <a href={`${base}/components/${entry.slug}-consensusComponents-${i}`} class="fullscreen-link" title="View Full Screen">
+                          <a href={`${baseUrl}components/${entry.slug}-consensusComponents-${i}`} class="fullscreen-link" title="View Full Screen" aria-label={`View Consensus Visualization ${i+1} in Full Screen`}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                               <path d="M8 3H5a2 2 0 0 0-2 2v3"></path>
                               <path d="M21 8V5a2 2 0 0 0-2-2h-3"></path>
@@ -435,7 +456,7 @@ function isImagePath(path) {
                             {isImagePath(component) ? (
                               <AstroImageLoader src={component} alt={`Consensus visualization ${i + 1}`} />
                             ) : (
-                              <DynamicComponentLoader client:only="react" componentPath={component} />
+                              <DynamicComponentLoader client:only="react" componentPath={normalizeComponentPath(component)} />
                             )}
                           </div>
                         </div>
@@ -492,4 +513,20 @@ function isImagePath(path) {
       )}
     </article>
   </div>
+
+  <script>
+    // Add event listener for fullscreen links to track visualization views
+    document.addEventListener('DOMContentLoaded', () => {
+      const fullscreenLinks = document.querySelectorAll('.fullscreen-link');
+      fullscreenLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+          const componentId = e.currentTarget.closest('.viz-frame')?.dataset.componentId;
+          if (componentId) {
+            console.log(`Fullscreen view requested for: ${componentId}`);
+            // You could add analytics tracking here
+          }
+        });
+      });
+    });
+  </script>
 </FullWidthLayout>

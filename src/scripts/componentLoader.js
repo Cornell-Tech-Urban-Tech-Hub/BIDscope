@@ -61,6 +61,11 @@ export async function loadComponent(componentPath) {
       case 'iframe':
         return handleIframeConfig(processedPath);
       
+      // Markdown files
+      case 'md':
+      case 'markdown':
+        return handleMarkdownContent(processedPath);
+      
       // React/TypeScript component files
       case 'jsx':
       case 'tsx':
@@ -68,8 +73,17 @@ export async function loadComponent(componentPath) {
       case 'ts': 
         // Use the relative path directly for dynamic import - important!
         console.log(`Importing JSX/TSX component: ${processedPath}`);
-        const module = await import(/* @vite-ignore */ processedPath);
-        return module.default;
+        try {
+          const module = await import(/* @vite-ignore */ processedPath);
+          return module.default;
+        } catch (importError) {
+          console.error(`Module import error for ${processedPath}:`, importError);
+          // Try alternative import path structure if original fails
+          const altPath = processedPath.startsWith('/') ? processedPath.substring(1) : `/${processedPath}`;
+          console.log(`Trying alternative path: ${altPath}`);
+          const module = await import(/* @vite-ignore */ altPath);
+          return module.default;
+        }
         
       // Default: try to load as a JavaScript module
       default:
@@ -89,6 +103,7 @@ function createImageElement(path) {
   img.src = path;
   img.loading = 'lazy';
   img.style.maxWidth = '100%';
+  img.alt = 'Visualization image'; // Add basic accessibility
   return img;
 }
 
@@ -97,6 +112,7 @@ function createVideoElement(path) {
   const video = document.createElement('video');
   video.src = path;
   video.controls = true;
+  video.style.maxWidth = '100%';
   return video;
 }
 
@@ -200,6 +216,8 @@ function createIframeElement(url, options = {}) {
   
   if (options.title) {
     iframe.title = options.title;
+  } else {
+    iframe.title = "Embedded content"; // Basic accessibility
   }
   
   // Add any custom styles
@@ -236,5 +254,55 @@ async function handleIframeConfig(configPath) {
   } catch (error) {
     console.error(`Failed to load iframe config: ${configPath}`, error);
     return createErrorElement(`Failed to load iframe config: ${configPath}`);
+  }
+}
+
+// Handle markdown content (new)
+async function handleMarkdownContent(path) {
+  try {
+    // Try to fetch the markdown content
+    const response = await fetch(path);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const markdownContent = await response.text();
+    
+    // Create container for markdown
+    const container = document.createElement('div');
+    container.className = 'markdown-content';
+    
+    // If 'marked' library is available globally, use it to parse markdown
+    if (typeof window.marked !== 'undefined') {
+      container.innerHTML = window.marked.parse(markdownContent);
+    } else {
+      // Basic fallback markdown rendering (very simple)
+      const htmlContent = markdownContent
+        // Headers
+        .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+        .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+        .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+        // Bold
+        .replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>')
+        // Italic
+        .replace(/\*(.*)\*/gim, '<em>$1</em>')
+        // Code
+        .replace(/`(.*)`/gim, '<code>$1</code>')
+        // Links
+        .replace(/\[(.*?)\]\((.*?)\)/gim, '<a href="$2">$1</a>')
+        // Paragraphs
+        .replace(/^\s*(\n)?(.+)/gim, function(m) {
+          return /^<(\/)?(h\d|ul|ol|li|blockquote|pre|img)/.test(m) ? m : '<p>'+m+'</p>';
+        })
+        // Line breaks
+        .replace(/\n$/gim, '<br />');
+      
+      container.innerHTML = htmlContent;
+    }
+    
+    return container;
+  } catch (error) {
+    console.error(`Failed to load markdown: ${path}`, error);
+    return createErrorElement(`Failed to load markdown: ${path}`);
   }
 }
