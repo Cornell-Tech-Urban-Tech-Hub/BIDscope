@@ -1,0 +1,137 @@
+{
+  "$ref": "#/definitions/projects",
+  "definitions": {
+    "projects": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "publishDate": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "string",
+              "format": "date"
+            },
+            {
+              "type": "integer",
+              "format": "unix-time"
+            }
+          ]
+        },
+        "updatedDate": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "string",
+              "format": "date"
+            },
+            {
+              "type": "integer",
+              "format": "unix-time"
+            }
+          ]
+        },
+        "thumbnail": {
+          "type": "string"
+        },
+        "bidName": {
+          "type": "string"
+        },
+        "borough": {
+          "type": "string",
+          "enum": [
+            "Manhattan",
+            "Brooklyn",
+            "Queens",
+            "Bronx",
+            "Staten Island"
+          ]
+        },
+        "yearEstablished": {
+          "type": "number"
+        },
+        "featured": {
+          "type": "boolean",
+          "default": false
+        },
+        "revisionMode": {
+          "type": "boolean",
+          "default": false,
+          "description": "If true, displays visualization placeholders even if no components exist",
+          "markdownDescription": "If true, displays visualization placeholders even if no components exist"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "insightComponents": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Array of relative filepaths to TSX components for Insight visualizations",
+          "markdownDescription": "Array of relative filepaths to TSX components for Insight visualizations"
+        },
+        "transformationComponents": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Array of relative filepaths to TSX components for Transformation visualizations",
+          "markdownDescription": "Array of relative filepaths to TSX components for Transformation visualizations"
+        },
+        "predictionComponents": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Array of relative filepaths to TSX components for Prediction visualizations",
+          "markdownDescription": "Array of relative filepaths to TSX components for Prediction visualizations"
+        },
+        "consensusComponents": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Array of relative filepaths to TSX components for Consensus visualizations",
+          "markdownDescription": "Array of relative filepaths to TSX components for Consensus visualizations"
+        },
+        "dataSource": {
+          "type": "string"
+        },
+        "visualizationTechniques": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "$schema": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "description",
+        "publishDate",
+        "bidName",
+        "borough"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
