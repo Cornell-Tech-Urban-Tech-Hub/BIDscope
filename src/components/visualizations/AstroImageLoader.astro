@@ -16,34 +16,68 @@ const { src, alt = '', width = 800, height = 600, class: className = '' } = Astr
 
 // Process the image path
 let imagePath;
-try {
-  // Handle paths that include /src/ by removing that part
-  // and any leading slash to make it relative to project root
-  let importPath = src;
-  
-  // Remove /src/ prefix if present (common in your file paths)
-  if (importPath.includes('/src/')) {
-    importPath = importPath.replace('/src/', '');
-  } else if (importPath.startsWith('src/')) {
-    importPath = importPath.replace('src/', '');
+let isExternalImage = false;
+
+// Check if the source is an external URL
+if (src.startsWith('http://') || src.startsWith('https://')) {
+  isExternalImage = true;
+  imagePath = src;
+} else {
+  try {
+    // Handle paths that include /src/ by removing that part
+    // and any leading slash to make it relative to project root
+    let importPath = src;
+    
+    // For relative paths starting with ../../
+    if (importPath.startsWith('../../')) {
+      // These are already properly formatted relative to the component location
+      importPath = importPath;
+    }
+    // Remove /src/ prefix if present (common in your file paths)
+    else if (importPath.includes('/src/')) {
+      importPath = importPath.replace('/src/', '/');
+    } else if (importPath.startsWith('src/')) {
+      importPath = importPath.replace('src/', '');
+    }
+    
+    // Remove any leading slash for import
+    if (importPath.startsWith('/')) {
+      importPath = importPath.substring(1);
+    }
+    
+    console.log(`Attempting to import image: ${importPath}`);
+    
+    // Use dynamic import to get the image
+    const imageModule = await import(`../../${importPath}`);
+    imagePath = imageModule.default;
+  } catch (error) {
+    console.error(`Failed to import image: ${src}`, error);
+    console.log("Import path attempted:", src);
+    
+    // Try an alternative approach for public directory images
+    if (src.startsWith('/') && !src.startsWith('/src/')) {
+      // This might be a public directory image, use directly
+      imagePath = src;
+      isExternalImage = true;
+    }
   }
-  
-  // Remove any leading slash
-  if (importPath.startsWith('/')) {
-    importPath = importPath.substring(1);
-  }
-  
-  // Use dynamic import to get the image
-  const imageModule = await import(`../../${importPath}`);
-  imagePath = imageModule.default;
-} catch (error) {
-  console.error(`Failed to import image: ${src}`, error);
-  console.error("Import error details:", error);
 }
+
+// Get the base URL for proper path resolution
+const baseUrl = import.meta.env.BASE_URL || '/';
 ---
 
-<div class="astro-image-container">
-  {imagePath ? (
+{isExternalImage ? (
+  <div class="astro-image-container">
+    <img 
+      src={imagePath} 
+      alt={alt} 
+      class={`astro-image ${className}`}
+      loading="lazy"
+    />
+  </div>
+) : imagePath ? (
+  <div class="astro-image-container">
     <Image 
       src={imagePath} 
       alt={alt} 
@@ -51,13 +85,13 @@ try {
       height={height}
       class={`astro-image ${className}`}
     />
-  ) : (
-    <div class="error-message">
-      <p>Failed to load image: {src}</p>
-      <p>Make sure the image exists and the path is correct</p>
-    </div>
-  )}
-</div>
+  </div>
+) : (
+  <div class="error-message">
+    <p>Failed to load image: {src}</p>
+    <p>Make sure the image exists and the path is correct</p>
+  </div>
+)}
 
 <style>
   .astro-image-container {

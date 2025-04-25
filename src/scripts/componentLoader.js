@@ -22,12 +22,21 @@ export async function loadComponent(componentPath) {
       processedPath = componentPath;
     }
     
+    // Fix URLs that incorrectly include 'src' in the path
+    if (processedPath.includes('/src/')) {
+      processedPath = processedPath.replace('/src/', '/');
+      console.log(`Fixed path by removing 'src': ${processedPath}`);
+    } else if (processedPath.startsWith('src/')) {
+      processedPath = processedPath.replace('src/', '');
+      console.log(`Fixed path by removing 'src': ${processedPath}`);
+    }
+    
     // Detect file type based on extension
     const fileExtension = processedPath.split('.').pop().toLowerCase();
     
     // For images within src directory, let Astro handle it specially
     if (['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'].includes(fileExtension) && 
-        (processedPath.includes('/src/') || processedPath.startsWith('src/') || processedPath.startsWith('../../'))) {
+        (processedPath.includes('/components/') || processedPath.includes('/assets/') || processedPath.startsWith('../../'))) {
       // Instead of trying to create an image element directly,
       // return an object that signals this is an image to be processed by Astro
       return {
@@ -105,6 +114,17 @@ function createImageElement(path) {
   img.style.maxWidth = '100%';
   img.alt = 'Visualization image'; // Add basic accessibility
   return img;
+}
+
+// Helper function to normalize public URLs to avoid 'src' in path
+function normalizePublicUrl(url) {
+  // For URLs that should point to public directory
+  if (url.includes('/src/')) {
+    return url.replace('/src/', '/');
+  } else if (url.startsWith('src/')) {
+    return url.replace('src/', '');
+  }
+  return url;
 }
 
 // Helper function to create a video element

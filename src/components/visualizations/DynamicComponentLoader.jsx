@@ -15,6 +15,7 @@ const DynamicComponentLoader = ({ componentPath, fullWidth = false }) => {
   const [isAstroImage, setIsAstroImage] = useState(false);
   const [isYouTubeEmbed, setIsYouTubeEmbed] = useState(false);
   const [youTubeId, setYouTubeId] = useState(null);
+  const [isMarkdown, setIsMarkdown] = useState(false);
   const containerRef = useRef(null);
   // Use a stable id to prevent remounting issues
   const [stableId] = useState(() => Math.random().toString(36).slice(2, 10));
@@ -26,6 +27,7 @@ const DynamicComponentLoader = ({ componentPath, fullWidth = false }) => {
     const loadAndRenderComponent = async () => {
       if (!componentPath) {
         setLoading(false);
+        setError("No component path provided");
         return;
       }
       
@@ -40,6 +42,11 @@ const DynamicComponentLoader = ({ componentPath, fullWidth = false }) => {
           setLoading(false);
           return;
         }
+      }
+
+      // Check if the file is a markdown file
+      if (componentPath.endsWith('.md') || componentPath.endsWith('.markdown')) {
+        setIsMarkdown(true);
       }
       
       try {
@@ -89,11 +96,20 @@ const DynamicComponentLoader = ({ componentPath, fullWidth = false }) => {
   }, [componentPath, stableId]);
 
   if (loading) {
-    return <div className="viz-loading">Loading visualization...</div>;
+    return (
+      <div className="viz-loading" role="status" aria-live="polite">
+        <span>Loading visualization...</span>
+        <div className="viz-loading-spinner" aria-hidden="true"></div>
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="viz-error">{error}</div>;
+    return (
+      <div className="viz-error" role="alert">
+        <p><strong>Error:</strong> {error}</p>
+      </div>
+    );
   }
 
   // For YouTube embeds, render directly in React
@@ -135,6 +151,17 @@ const DynamicComponentLoader = ({ componentPath, fullWidth = false }) => {
     );
   }
 
+  // For Markdown content
+  if (isMarkdown) {
+    return (
+      <div 
+        ref={containerRef} 
+        className={`viz-container-markdown ${fullWidth ? 'full-width' : ''}`}
+        aria-label="Markdown content"
+      />
+    );
+  }
+
   // For DOM elements (rendered via ref)
   if (!Component) {
     return (
@@ -147,7 +174,16 @@ const DynamicComponentLoader = ({ componentPath, fullWidth = false }) => {
 
   // For React components - properly handle with stable ID
   if (Component) {
-    return React.createElement(Component, { key: stableId });
+    try {
+      return React.createElement(Component, { key: stableId });
+    } catch (err) {
+      console.error(`Error rendering component: ${err.message}`);
+      return (
+        <div className="viz-error" role="alert">
+          <p><strong>Rendering Error:</strong> {err.message}</p>
+        </div>
+      );
+    }
   }
 
   return null;
