@@ -15,8 +15,6 @@ const projectBids = allProjects.map(project => project.data.bidName);
 const bidToSlugMap = Object.fromEntries(
   allProjects.map(project => [project.data.bidName, project.slug])
 );
-
-const base = import.meta.env.BASE_URL || '/';
 ---
 
 <MainLayout title="BIDSpec - Business Improvement District Analysis" 
@@ -65,7 +63,7 @@ const base = import.meta.env.BASE_URL || '/';
       
       <!-- Button placed back in first container but as standalone element -->
       <div class="relative mt-4 mb-8 flex justify-center">
-        <a href={`${base}/projects`} class="button hero-button">View Projects</a>
+        <a href="/projects" class="button hero-button">View Projects</a>
       </div>
     </div>
     
@@ -110,7 +108,7 @@ const base = import.meta.env.BASE_URL || '/';
       
       <div class="md:col-span-2 fade-in">
         <div class="relative rounded-xl overflow-hidden border border-muted/30 shadow-lg image-frame">
-          <img src={`${base}/images/cornell-tech.jpg`} alt="Cornell Tech campus" class="w-full h-auto object-cover aspect-[4/3]" />
+          <img src="/images/cornell-tech.jpg" alt="Cornell Tech campus" class="w-full h-auto object-cover aspect-[4/3]" />
         </div>
         <p class="text-sm text-muted-foreground mt-3 text-center">Cornell Tech campus on Roosevelt Island, NYC</p>
       </div>
@@ -173,7 +171,7 @@ const base = import.meta.env.BASE_URL || '/';
     </div>
     
     <div class="mt-14 text-center fade-in">
-      <a href={`${base}/projects`} class="button">View all projects</a>
+      <a href="/projects" class="button">View all projects</a>
     </div>
   </section>
   
@@ -202,7 +200,7 @@ const base = import.meta.env.BASE_URL || '/';
         Dive into our comprehensive analyses of Business Improvement Districts across New York City.
       </p>
       <div class="flex flex-wrap justify-center gap-4">
-        <a href={`${base}/projects`} class="px-8 py-3 bg-white text-primary font-medium rounded-lg hover:bg-opacity-95 transition-colors">
+        <a href="/projects" class="px-8 py-3 bg-white text-primary font-medium rounded-lg hover:bg-opacity-95 transition-colors">
           View All Projects
         </a>
       </div>
@@ -226,8 +224,8 @@ function initializePage() {
   const imgElements = document.querySelectorAll('img');
   imgElements.forEach(img => {
     img.onerror = () => {
-      const base = import.meta.env.BASE_URL || '/';
-      img.src = `${base}/images/placeholder.jpg`;
+      // Use absolute path for placeholder without base variable
+      img.src = "/images/placeholder.jpg";
     };
   });
 

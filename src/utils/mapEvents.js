@@ -122,14 +122,7 @@ class MapEventManager {
             return astroData.dataset.astroRepoBase;
           }
         }
-        
-        // Final fallback - try to get from window location for GitHub Pages
-        if (typeof window !== 'undefined') {
-          const pathParts = window.location.pathname.split('/');
-          if (pathParts.length > 1 && pathParts[1] === 'BIDspec') {
-            return '/BIDspec';
-          }
-        }
+
         
         return '/';
       };
