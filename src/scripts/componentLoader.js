@@ -2,9 +2,6 @@
 
 export async function loadComponent(componentPath) {
   try {
-    // Get the base URL from environment
-    const baseUrl = import.meta.env.BASE_URL || '/';
-    
     console.log(`Loading component with path: ${componentPath}`);
     
     // Special handling for YouTube URLs
@@ -17,31 +14,25 @@ export async function loadComponent(componentPath) {
       return createIframeElement(componentPath.substring(7));
     }
     
-    // Process path with base URL if needed
+    // Handle relative paths starting with ../../
     let processedPath = componentPath;
-    
-    // If it's a relative path and doesn't already include the base URL, add it
-    if (!processedPath.startsWith('http') && !processedPath.startsWith('//') && 
-        !processedPath.startsWith('/') && !processedPath.startsWith(baseUrl)) {
-      processedPath = `${baseUrl}${processedPath}`;
+    if (componentPath.startsWith('../../')) {
+      // Leave as-is - we'll handle it directly in import statements
+      console.log(`Using relative path as specified: ${componentPath}`);
+      processedPath = componentPath;
     }
-    // For paths starting with '/' but not the baseUrl, add the base URL
-    else if (processedPath.startsWith('/') && baseUrl !== '/' && !processedPath.startsWith(baseUrl)) {
-      processedPath = `${baseUrl}${processedPath.substring(1)}`;
-    }
-    
-    console.log(`Processed path: ${processedPath}`);
     
     // Detect file type based on extension
-    const fileExtension = componentPath.split('.').pop().toLowerCase();
+    const fileExtension = processedPath.split('.').pop().toLowerCase();
     
     // For images within src directory, let Astro handle it specially
     if (['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'].includes(fileExtension) && 
-        (componentPath.includes('/src/') || componentPath.startsWith('src/') || componentPath.startsWith('../../'))) {
-      // Pass the original path for Astro to handle
+        (processedPath.includes('/src/') || processedPath.startsWith('src/') || processedPath.startsWith('../../'))) {
+      // Instead of trying to create an image element directly,
+      // return an object that signals this is an image to be processed by Astro
       return {
         type: 'astro-image',
-        path: componentPath
+        path: processedPath
       };
     }
     
@@ -75,175 +66,20 @@ export async function loadComponent(componentPath) {
       case 'tsx':
       case 'js':
       case 'ts': 
-        // Using dynamic import to load the component
-        try {
-          // For import statements, we need to handle base URL differently
-          let importPath = processedPath;
-          
-          // Create versions of the path with and without the src/ prefix
-          const importPaths = [];
-          
-          // Normalize baseUrl to ensure it has a trailing slash
-          const normalizedBase = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
-          
-          // If it's an absolute path starting with the base URL
-          if (baseUrl !== '/' && importPath.startsWith(baseUrl)) {
-            // Extract the path after the base URL
-            const pathWithoutBase = importPath.substring(baseUrl.length);
-            
-            // Try paths with and without src/ prefix
-            if (pathWithoutBase.startsWith('src/')) {
-              // Without src/ prefix (for production environment)
-              importPaths.push(`${normalizedBase}${pathWithoutBase.substring(4)}`);
-              
-              // Just the path without base or src/ - for GitHub Pages
-              const cleanPath = pathWithoutBase.substring(4);
-              if (cleanPath) {
-                importPaths.push(`${normalizedBase}${cleanPath}`);
-              }
-            } else {
-              // Path already doesn't have src/ prefix
-              importPaths.push(importPath);
-            }
-          } else {
-            // For paths that don't start with baseUrl
-            if (importPath.startsWith('src/')) {
-              // Remove src/ prefix and add base
-              importPaths.push(`${normalizedBase}${importPath.substring(4)}`);
-              importPaths.push(importPath.substring(4)); // Try without base too
-            } else if (importPath.includes('/src/')) {
-              // Handle /src/ in the middle of the path
-              importPaths.push(importPath.replace('/src/', '/'));
-            }
-            
-            // Try with base URL explicitly added
-            if (!importPath.startsWith('/') && !importPath.startsWith(baseUrl) && 
-                !importPath.startsWith('http')) {
-              importPaths.push(`${normalizedBase}${importPath}`);
-            }
-            
-            // Always include the original path
-            importPaths.push(importPath);
-          }
-          
-          // Ensure the known working path pattern is included for GitHub Pages
-          const componentPathWithoutSrc = componentPath.replace(/^\/?(src\/)?/, '');
-          importPaths.push(`${normalizedBase}${componentPathWithoutSrc}`);
-          
-          // Try each path strategy in sequence
-          console.log('Attempting import with paths:', importPaths);
-          
-          for (const path of importPaths) {
-            try {
-              const result = await attemptImport(path);
-              console.log(`Successfully imported from: ${path}`);
-              return result;
-            } catch (e) {
-              console.log(`Import attempt failed for path: ${path}`);
-              // Continue to next path
-            }
-          }
-          
-          // If we got here, all import attempts failed
-          throw new Error(`Failed to import component after trying multiple path strategies`);
-        } catch (importError) {
-          console.error(`Failed to import component: ${processedPath}`, importError);
-          throw new Error(`Failed to import component: ${importError.message}`);
-        }
+        // Use the relative path directly for dynamic import - important!
+        console.log(`Importing JSX/TSX component: ${processedPath}`);
+        const module = await import(/* @vite-ignore */ processedPath);
+        return module.default;
+        
+      // Default: try to load as a JavaScript module
+      default:
+        console.warn(`Unknown file type: ${fileExtension}, attempting to load as module`);
+        const defaultModule = await import(/* @vite-ignore */ processedPath);
+        return defaultModule.default;
     }
   } catch (error) {
     console.error(`Failed to load component: ${componentPath}`, error);
     return createErrorElement(`Failed to load: ${componentPath} (${error.message})`);
-  }
-}
-
-// Helper function to attempt import with different strategies
-async function attemptImport(path) {
-  console.log(`Attempting to import: ${path}`);
-  
-  // Special handling for JSX/TSX files on GitHub Pages
-  if ((path.endsWith('.jsx') || path.endsWith('.tsx')) && 
-      (path.includes('github.io') || path.startsWith('/BIDspec/') || path.includes('githubusercontent.com'))) {
-    
-    console.log('Using fetch approach for JSX/TSX file:', path);
-    
-    try {
-      // Use fetch instead of import for JSX files due to MIME type issues
-      const response = await fetch(path);
-      
-      if (!response.ok) {
-        console.error(`Failed to fetch: ${response.status}`, path);
-        throw new Error(`Failed to fetch component: ${response.status}`);
-      }
-      
-      // Get the JSX content
-      const jsxContent = await response.text();
-      
-      // Create a simple component wrapper that will evaluate the JSX
-      // using React's createElement API directly (avoiding JSX parsing issues)
-      return function DynamicJsxComponent() {
-        // Create a container ref to render into
-        const containerRef = React.useRef(null);
-        
-        // Use effect to create and mount the component from source
-        React.useEffect(() => {
-          try {
-            // Use a safe evaluation approach with Function constructor
-            const createComponentFn = new Function('React', `
-              "use strict";
-              // Provide React so JSX can use it
-              const { createElement, useState, useEffect, useRef, useMemo, useCallback } = React;
-              
-              // Create a temporary container to hold the component
-              let Component;
-              
-              // Execute component code
-              ${jsxContent}
-              
-              // Return whichever export was defined
-              return Component || exports?.default || exports || {};
-            `);
-            
-            // Execute the function with React
-            const ComponentClass = createComponentFn(window.React);
-            
-            // Only render if we have a valid component and container
-            if (ComponentClass && containerRef.current) {
-              // If it's a function component, render it
-              const element = window.React.createElement(ComponentClass);
-              window.ReactDOM.render(element, containerRef.current);
-            }
-          } catch (err) {
-            console.error('Error rendering dynamic JSX:', err);
-            if (containerRef.current) {
-              containerRef.current.innerHTML = `<div class="error">Error rendering component: ${err.message}</div>`;
-            }
-          }
-          
-          // Clean up on unmount
-          return () => {
-            if (containerRef.current) {
-              window.ReactDOM.unmountComponentAtNode(containerRef.current);
-            }
-          };
-        }, []);
-        
-        // Return a div that the component will render into
-        return window.React.createElement('div', { ref: containerRef, className: 'dynamic-jsx-container' });
-      };
-    } catch (error) {
-      console.error(`Failed to load JSX component:`, error);
-      throw error;
-    }
-  }
-  
-  // Standard import for other files
-  try {
-    const module = await import(/* @vite-ignore */ path);
-    return module.default || module;
-  } catch (error) {
-    console.error(`Import failed for ${path}:`, error);
-    throw error;
   }
 }
 
