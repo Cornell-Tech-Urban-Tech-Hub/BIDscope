@@ -17,6 +17,11 @@ const { src, alt = '', width = 800, height = 600, class: className = '' } = Astr
 // Process the image path
 let imagePath;
 let isExternalImage = false;
+let errorMessage = null;
+
+// Get the base URL for proper path resolution
+const baseUrl = import.meta.env.BASE_URL || '/';
+const isProd = import.meta.env.PROD;
 
 // Check if the source is an external URL
 if (src.startsWith('http://') || src.startsWith('https://')) {
@@ -45,26 +50,58 @@ if (src.startsWith('http://') || src.startsWith('https://')) {
       importPath = importPath.substring(1);
     }
     
-    console.log(`Attempting to import image: ${importPath}`);
-    
-    // Use dynamic import to get the image
-    const imageModule = await import(`../../${importPath}`);
-    imagePath = imageModule.default;
+    // For relative paths and public directory images
+    if (importPath.startsWith('public/')) {
+      // Handle public directory paths by removing 'public/'
+      imagePath = `/${importPath.replace('public/', '')}`;
+      isExternalImage = true;
+    } else if (importPath.startsWith('/') && !importPath.includes('/src/')) {
+      // Already a root-relative path, might be from public directory
+      imagePath = importPath;
+      isExternalImage = true;
+    } else {
+      try {
+        console.log(`[AstroImageLoader] Attempting to import image: ${importPath}`);
+        
+        // Use dynamic import to get the image
+        const imageModule = await import(`../../${importPath}`);
+        imagePath = imageModule.default;
+        console.log(`[AstroImageLoader] Successfully imported image: ${importPath}`);
+      } catch (importError) {
+        console.error(`[AstroImageLoader] Failed to import image: ${importPath}`, importError);
+        
+        // Try checking if this is a public directory image
+        if (importPath.startsWith('images/') || !importPath.includes('/')) {
+          // This might be a public directory image, try using directly
+          imagePath = `/${importPath}`;
+          isExternalImage = true;
+          console.log(`[AstroImageLoader] Falling back to public path: ${imagePath}`);
+        } else {
+          // Try a direct path with baseUrl
+          imagePath = `${baseUrl}${importPath}`;
+          isExternalImage = true;
+          console.log(`[AstroImageLoader] Falling back to baseUrl path: ${imagePath}`);
+        }
+      }
+    }
   } catch (error) {
-    console.error(`Failed to import image: ${src}`, error);
-    console.log("Import path attempted:", src);
+    console.error(`[AstroImageLoader] Error processing image path: ${src}`, error);
+    errorMessage = `Failed to load image: ${src}. Error: ${error.message}`;
     
-    // Try an alternative approach for public directory images
-    if (src.startsWith('/') && !src.startsWith('/src/')) {
+    // Set a fallback for the public directory as a last resort
+    if (src.startsWith('/')) {
       // This might be a public directory image, use directly
       imagePath = src;
       isExternalImage = true;
+      console.log(`[AstroImageLoader] Last resort fallback to direct path: ${imagePath}`);
+    } else {
+      // Try with baseUrl prefix
+      imagePath = `${baseUrl}${src}`;
+      isExternalImage = true;
+      console.log(`[AstroImageLoader] Last resort fallback with baseUrl: ${imagePath}`);
     }
   }
 }
-
-// Get the base URL for proper path resolution
-const baseUrl = import.meta.env.BASE_URL || '/';
 ---
 
 {isExternalImage ? (
@@ -74,7 +111,15 @@ const baseUrl = import.meta.env.BASE_URL || '/';
       alt={alt} 
       class={`astro-image ${className}`}
       loading="lazy"
+      width={width}
+      height={height}
+      onerror="this.onerror=null; this.classList.add('image-error'); this.parentNode.classList.add('has-error');"
     />
+    {isProd && (
+      <noscript>
+        <div class="noscript-message">Image: {imagePath}</div>
+      </noscript>
+    )}
   </div>
 ) : imagePath ? (
   <div class="astro-image-container">
@@ -88,8 +133,9 @@ const baseUrl = import.meta.env.BASE_URL || '/';
   </div>
 ) : (
   <div class="error-message">
-    <p>Failed to load image: {src}</p>
+    <p>{errorMessage || `Failed to load image: ${src}`}</p>
     <p>Make sure the image exists and the path is correct</p>
+    <code class="debug-path">{src}</code>
   </div>
 )}
 
@@ -100,6 +146,7 @@ const baseUrl = import.meta.env.BASE_URL || '/';
     justify-content: center;
     align-items: center;
     overflow: hidden;
+    position: relative;
   }
   
   .astro-image {
@@ -116,5 +163,35 @@ const baseUrl = import.meta.env.BASE_URL || '/';
     border-radius: 4px;
     margin: 1rem 0;
     text-align: center;
+  }
+  
+  .debug-path {
+    font-size: 0.8rem;
+    opacity: 0.7;
+    word-break: break-all;
+  }
+  
+  .image-error {
+    border: 1px dashed red;
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .has-error::after {
+    content: "Image failed to load";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 0, 0, 0.1);
+    padding: 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+  }
+  
+  .noscript-message {
+    display: none;
   }
 </style>
