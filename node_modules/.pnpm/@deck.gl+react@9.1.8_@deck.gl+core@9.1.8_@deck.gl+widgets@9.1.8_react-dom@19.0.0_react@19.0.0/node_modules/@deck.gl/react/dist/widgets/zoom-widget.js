@@ -1,7 +1,0 @@
-import { ZoomWidget as _ZoomWidget } from '@deck.gl/widgets';
-import { useWidget } from "../utils/use-widget.js";
-export const ZoomWidget = (props = {}) => {
-    const widget = useWidget(_ZoomWidget, props);
-    return null;
-};
-//# sourceMappingURL=zoom-widget.js.map

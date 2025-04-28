@@ -1,2 +1,0 @@
-// Typed arrays
-export {};

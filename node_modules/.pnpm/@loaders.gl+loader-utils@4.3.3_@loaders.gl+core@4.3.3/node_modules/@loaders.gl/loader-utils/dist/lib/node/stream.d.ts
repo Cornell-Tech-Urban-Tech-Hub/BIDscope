@@ -1,6 +1,0 @@
-import * as stream from 'stream';
-export type { Writable } from 'stream';
-/** Wrapper for Node.js stream method */
-export declare const Transform: typeof stream.Transform;
-export declare const isSupported: boolean;
-//# sourceMappingURL=stream.d.ts.map

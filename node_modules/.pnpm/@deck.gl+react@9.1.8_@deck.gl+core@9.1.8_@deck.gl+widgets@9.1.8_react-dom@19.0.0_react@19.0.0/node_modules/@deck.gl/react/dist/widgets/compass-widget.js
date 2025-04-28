@@ -1,7 +1,0 @@
-import { CompassWidget as _CompassWidget } from '@deck.gl/widgets';
-import { useWidget } from "../utils/use-widget.js";
-export const CompassWidget = (props = {}) => {
-    const widget = useWidget(_CompassWidget, props);
-    return null;
-};
-//# sourceMappingURL=compass-widget.js.map
