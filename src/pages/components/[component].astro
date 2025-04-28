@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import DynamicComponentLoader from '../../components/visualizations/DynamicComponentLoader.jsx';
+import AstroImageLoader from '../../components/visualizations/AstroImageLoader.astro';
 
 // Define a custom minimal layout for component-only view
 const base = import.meta.env.BASE_URL || '/';
@@ -65,6 +66,16 @@ export async function getStaticPaths() {
 
 // Get component data from props
 const { componentPath, projectTitle, projectSlug, componentTitle, bidName } = Astro.props;
+
+// Helper function to check if a path is an image
+function isImagePath(path) {
+  if (!path) return false;
+  const ext = path.split('.').pop().toLowerCase();
+  return ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'].includes(ext);
+}
+
+// Determine if this component is an image
+const isImage = isImagePath(componentPath);
 ---
 
 <!DOCTYPE html>
@@ -135,10 +146,50 @@ const { componentPath, projectTitle, projectSlug, componentTitle, bidName } = As
         box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         border-radius: 8px;
         overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      /* Fixed styling for image components */
+      .image-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        max-height: 90vh;
+        padding: 1rem;
+        box-sizing: border-box;
+      }
+      
+      .image-wrapper :global(img),
+      .image-wrapper .astro-image {
+        max-width: 100%;
+        max-height: 85vh;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        display: block;
+        margin: 0 auto;
+      }
+
+      .image-wrapper .astro-image-container {
+        width: auto;
+        height: auto;
+        max-width: 100%;
+        max-height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
       
       @media (max-width: 768px) {
         .component-container {
+          padding: 1rem;
+        }
+        
+        .image-wrapper {
           padding: 1rem;
         }
       }
@@ -158,7 +209,17 @@ const { componentPath, projectTitle, projectSlug, componentTitle, bidName } = As
       
       <main class="component-container">
         <div class="component-wrapper">
-          <DynamicComponentLoader client:only="react" componentPath={componentPath} fullWidth={true} />
+          {isImage ? (
+            <div class="image-wrapper">
+              <AstroImageLoader 
+                src={componentPath} 
+                alt={componentTitle} 
+                class="fullscreen-image"
+              />
+            </div>
+          ) : (
+            <DynamicComponentLoader client:only="react" componentPath={componentPath} />
+          )}
         </div>
       </main>
     </div>

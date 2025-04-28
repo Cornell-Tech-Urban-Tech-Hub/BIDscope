@@ -1,4 +1,5 @@
 # April 16 2025 - Website Dev Workshop 
+## https://cornell-tech-urban-tech-hub.github.io/BIDspec/
 
 ## 10:30-11AM 
 ### Break into teams, and flesh out an outline for your BIDSpec page: 
@@ -11,3 +12,8 @@
 
 ## 11AM 
 ### I will go around and review the outlines of the website page for each group. 
+
+## 11:50-12:00 Break 
+
+## 12:00-class end
+### We will workshop getting components working in the project environment. Let's save text for outside of class, as it should be a fairly easy port of your final slide deck. 
