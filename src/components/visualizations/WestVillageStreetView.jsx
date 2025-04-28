@@ -4,7 +4,7 @@ export default function WestVillageStreetView() {
         {/* image */}
         <div className="flex-1 flex justify-center items-center">
           <img 
-            src="/BIDspec/west_village/street_view1.png" 
+            src="/west_village/street_view1.png"
             alt="West Village Street View" 
             style={{ width: '100%', maxWidth: '650px', borderRadius: '12px', objectFit: 'cover' }}
           />
