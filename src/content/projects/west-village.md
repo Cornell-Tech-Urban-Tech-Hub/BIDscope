@@ -49,15 +49,88 @@ West Village BID, established in 2022, is the fourth newest business improvement
 
 # Transformation Analysis
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eget neque at metus aliquam convallis. Nam finibus convallis felis, eu faucibus neque. Vestibulum gravida diam at ipsum posuere, ut pulvinar purus malesuada. Integer gravida fringilla arcu a fermentum. Nullam faucibus dui augue, a imperdiet magna gravida ut. Donec ac justo et enim tempus gravida at quis quam. Duis eu dapibus nisi, a fermentum quam. Mauris nec leo sit amet elit gravida egestas vel at magna. Nulla nisi neque, iaculis in augue eget, lacinia sodales nisl.
+## West Village BID - Transformation
 
-Mauris faucibus risus eget libero facilisis, non sagittis urna gravida. Sed feugiat justo odio, non mollis massa efficitur ac. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Pellentesque vulputate dictum dolor, eget vestibulum magna volutpat at. Cras a tellus velit. Nam nisi libero, aliquet at facilisis at, consequat nec purus. Sed tincidunt ligula eget placerat rutrum. Praesent pharetra congue purus, eu consequat nisl. Pellentesque euismod, mauris id ultrices efficitur, erat purus imperdiet magna, sit amet sollicitudin turpis ante id lacus.
+West Village’s historic streets are struggling to accommodate today’s pedestrian volumes, commercial churn, and tourist pressure. Targeted sidewalk widening and heritage-styled streetscape upgrades directly tackle current issues, restoring safe pedestrian flow, reinforcing the area’s cultural identity​​.  Through these interventions, we’re shaping a future that respects the past while supporting local businesses and the community.
+
+### Current State
+- **Narrow Sidewalk**: on Bleecker street, queues outside storefronts + two-sided parking cut pedestrian level-of-service.
+- **Limited Rest Area**: lacks pedestrian-friendly elements (e.g. benches)
+- **Fragmented streetscape language**: mix of modern fixtures next to landmark façades undermines sense of place
+
+### Interventions
+- **Removing parking space**: provide more space for pedestrain
+- **Pavement expansion**: provide more space for walking, accessibility, and outdoor seating and will have more foot traffic & higher retail engagement
+- **Adding historically inspired design elements**: like historic barriers, retro-style streetlights, and vintage benches to create a historical and attractive environment for both residents and visitors
+
+
+### Estimate Cost
+
+| Element                 | Estimated Cost per Unit      | Total Units (Approx.) | Total Cost Estimate   |
+|-------------------------|------------------------------|-----------------------|-----------------------|
+| Vintage Bench           | \$2,000 – \$4,000 per bench  | ~5 – 8                | ~\$10,000 – \$32,000  |
+| Historic Barrier        | \$500 – \$1,500 per section  | ~8 – 12               | ~\$4,000 – \$18,000   |
+| Retro Streetlight       | \$2,000 – \$8,000 per light  | ~3 – 5                | ~\$6,000 – \$40,000   |
+| Installation Costs      | \$500 – \$5,000 per element  | –                     | ~\$4,000 – \$40,000   |
+| Permitting & Misc.      | Varies (5–10 % of project)   | –                     | ~\$3,000 – \$10,000   |
+| **Total Estimated Budget** | –                        | –                     | **~\$30,000 – \$110,000** |
+
+### Estimate Timeline
+
+| Phase                        | Time              |  |
+|------------------------------|-------------------|-------------|
+| Design & Planning            | 1 – 2 months      | Month 0 – 2 |
+| Permitting & Approvals       | 2 – 4 months      | Month 2 – 6 |
+| Procurement & Manufacturing  | 3 – 6 months      | Month 6 – 12|
+| Installation                 | 1 – 2 months      | Month 12 – 14|
+| **Total Estimated Timeline** | **≈ 7 – 14 months** |             |
+
+
+### Estimate Impact
+
+|                           | Walkability Intervention (Phase 1)                                           | Aesthetic Intervention (Phase 2)                                          |
+|---------------------------|-------------------------------------------------------------------------------|----------------------------------------------------------------------------|
+| **Cost**                  | Low (trial run)                                                              | Moderate                                                                   |
+| **Trade-off**             | Loss of parking may inconvenience visitors and residents who rely on cars    | Long-term maintenance costs to keep the elements in good condition         |
+| **Impact**                | More space for walking, accessibility, and outdoor seating → higher foot traffic & retail engagement | More historical and attractive environment → increased visitors & local commerce |
+| **Summary**               | Prioritizing long-term pedestrian and business benefits                      | Prioritizing historical enhancement                                        |
+
+### Challenges and Strategies
+- **Funding**
+  - Public grants (historical preservation funds), private donors, and BID budgets
+  - Start with a trial project on a high-foot-traffic street, then expand based on success
+  - Consider public-private partnerships
+- **Permitting and Landmark Regulations**
+  - Work closely with city agencies (Landmarks Preservation Commission, NYC DOT) to ensure compliance
+  - Use historically accurate designs to gain faster approval
+- **Construction Disruptions**
+  - Schedule construction during low-traffic seasons to minimize disruptions
+  - Provide temporary pedestrian paths to maintain accessibility
+  - Offer business relief programs, such as temporary outdoor vending permits
 
 # Prediction Analysis
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed feugiat lacus ut justo elementum, efficitur sollicitudin nulla volutpat. In hac habitasse platea dictumst. Ut varius at arcu vel vestibulum. Quisque congue magna a ligula elementum, sit amet eleifend eros rutrum. Donec eu nisi eu tortor posuere dictum. Quisque et fringilla justo. Nullam nec auctor nisi. Donec ornare nibh vel consequat tempus. Aliquam laoreet diam turpis, non aliquet libero convallis in. Sed facilisis, velit nec gravida dapibus, dolor felis tincidunt diam, non sagittis est nisi eget ex. Nullam eget semper erat. Vivamus viverra ac enim at tempor. Vestibulum id tellus at velit rhoncus tincidunt sed ut magna.
 
 Curabitur tincidunt felis quis dui fermentum, eget tristique erat interdum. Mauris vel leo semper, facilisis ligula vitae, porta risus. Duis facilisis purus vel ipsum maximus, nec sagittis magna facilisis. Sed arcu magna, rhoncus nec congue ut, finibus sed diam. Ut sodales tellus non ornare tempus. Donec at felis pellentesque, malesuada neque posuere, ultrices sem. Nam pharetra sapien sed eros congue, in tincidunt nisl semper. Fusce porta felis in risus molestie, vel placerat mauris facilisis.
+
+### Economic Impact
+#### Business Activities
+
+There are some BID made similar improvements. In Brooklyn's Dumbo section, the retail sales jumped **172%** three years after the first pedestrian plaza opened. On Pearl Street, sales during peak seasons increased **14%** in stores along a mini plaza. Open Streets corridors provided an averaging **19%** sales boost for restaurants and bars.
+
+Therefore, the interventions should also lead to a **20%** increase in business activities.
+
+#### Employment Opportunities
+Long-Term Growth in Tourism will create more Employment Opportunities and increasing the local economy. Restaurants, retail shops, guided tours, and artisan markets need more staff to run the business.
+Based on **20%** increase, this is estimate increase of job opportunities.
+
+|               | Current Employment | Predicted Employment (Post-Intervention) | Net Gain |
+|-----------------------|--------------------|-------------------------------------------|----------|
+| Cafés & Restaurants   | 150                | 180                                       | +30      |
+| Retail Shops          | 50                 | 60                                        | +10      |
+| Guided Tours          | 10                 | 15                                        | +5       |
+| Artisan Markets       | 8                  | 12                                        | +4       |
 
 # Consensus Analysis
 
