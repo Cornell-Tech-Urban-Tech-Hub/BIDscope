@@ -1,0 +1,8 @@
+
+import __ASTRO_IMAGE_IMPORT_ZqWEIG from "../../assets/placeholder.jpg?astroContentImageFlag=&importer=src%2Fcontent%2Fprojects%2Fdowntown-brooklyn.md";
+import __ASTRO_IMAGE_IMPORT_r3CrA from "../../assets/placeholder.jpg?astroContentImageFlag=&importer=src%2Fcontent%2Fprojects%2Flong-island-city.md";
+import __ASTRO_IMAGE_IMPORT_Zbk4NF from "../../assets/placeholder.jpg?astroContentImageFlag=&importer=src%2Fcontent%2Fprojects%2Fwest-village.md";
+import __ASTRO_IMAGE_IMPORT_Z1v1chw from "../../assets/placeholder.jpg?astroContentImageFlag=&importer=src%2Fcontent%2Fprojects%2Ffifth-avenue-brooklyn.md";
+import __ASTRO_IMAGE_IMPORT_Z1UBK3x from "../../assets/placeholder.jpg?astroContentImageFlag=&importer=src%2Fcontent%2Fprojects%2Fdumbo.md";
+export default new Map([["../../assets/placeholder.jpg?astroContentImageFlag=&importer=src%2Fcontent%2Fprojects%2Fdowntown-brooklyn.md", __ASTRO_IMAGE_IMPORT_ZqWEIG], ["../../assets/placeholder.jpg?astroContentImageFlag=&importer=src%2Fcontent%2Fprojects%2Flong-island-city.md", __ASTRO_IMAGE_IMPORT_r3CrA], ["../../assets/placeholder.jpg?astroContentImageFlag=&importer=src%2Fcontent%2Fprojects%2Fwest-village.md", __ASTRO_IMAGE_IMPORT_Zbk4NF], ["../../assets/placeholder.jpg?astroContentImageFlag=&importer=src%2Fcontent%2Fprojects%2Ffifth-avenue-brooklyn.md", __ASTRO_IMAGE_IMPORT_Z1v1chw], ["../../assets/placeholder.jpg?astroContentImageFlag=&importer=src%2Fcontent%2Fprojects%2Fdumbo.md", __ASTRO_IMAGE_IMPORT_Z1UBK3x]]);
+		
