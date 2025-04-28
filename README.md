@@ -2,9 +2,19 @@
 
 This is the official website for the BIDSpec (Business Improvement District) project from Cornell Tech. Built with [Astro](https://astro.build/), the site showcases our research on Business Improvement Districts (BIDs) and their impact on urban development and community engagement.
 
-## About BIDSpec
+## [FOR STUDENTS] Editing Guidelines. 
 
-BIDSpec is a comprehensive analysis platform for Business Improvement Districts, providing insights into how these special assessment districts function, their economic impact, and their role in urban development. The project combines geospatial data visualization, economic analysis, and policy research to create a holistic understanding of BIDs across various cities.
+Project pages are stored in src/content/projects/BID_NAME.md. Your BID should already have a file for it created. In this file, you will see a header at the top with metadata for your BID (general info about the BID, etc.). Also of note are the *component* fields. These correspond to the visualizations to be rendered for your Insight, Transformation, Prediction, and/or Consensus portions of your analysis. Put code and media for your visualizations in /public/components/groups/BID_NAME/ , and reference them appropriately in the header of your markdown file. 
+
+Please do NOT change the first-level section titles (#Insight Analysis, etc.). I have regex that searches for these headers and puts the interactive components in the correct location. Feel free to add your own second-level (##) and third-level (###) headers. 
+
+**Please do not push directly to the repo. Instead, add your content and code on branches, and submit pull requests. I will review code and approve pull requests.** 
+
+**We will not incorporate server-side rendering (SSR). All loading of interactive components should be client-side, so that everything can be wholly contained in the repository. If this isn't possible for your visualization, a video demo will suffice (upload to YouTube and embed, etc.)**
+
+I highly encourage the use of AI-assisted development tools (a la GitHub CoPilot pro, which is free with the student developer pack), if you are unfamiliar with geospatial front-end development. Albeit through trial and error, this website is largely developed with CoPilot (the Claude 3.7 thinking model). 
+
+If you need to add extra modules to the project, please email me at mwf62@cornell.edu, and I can install them into the project environment.
 
 ## Development
 
@@ -30,30 +40,6 @@ This website is built using Astro, a modern static site generator that delivers 
 ### TailwindCSS
 
 The site uses TailwindCSS for styling, a utility-first CSS framework that enables rapid UI development.
-
-### Components
-
-The website features several custom components:
-- Interactive maps showing BID locations and boundaries
-- Data visualization tools for BID financial analysis
-- Project showcase highlighting specific BID case studies
-- Comparative analysis of BID structures across different cities
-
-## Project Structure
-
-- `/src/pages/` - Page templates including the main index
-- `/src/components/` - UI components organized by function
-- `/src/layouts/` - Layout templates for consistent page structure
-- `/public/` - Static assets like images, logos, and geospatial data
-
-## Deployment
-
-The site is deployed at [urban.tech.cornell.edu/bidspec](https://urban.tech.cornell.edu/bidspec) via GitHub Pages.
-
-## Team
-
-- Matt Franchi - Computer Science PhD Candidate
-- [Additional team members]
 
 ## Contact
 

@@ -18,7 +18,8 @@ revisionMode: true
 tags: ["Historic District", "Retail", "Tourism", "Cultural Heritage"]
 
 # Visualization Component References - empty arrays to be filled by students
-insightComponents: []
+insightComponents:
+  - "../../components/visualizations/WestVillageStreetView.jsx"
 transformationComponents: []
 predictionComponents: []
 consensusComponents: []
@@ -32,9 +33,19 @@ The West Village Business Improvement District serves one of Manhattan's most ic
 
 # Insight Analysis
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla facilisi. Proin eget fermentum nisi. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Donec euismod, nisl eget aliquam ultricies, nunc sapien ultricies arcu, vel feugiat nunc nisl eget libero. Vivamus commodo tortor ac quam varius, in accumsan nulla rutrum. Mauris egestas erat sit amet augue volutpat, eu convallis odio tincidunt. Nulla facilisi. Praesent luctus urna sed dolor congue dictum. Maecenas dignissim eros at nisi varius, in lacinia velit pulvinar.
+## West Village BID - Insight
 
-Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. In hac habitasse platea dictumst. Proin sed finibus justo. Praesent ultrices dolor non fermentum blandit. Quisque vel congue magna, at varius ligula. Aliquam erat volutpat. Aenean vestibulum metus nec enim consequat, id maximus dolor dignissim. Nullam vehicula tristique eros, non cursus purus elementum ac. Mauris tempus erat purus, sit amet feugiat enim fermentum non.
+West Village BID, established in 2022, is the fourth newest business improvement district in New York City. Covering approximately 46 acres (0.07 square miles), it is relatively small compared to other major city districts. With a moderate annual budget of around $595,000, the BID mainly focuses on providing essential services such as sanitation and public safety. Situated within the historic Greenwich Village Historic District, an area celebrated for its rich cultural and architectural legacy, West Village BID is surrounded by older, well-established BIDs like the Village Alliance (founded in 1993) and the Union Square Partnership (founded in 1984).
+
+### Key Observations
+- **Land Use**: Predominantly mixed residential and commercial buildings, with higher density toward the north.
+- **Mobility**: 7th Avenue South serves as a major traffic corridor, while Bleecker Street and Christopher Street are more pedestrian-focused.
+- **Public Spaces**: Parks like Father Demo Square and the Stonewall National Monument serve as important community spaces.
+
+### Challenges Identified
+- **Sanitation**: Garbage pickup was reduced during the pandemic and has only recently returned to pre-pandemic levels; maintaining cleanliness remains a priority.
+- **Pedestrian Experience**: Narrow sidewalks in parts of the district combined with heavy foot traffic pose challenges for walkability.
+- **Business Dynamics**: Restaurants, boutique shops, and cultural venues experience varying levels of activity, with concerns related to safety and sanitation expressed during interviews.
 
 # Transformation Analysis
 
