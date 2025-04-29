@@ -99,7 +99,7 @@ Our analysis utilizes three complementary simulation tools to evaluate different
 
 - StreetMix: Measures changes in foot traffic, flood prevention effectiveness, and traffic congestion based on different street configurations.  
 - FloodNet: Visualizes flooding patterns from the Gowanus Canal during major storm events, based on elevation data.  
-- GAMA: Models localized flooding from rainfall and storms showing water diffusion and barrier effectiveness.  
+- GAMA: Models localized flooding from rainfall and storms showing water diffusion and barrier effectiveness. GAMA depicts generic flooding behavior across the terrain, regardless of whether water originates from rainfall, canal overflow, or runoff.
 
 We modeled three distinct scenarios to assess potential interventions:
 
@@ -128,12 +128,18 @@ The current street design includes standard sidewalks, transit shelters, bicycle
   <figcaption>Figure 2. GAMA View 1: Average Flooding Scenario</figcaption>
 </figure>
 
+### Baseline Flooding Conditions in GAMA Model
+
 The GAMA model reveals important baseline conditions:
-- All cells start with low water height (~2.0)
-- Fifth Avenue BID area begins dry (white)
-- BID polygon border acts as a passive containment zone
-- Interior remains white → effective protection under low-risk scenarios
-This confirms that 5th Avenue's elevated position naturally protects it during minor flooding events, but does little to prevent water from flowing downhill toward the Gowanus Canal area.
+
+- All cells start with low water height (~2.0).
+- The **Fifth Avenue BID area** consistently exhibits *lower water levels* (light blue), indicating partial inundation but reduced severity compared to surrounding regions.
+- The **BID polygon border** functions as a passive containment zone that limits water exchange.
+- The **interior maintains lower water accumulation**, suggesting that its elevated position provides **partial protection** under low-risk scenarios.
+- The **square-shaped BID polygon** reflects the inclusion of not only Fifth Avenue but also **adjacent areas along 3rd and 4th Avenues**, capturing the broader commercial and mixed-use zone it is meant to represent.
+
+> This confirms that while Fifth Avenue’s topography helps **mitigate flood intensity** during minor events, it does **not fully prevent water intrusion** and offers limited protection to downstream areas such as the **Gowanus Canal**.
+
 
 ### View 2: Increased Flooding/High-Risk Scenario
 This view illustrates what happens during severe weather events with the current infrastructure.
@@ -159,7 +165,18 @@ During heavy rainfall, the current configuration fails to adequately manage stor
 The integrated simulation demonstrates severe flooding dynamics:
 - Gowanus Canal overflows into surrounding area triggered by heavy rainfall
 - All cells begin to flood; BID area gradually floods as dykes are overwhelmed
-- Simulations show real-time water diffusion and barrier failure
+- Simulations show real-time water diffusion and barrier failure, helping visualize how low-lying areas transition from dry to saturated.
+
+> While the barrier/dyke model in GAMA does **not replicate engineered flood infrastructure in precise detail**, it effectively simulates the **basic protective function** of elevation-based or physical boundaries—such as raised sidewalks, berms, or zoning boundaries—that slow water ingress.
+>
+> Even though the **Fifth Avenue BID border lacks a physical barrier**, simulating it as a **virtual containment zone** allows planners to:
+> - Visualize the impact of **zoning boundaries** on flood behavior
+> - **Estimate timing of flood onset** in targeted commercial zones
+> - Explore **policy-driven interventions** (e.g., permeable pavement, green buffers) within a defined footprint
+>
+> This abstraction is useful for **urban planning and resilience testing**, helping stakeholders prioritize areas for real-world flood mitigation strategies.
+
+
 
 The aerial view clearly shows the spread of floodwaters across lower-elevation areas, with 5th Avenue serving as a conduit that channels water toward lower avenues rather than absorbing or redirecting it.
 
@@ -185,7 +202,7 @@ The redesigned street features expanded sidewalks, improved transit infrastructu
 </figure>
 
 
-The simulation results demonstrate the effectiveness of the intervention:
+The GAMA simulation results demonstrate the effectiveness of the intervention:
 
 - BID area and surroundings are affected by increased water levels
 - Vegetation (green patches) appear as water recedes and cells near the BID
