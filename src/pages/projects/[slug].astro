@@ -165,25 +165,6 @@ function isImagePath(path) {
   const ext = path.split('.').pop().toLowerCase();
   return ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'].includes(ext);
 }
-
-// Function to normalize component paths for loading
-function normalizeComponentPath(path) {
-  if (!path) return '';
-  // Handle relative paths that point to the src directory
-  if (path.startsWith('../../') || path.startsWith('../')) {
-    return path;
-  }
-  // Handle absolute paths
-  if (path.startsWith('/')) {
-    return path;
-  }
-  // Handle URLs
-  if (path.startsWith('http')) {
-    return path;
-  }
-  // Default case - ensure path is relative to the base URL
-  return `${baseUrl}${path.startsWith('/') ? path.substring(1) : path}`;
-}
 ---
 
 <FullWidthLayout 
@@ -296,7 +277,7 @@ function normalizeComponentPath(path) {
                             {isImagePath(component) ? (
                               <AstroImageLoader src={component} alt={`Insight visualization ${i + 1}`} />
                             ) : (
-                              <DynamicComponentLoader client:only="react" componentPath={normalizeComponentPath(component)} />
+                              <DynamicComponentLoader client:only="react" componentPath={component} />
                             )}
                           </div>
                         </div>
@@ -350,7 +331,7 @@ function normalizeComponentPath(path) {
                             {isImagePath(component) ? (
                               <AstroImageLoader src={component} alt={`Transformation visualization ${i + 1}`} />
                             ) : (
-                              <DynamicComponentLoader client:only="react" componentPath={normalizeComponentPath(component)} />
+                              <DynamicComponentLoader client:only="react" componentPath={component} />
                             )}
                           </div>
                         </div>
@@ -404,7 +385,7 @@ function normalizeComponentPath(path) {
                             {isImagePath(component) ? (
                               <AstroImageLoader src={component} alt={`Prediction visualization ${i + 1}`} />
                             ) : (
-                              <DynamicComponentLoader client:only="react" componentPath={normalizeComponentPath(component)} />
+                              <DynamicComponentLoader client:only="react" componentPath={component} />
                             )}
                           </div>
                         </div>
@@ -456,7 +437,7 @@ function normalizeComponentPath(path) {
                             {isImagePath(component) ? (
                               <AstroImageLoader src={component} alt={`Consensus visualization ${i + 1}`} />
                             ) : (
-                              <DynamicComponentLoader client:only="react" componentPath={normalizeComponentPath(component)} />
+                              <DynamicComponentLoader client:only="react" componentPath={component} />
                             )}
                           </div>
                         </div>
