@@ -5,7 +5,7 @@ import * as turf from '@turf/turf';
 import { MapProvider, useMapContext } from './MapContext';
 import mapCleanupManager from '../../utils/mapCleanup';
 // Import utility functions from mapUtils.js
-import { createBidPerimeters, createBidPolygons, calculateBoundingBox, getBasePath } from '../../utils/mapUtils';
+import { createBidPerimeters, createBidPolygons, calculateBoundingBox } from '../../utils/mapUtils';
 // Import the map event manager
 import mapEventManager from '../../utils/mapEvents';
 
@@ -186,8 +186,7 @@ function DeckGLMap({
         if (!geojsonData && typeof window !== 'undefined') {
           console.log('GeoJSON data not loaded yet, attempting to load');
           
-          const base = getBasePath();
-          fetch(`${base}/data/bids.geojson`)
+          fetch(`/data/bids.geojson`)
             .then(response => {
               if (!response.ok) throw new Error(`Failed to fetch: ${response.status}`);
               return response.json();
@@ -382,8 +381,7 @@ function DeckGLMap({
         
         let bidData = geojsonData;
         if (!bidData) {
-          const base = getBasePath();
-          const response = await fetch(`${base}/data/bids.geojson`);
+          const response = await fetch(`/data/bids.geojson`);
           if (!response.ok) {
             throw new Error(`Failed to fetch GeoJSON: ${response.status} ${response.statusText}`);
           }
@@ -638,7 +636,7 @@ function getEnhancedTooltipStyle(isActive = false) {
   };
 }
 
-// Update setupMapLayers function to handle layer creation more safely
+// Update setupMapLayers function with proper URL navigation
 async function setupMapLayers(
   map, 
   geojsonData, 
@@ -853,8 +851,9 @@ async function setupMapLayers(
         
         // Only navigate if this BID has a project
         if (hasProject && bidToSlugMap && bidToSlugMap[bidName]) {
-          // Use mapEventManager to navigate to project instead of direct location change
-          mapEventManager.navigateToBidProject(bidName, bidToSlugMap);
+          // Use absolute URL path instead of mapEventManager
+          const projectSlug = bidToSlugMap[bidName];
+          window.location.href = `/projects/${projectSlug}`;
         }
       },
       onHover: (info) => {
@@ -978,7 +977,7 @@ async function setupMapLayers(
   }
 }
 
-// Update updateMapLayers function with similar improvements
+// Update updateMapLayers function similarly
 function updateMapLayers(
   deckOverlay, 
   geojsonData, 
@@ -1149,8 +1148,9 @@ function updateMapLayers(
           
           // Only navigate if this BID has a project
           if (hasProject && bidToSlugMap && bidToSlugMap[bidName]) {
-            // Use mapEventManager to navigate to project instead of direct location change
-            mapEventManager.navigateToBidProject(bidName, bidToSlugMap);
+            // Use absolute URL path for consistent navigation
+            const projectSlug = bidToSlugMap[bidName];
+            window.location.href = `/projects/${projectSlug}`;
           }
         },
         onHover: (info) => {
