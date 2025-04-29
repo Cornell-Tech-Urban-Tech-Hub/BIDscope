@@ -21,7 +21,8 @@ tags: ["Historic District", "Retail", "Tourism", "Cultural Heritage"]
 insightComponents:
     - "../../components/visualizations/WestVillageStreetView.jsx"
 transformationComponents: []
-predictionComponents: []
+predictionComponents:
+    [https://www.youtube.com/embed/5z-ai3G0_HQ, https://youtu.be/Yi7UfaQPESo]
 consensusComponents: []
 
 # Data Sources and techniques
@@ -117,8 +118,6 @@ West Village’s historic streets are struggling to accommodate today’s pedest
 ## Streetscape Visualization
 
 To visualize our proposed streetscape transformations, we developed [Stable Diffusion Street](https://github.com/ethan-yz-hao/stable-diffusion-street), an AI-powered street view image generator. This tool allows us to transform existing West Village street scenes while preserving their distinctive architectural character and spatial layout.
-
-<iframe width="100%" height="600px" src="https://www.youtube.com/embed/5z-ai3G0_HQ" title="West Village Transformation Visualization" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 The tool offers several key features that were essential for our visualization process:
 
