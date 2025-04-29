@@ -8,7 +8,7 @@ Project pages are stored in [src/content/projects/](/src/content/projects)BID_NA
 
 Put code modules (.jsx, .tsx, etc.) files for your visualizations in [/src/components/groups/](/src/components/groups)BID_NAME/ , and reference them appropriately in the header of your markdown file. **IMPORTANT** Then, you need to add your component to the component registry in [src/components/visualizations/ComponentRegistry.jsx](src/components/visualizations/ComponentRegistry.jsx), in the 'componentRegistry' dictionary. Without doing this, the site will not load your component and it will not work correctly in the production environment. 
 
-Put images amd media (.jpg, .png, etc.) files for your visualizations in [/public/components/groups/](/src/components/groups)BID_NAME/, and reference them appropriately in the header of your markdown file. See src/content/projects/robotability.md for an example project file. 
+Put images and media (.jpg, .png, etc.) files for your visualizations in [/public/components/groups/](/public/components/groups)BID_NAME/, and reference them appropriately in the header of your markdown file. See src/content/projects/robotability.md for an example project file. 
 
 Please do NOT change the first-level section titles (#Insight Analysis, etc.). I have regex that searches for these headers and puts the interactive components in the correct location. Feel free to add your own second-level (##) and third-level (###) headers. 
 
