@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: 
+Host: https://robotability.cornell.edu
+Sitemap: https://robotability.cornell.edu/sitemap-index.xml
