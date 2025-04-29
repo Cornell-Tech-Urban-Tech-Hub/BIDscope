@@ -167,6 +167,48 @@ The tool provides several key analytical capabilities:
 
 The analysis tool integrates actual pedestrian count data with spatial measurements of the existing streetscape, providing an evidence-based approach to our proposed interventions. This data-driven methodology ensures that our recommendations target the areas with the greatest need and potential impact.
 
+## Walkability Simulation
+We have implemented a tool using the **GAMA platform** to simulate and visualize the effects of adding resting areas in the West Village BID. The goal is to enhance pedestrian walkability, especially for vulnerable populations such as the elderly or those with mobility limitations.
+
+GAMA enables us to model real-world pedestrian behavior through agent-based simulation. Each pedestrian agent is programmed with behaviors such as:
+- Walking forward
+- Slowing down when crowded
+- Seeking rest when fatigued
+
+We developed two simulation scenarios:
+- **Baseline**: Pedestrians move through the BID under existing conditions, with limited access to seating.
+- **Intervention**: Additional benches are installed throughout the area, offering more opportunities for pedestrians to rest.
+
+By comparing the two simulations, we observed a reduction in pedestrian fatigue and a more even distribution of foot traffic in the intervention case. This demonstrates that even small design interventions can improve urban comfort and accessibility.
+
+### Before Intervention
+![](../../../public/components/groups/west-village/rest-area_before.gif)  
+*Baseline scenario: Pedestrians move without added benches. Red tiredness indicators cluster in key areas lacking rest infrastructure.*
+
+### After Intervention
+![](../../../public/components/groups/west-village/rest-area_after.gif)  
+*Intervention scenario: With benches added, tiredness indicators decrease and spread out, showing improved pedestrian recovery and comfort.*
+
+### Tiredness Levels Visualization
+*Dot colors represent tiredness levels:  
+🟢 Green = Energetic  
+🟡 Yellow = Moderately Tired  
+🔴 Red = Very Tired / Needs Rest*
+
+In the baseline simulation, red clusters indicate pedestrian fatigue due to the lack of rest areas. In the intervention scenario, those red zones begin to fade — signaling a more walkable and supportive environment.
+
+---
+
+### Interactive Scenario Planning
+
+In addition to visualizing fatigue patterns, our GAMA model serves as an interactive **planning tool**. Decision-makers can:
+- Adjust the number and location of resting areas
+- Explore multiple design configurations
+- Observe how pedestrian flow and comfort levels shift in response
+
+This enables low-risk exploration of **“what-if” scenarios**, supporting smarter, data-driven design decisions before implementation begins.
+
+
 ## Economic Impact
 
 ### Business Activities
