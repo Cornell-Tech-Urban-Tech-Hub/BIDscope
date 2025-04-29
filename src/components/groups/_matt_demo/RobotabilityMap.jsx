@@ -234,13 +234,9 @@ const RobotabilityMap = () => {
         const baseUrl = document.querySelector('meta[name="astro:base"]')?.getAttribute('content') || '';
         
         // Fix paths with baseUrl if needed
-        const sidewalksPath = baseUrl 
-          ? `${baseUrl}/src/components/groups/_matt_demo/sidewalks.geojson`
-          : '/src/components/groups/_matt_demo/sidewalks.geojson';
+        const sidewalksPath = '/components/groups/_matt_demo/sidewalks.geojson'
           
-        const censusPath = baseUrl 
-          ? `${baseUrl}/src/components/groups/_matt_demo/census.geojson`
-          : '/src/components/groups/_matt_demo/census.geojson';
+        const censusPath = '/components/groups/_matt_demo/census.geojson'
         
         console.log(`Loading data from: ${sidewalksPath} and ${censusPath}`);
         
