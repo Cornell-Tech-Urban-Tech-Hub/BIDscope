@@ -18,14 +18,14 @@ revisionMode: true
 tags: ["Robotics", "Urban Design", "Accessibility", "Smart Cities", "Automation"]
 
 insightComponents: [
-  "/src/components/groups/_matt_demo/RobotabilityMap.jsx"
+  "src/components/groups/_matt_demo/RobotabilityMap.jsx"
 ]
 transformationComponents: [
-  "/src/components/groups/_matt_demo/robo_1.png"
+  "/components/groups/_matt_demo/robo_1.png"
 ]
 predictionComponents: []
 consensusComponents: [
-  "/src/components/groups/_matt_demo/robo_0.png", 
+  "/components/groups/_matt_demo/robo_0.png", 
   "https://www.youtube.com/embed/o52MZ1AHyjA"
 ]
 
