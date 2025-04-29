@@ -7,6 +7,8 @@ interface Props {
   alt: string;
   width?: number;
   height?: number;
+  class?: string;
+  inferSize?: boolean;
 }
 
 // Get the props with defaults
@@ -14,21 +16,40 @@ const {
   src, 
   alt, 
   width = undefined, 
-  height = undefined 
+  height = undefined,
+  class: className = "",
+  inferSize = false
 } = Astro.props;
 
-// Handle both absolute paths and paths that don't start with '/'
-const imageSrc = src.startsWith('/') ? src : `/${src}`;
+// Process image path correctly for public directory
+// If the path doesn't start with a slash and doesn't include 'src/', 
+// we assume it's a path relative to public/
+let imageSrc = src;
+
+
+// If both width and height are missing and inferSize is false, use default dimensions
+// to prevent the MissingImageDimension error
+const useWidth = width || 800;
+const useHeight = height || 600;
 ---
 
-<div class="astro-image-container">
-  <Image
-    src={imageSrc}
-    alt={alt}
-    width={width}
-    height={height}
-    class="astro-loaded-image"
-  />
+<div class={`astro-image-container ${className}`}>
+  {inferSize ? (
+    <Image
+      src={imageSrc}
+      alt={alt}
+      inferSize={true}
+      class="astro-loaded-image"
+    />
+  ) : (
+    <Image
+      src={imageSrc}
+      alt={alt}
+      width={useWidth}
+      height={useHeight}
+      class="astro-loaded-image"
+    />
+  )}
 </div>
 
 <style>

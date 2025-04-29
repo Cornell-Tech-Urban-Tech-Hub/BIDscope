@@ -21,11 +21,11 @@ insightComponents: [
   "src/components/groups/_matt_demo/RobotabilityMap.jsx"
 ]
 transformationComponents: [
-  "components/groups/_matt_demo/robo_1.png"
+  "/components/groups/_matt_demo/robo_1.png"
 ]
 predictionComponents: []
 consensusComponents: [
-  "components/groups/_matt_demo/robo_0.png", 
+  "/components/groups/_matt_demo/robo_0.png", 
   "https://www.youtube.com/embed/o52MZ1AHyjA"
 ]
 
