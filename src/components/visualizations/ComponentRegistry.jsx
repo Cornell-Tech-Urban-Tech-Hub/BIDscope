@@ -1,0 +1,64 @@
+import React from 'react';
+import RobotabilityMap from '../groups/_matt_demo/RobotabilityMap.jsx';
+// Import all other visualization components you need
+// import OtherComponent from '../path/to/OtherComponent';
+
+// Map component paths to their actual component implementations
+const componentRegistry = {
+  // Key should match the path specified in content files (without the full path)
+  'RobotabilityMap': RobotabilityMap,
+  '_matt_demo/RobotabilityMap': RobotabilityMap,
+  'groups/_matt_demo/RobotabilityMap': RobotabilityMap,
+  'src/components/groups/_matt_demo/RobotabilityMap': RobotabilityMap,
+  'src/components/groups/_matt_demo/RobotabilityMap.jsx': RobotabilityMap,
+  
+  // Add all other components following the same pattern
+  // 'ComponentName': ComponentReference,
+};
+
+// External component loader - loads a YouTube embed or other external content
+const ExternalComponent = ({ src }) => {
+  if (src.includes('youtube.com/embed/')) {
+    return (
+      <div className="aspect-video w-full">
+        <iframe 
+          src={src}
+          title="YouTube video player"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          className="w-full h-full border-0"
+        />
+      </div>
+    );
+  }
+  return <p>Unsupported external component: {src}</p>;
+};
+
+// Helper function to get the component by path
+export function getComponentByPath(path) {
+  // Handle external URLs (like YouTube)
+  if (path.startsWith('http')) {
+    return props => <ExternalComponent src={path} {...props} />;
+  }
+  
+  // Clean up the path to match our registry keys
+  // Remove common prefixes
+  const normalizedPath = path
+    .replace(/^\/components\//, '')
+    .replace(/^src\/components\//, '')
+    .replace(/^\/src\/components\//, '');
+  
+  // Try different variations of the path to find a match
+  const component = 
+    componentRegistry[path] || 
+    componentRegistry[normalizedPath] || 
+    componentRegistry[normalizedPath.replace(/\.jsx$/, '')] ||
+    componentRegistry[normalizedPath.split('/').pop().replace(/\.jsx$/, '')];
+  
+  if (!component) {
+    console.warn(`Component not found in registry: ${path}`);
+    return () => <p className="error-message">Component not found: {path}</p>;
+  }
+  
+  return component;
+}
