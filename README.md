@@ -4,7 +4,7 @@ This is the official website for the BIDSpec (Business Improvement District) pro
 
 ## [FOR STUDENTS] Editing Guidelines. 
 
-Project pages are stored in src/content/projects/BID_NAME.md. Your BID should already have a file for it created. In this file, you will see a header at the top with metadata for your BID (general info about the BID, etc.). Also of note are the *component* fields. These correspond to the visualizations to be rendered for your Insight, Transformation, Prediction, and/or Consensus portions of your analysis. 
+Project pages are stored in [src/content/projects/](/src/content/projects)BID_NAME.md. Your BID should already have a file for it created. In this file, you will see a header at the top with metadata for your BID (general info about the BID, etc.). Also of note are the *component* fields. These correspond to the visualizations to be rendered for your Insight, Transformation, Prediction, and/or Consensus portions of your analysis. 
 
 Put code modules (.jsx, .tsx, etc.) files for your visualizations in [/src/components/groups/](/src/components/groups)BID_NAME/ , and reference them appropriately in the header of your markdown file. **IMPORTANT** Then, you need to add your component to the component registry in [src/components/visualizations/ComponentRegistry.jsx](src/components/visualizations/ComponentRegistry.jsx), in the 'componentRegistry' dictionary. Without doing this, the site will not load your component and it will not work correctly in the production environment. 
 
