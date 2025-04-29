@@ -4,7 +4,7 @@ title: "5th Avenue BID - Brooklyn"
 description: "Analysis of the 5th Avenue Business Improvement District in Park Slope, Brooklyn."
 publishDate: 2023-09-15
 updatedDate: 2023-10-01
-thumbnail: "../../assets/placeholder.jpg"
+thumbnail: "/src/components/groups/fifth-avenue-bid/5th_thumbnail.png"
 
 # BID-specific Information
 bidName: "Park Slope 5th Avenue"
@@ -19,10 +19,12 @@ tags: ["Retail", "Small Business", "Community Development"]
 
 # Visualization Component References - empty arrays to be filled by students
 
-insightComponents: ["/src/components/groups/fifth-ave-brooklyn/5th_nlp.png"]
-transformationComponents: []
-predictionComponents: ["/src/components/groups/fifth-ave-brooklyn/5th_elevation.png", "/src/components/groups/fifth-ave-brooklyn/5th_floodnet.png"]
-consensusComponents: []
+
+# No components, We show only static images, not .jsx elements
+insightComponents: ["/src/components/groups/fifth-avenue-bid/5th_avenue_nlp.png", "/src/components/groups/fifth-avenue-bid/5th_avenue_nlp2.png"]
+transformationComponents: ["/src/components/groups/fifth-avenue-bid/average_streetmix.png"]
+predictionComponents: ["/src/components/groups/fifth-avenue-bid/floodnet_elevation.png", "/src/components/groups/fifth-avenue-bid/floodnet_flood_map.png"]
+consensusComponents: [/src/components/groups/fifth-avenue-bid/consensus.png]
 
 ---
 
@@ -37,24 +39,10 @@ The Fifth Avenue BID strengthens community ties and supports local businesses th
 These events serve multiple purposes. They attract foot traffic that boosts sales for local shops, cafes, and restaurants. They draw and retain residents who contribute to long-term local stability. Perhaps most importantly, they foster a sense of belonging and community pride that defines Park Slope's character.
 
 ### Data-Driven Insights
-To ground our work in local perspectives, we analyzed community-generated data using natural language processing (NLP) techniques. Topic modeling of hundreds of online reviews, testimonials, and social media posts related to 5th Avenue revealed recurring themes.
+To ground our work in local perspectives, we analyzed community-generated data using natural language processing (NLP) techniques. We performed Topic modeling analysis of hundreds of online reviews, testimonials, and social media posts related to 5th Avenue revealed recurring themes shown in Insight Visualization 1 (word clouds) and Insight Visualization 2 (pipeline).
 
 Residents and visitors frequently comment on 5th Avenue's active street life with vibrant pedestrian activity at various times of day. There's widespread appreciation for the diverse dining and retail options that line the avenue. During the COVID-19 pandemic, safety concerns became more prominent in community discussions, though many praised the area's resilience. The Open Streets initiative received positive reception, with many valuing these pedestrian-friendly spaces. In recent years, there's been increasing attention to green infrastructure and environmental practices, reflecting the community's forward-thinking values and growing recognition of climate vulnerabilities that threaten both businesses and residential areas. 
 
-
-<figure>
-  <img
-  src="../../../public/components/groups/fifth-ave-brooklyn/5th_avenue_nlp2.png"
-  alt="Figure 1. Topic Modeling of 5th Avenue BID Interviews"/>
-  <figcaption>Figure 1. Topic Modeling Analysis of 5th Avenue BID Interviews</figcaption>
-</figure>
-
-<figure>
-  <img
-  src="../../../public/components/groups/fifth-ave-brooklyn/5th_avenue_nlp.png"
-  alt="Figure 2. Dominant word clouds from 5th Avenue BID Interviews">
-  <figcaption>Figure 2. Dominant word clouds from 5th Avenue BID Interviews</figcaption>
-</figure>
 
 ### COVID & Open Streets
 
@@ -76,7 +64,7 @@ Our research uncovered numerous multi-million and even billion-dollar projects a
 
 In an effort to aid the issues we’ve mentioned so far, we propose assisting in flood prevention methods while also redesigning streets to accommodate and encourage the Open Streets Initiative. 
 
-There is a range of improvements we can make to 5th Avenue that will allow it to become a proactive area for flood mitigation. Expanding rain gardens, bioswales, and permeable surfaces to absorb excess rainwater naturally can aid in green stormwater management. Installing strategic water catchment areas to prevent overflow into vulnerable streets via retention basins and flood barriers can further contribite to flood prevention. Lastly, using sensors and real-time monitoring to optimize water flow and prevent backups via smart drainaige systems can assure that sewers do not go beyong their capacity. 
+There is a range of improvements we can make to 5th Avenue that will allow it to become a proactive area for flood mitigation. Expanding rain gardens, bioswales, and permeable surfaces to absorb excess rainwater naturally can aid in green stormwater management. As shown in Transformation Visualization, we used Streetmix to show some examples of improvements (discussed further). Installing strategic water catchment areas to prevent overflow into vulnerable streets via retention basins and flood barriers can further contribite to flood prevention. Lastly, using sensors and real-time monitoring to optimize water flow and prevent backups via smart drainaige systems can assure that sewers do not go beyong their capacity. 
 
 To fund improvements, we suggest reallocating a portion of the Gowanus Canal Superfund investment toward upstream flood prevention — especially on 5th Avenue — because keeping water from reaching 4th Avenue now will reduce future remediation costs downstream. We also see potential in local revenue tools — like shoreline protection districts, targeted taxes, or partnerships with the insurance industry — where insurers could invest in risk reduction that directly benefits their bottom line. We suggest a public-private partnership model. Local businesses — whose storefronts and operations are directly affected by flooding — could co-fund the project, while federal Superfund dollars would match private contributions.
 
@@ -115,23 +103,10 @@ Our analysis utilizes three complementary simulation tools to evaluate different
 
 We modeled three distinct scenarios to assess potential interventions:
 
-<figure>
-  <img
-  src="../../../public/components/groups/fifth-ave-brooklyn/floodnet_flood_map.png"
-  alt="Figure 3. FloodNet Elevation Map">
-  <figcaption>Figure 3. FloodNet Elevation Map</figcaption>
-</figure>
 
-<figure>
-  <img
-  src="../../../public/components/groups/fifth-ave-brooklyn/floodnet_elevation.png"
-  alt="Figure 4. FloodNet Vulnerability Map">
-  <figcaption>Figure 4. FloodNet Vulnerability Map</figcaption>
-</figure>
+The FloodNet Elevation Map in Prediction Visualization 1 clearly illustrates the topographical reality of Park Slope - a neighborhood that truly lives up to its name. The color gradient shows how 5th Avenue sits at a significantly higher elevation (depicted in orange-yellow tones) compared to the progressively lower-lying areas to the west. The Gowanus Canal and its immediate surroundings (shown in blue-green) represent the lowest points in the area.
 
-The FloodNet Elevation Map in Figure 3 clearly illustrates the topographical reality of Park Slope - a neighborhood that truly lives up to its name. The color gradient shows how 5th Avenue sits at a significantly higher elevation (depicted in orange-yellow tones) compared to the progressively lower-lying areas to the west. The Gowanus Canal and its immediate surroundings (shown in blue-green) represent the lowest points in the area.
-
-The Flood Vulnerability Map in Figure 4 demonstrates the direct consequences of this elevation differential. Areas along the Gowanus Canal and 3rd Avenue display high vulnerability to flooding (indicated by the intense red zones), while vulnerability gradually decreases as elevation increases eastward toward 5th Avenue. This clear visual correlation between elevation and flood risk validates our upstream intervention approach.
+The Flood Vulnerability Map in Prediction Visualization 2 demonstrates the direct consequences of this elevation differential. Areas along the Gowanus Canal and 3rd Avenue display high vulnerability to flooding (indicated by the intense red zones), while vulnerability gradually decreases as elevation increases eastward toward 5th Avenue. This clear visual correlation between elevation and flood risk validates our upstream intervention approach.
 
 By implementing water management solutions at 5th Avenue's higher elevation, we can intercept rainwater before it naturally flows downhill, preventing the accumulation of stormwater in the more vulnerable lower-lying areas. This preventative strategy addresses flooding at its source rather than merely reacting to flooding events after they've occurred in the canal area.
 
@@ -141,16 +116,16 @@ This view represents the current state of 5th Avenue with existing infrastructur
 <figure>
   <img
   src="../../../public/components/groups/fifth-ave-brooklyn/average_streetmix.png"
-  alt="Figure 5. StreetMix View 1: Baseline Scenario">
-  <figcaption>Figure 5. StreetMix View 1: Baseline Scenario</figcaption>
+  alt="Figure 1. StreetMix View 1: Baseline Scenario">
+  <figcaption>Figure 1. StreetMix View 1: Baseline Scenario</figcaption>
 </figure>
 
 The current street design includes standard sidewalks, transit shelters, bicycle lanes, and parking areas, but lacks significant water management features. Two trees provide minimal stormwater interception.
 
 <!-- ![Figure 4. GAMA View 1: Average Flooding Scenario](../../assets/5th_floodnet.png) -->
 <figure>
-  <img src="../../../public/components/groups/fifth-ave-brooklyn/average-gama.gif" alt="Figure 6. GAMA View 1: Average Flooding Scenario"/>
-  <figcaption>Figure 6. GAMA View 1: Average Flooding Scenario</figcaption>
+  <img src="../../../public/components/groups/fifth-ave-brooklyn/average-gama.gif" alt="Figure 2. GAMA View 1: Average Flooding Scenario"/>
+  <figcaption>Figure 2. GAMA View 1: Average Flooding Scenario</figcaption>
 </figure>
 
 The GAMA model reveals important baseline conditions:
@@ -166,8 +141,8 @@ This view illustrates what happens during severe weather events with the current
 <figure>
   <img
   src="../../../public/components/groups/fifth-ave-brooklyn/increased_streetmix.png"
-  alt="Figure 7. StreetMix View 2: High-Risk Scenario">
-  <figcaption>Figure 7. StreetMix View 2: High-Risk Scenario</figcaption>
+  alt="Figure 3. StreetMix View 2: High-Risk Scenario">
+  <figcaption>Figure 3. StreetMix View 2: High-Risk Scenario</figcaption>
 </figure>
 
 During heavy rainfall, the current configuration fails to adequately manage stormwater, leading to reduced pedestrian activity as the street becomes less hospitable.
@@ -177,8 +152,8 @@ During heavy rainfall, the current configuration fails to adequately manage stor
 <figure>
   <img
   src="../../../public/components/groups/fifth-ave-brooklyn/increased_gama.gif"
-  alt="Figure 8. GAMA View 2: Increased Flooding Scenario"/>
-  <figcaption>Figure 8. GAMA View 2: Increased Flooding Scenario</figcaption>
+  alt="Figure 4. GAMA View 2: Increased Flooding Scenario"/>
+  <figcaption>Figure 4. GAMA View 2: Increased Flooding Scenario</figcaption>
 </figure>
 
 The integrated simulation demonstrates severe flooding dynamics:
@@ -196,8 +171,8 @@ This view represents our proposed intervention scenario with enhanced green infr
 <figure>
   <img
   src="../../../public/components/groups/fifth-ave-brooklyn/reduced_streetmix.png"
-  alt="Figure 9. StreetMix View 3: Intervention Scenario">
-  <figcaption>Figure 9. StreetMix View 3: Intervention Scenario</figcaption>
+  alt="Figure 5. StreetMix View 3: Intervention Scenario">
+  <figcaption>Figure 5. StreetMix View 3: Intervention Scenario</figcaption>
 </figure>
 
 The redesigned street features expanded sidewalks, improved transit infrastructure, and critically, increased vegetation and permeable surfaces. The street view image reveals a dramatically greener environment, with tree canopy coverage significantly higher than in the current configuration.
@@ -205,8 +180,8 @@ The redesigned street features expanded sidewalks, improved transit infrastructu
 <figure>
   <img
   src="../../../public/components/groups/fifth-ave-brooklyn/reduced_gama.gif"
-  alt="Figure 10. GAMA View 3: Reduced Flooding Scenario"/>
-  <figcaption>Figure 10. GAMA View 3: Reduced Flooding Scenario</figcaption>
+  alt="Figure 6. GAMA View 3: Reduced Flooding Scenario"/>
+  <figcaption>Figure 6. GAMA View 3: Reduced Flooding Scenario</figcaption>
 </figure>
 
 
@@ -234,7 +209,7 @@ Ultimately, this is about more than risk mitigation—it’s about community-bui
 
 # Consensus Analysis
 
-Achieving consensus on upstream flood prevention and green infrastructure redesign hinges on coordinated action across a diverse network of stakeholders. Core agencies like the DEP, DDC, DOT, and EPA are already engaged in parallel efforts, from stormwater management to Superfund remediation. Their technical expertise and regulatory authority make them essential partners in implementing infrastructure changes along 5th Avenue. At the same time, civic tech groups and academic experts provide critical support for modeling and analysis, while insurers represent a promising avenue for co-funding through risk reduction strategies.
+Achieving consensus on upstream flood prevention and green infrastructure redesign hinges on coordinated action across a diverse network of stakeholders. As shown in Consensus Visualization, core agencies like the DEP, DDC, DOT, and EPA are already engaged in parallel efforts, from stormwater management to Superfund remediation. Their technical expertise and regulatory authority make them essential partners in implementing infrastructure changes along 5th Avenue. At the same time, civic tech groups and academic experts provide critical support for modeling and analysis, while insurers represent a promising avenue for co-funding through risk reduction strategies.
 
 Equally important are the community voices shaping and experiencing these changes firsthand. Residents, school leaders, and business owners along 4th and 5th Avenues are not only impacted by flooding but also stand to benefit most from a greener, more resilient corridor. Organizations like the Fifth Avenue BID and Gowanus Canal Conservancy bridge institutional and local knowledge, ensuring our interventions reflect both environmental science and neighborhood priorities. Through targeted outreach—policy briefs for officials, hands-on workshops for residents, and collaborative dashboards for experts—we’re building shared understanding and mutual investment. Consensus here isn’t uniform agreement; it’s a shared framework where every group has tools to visualize, evaluate, and act on a better future.
 
