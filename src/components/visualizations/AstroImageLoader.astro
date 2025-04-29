@@ -1,7 +1,5 @@
 ---
 import { Image } from 'astro:assets';
-import { existsSync } from 'node:fs';
-import path from 'node:path';
 
 interface Props {
   src: string;
@@ -13,50 +11,39 @@ interface Props {
 
 const { src, alt, width, height, class: className, ...rest } = Astro.props;
 
-let imageSrc;
-let isLocalImage = false;
-let isExternalImage = false;
-let imageExists = false;
-
 // Check if it's an external URL
-if (src.startsWith('http://') || src.startsWith('https://')) {
-  isExternalImage = true;
-} else {
-  // Handle local image paths
+const isExternalUrl = src.startsWith('http://') || src.startsWith('https://');
+
+// For local images, let Astro's image optimization handle it
+let optimizedImage;
+if (!isExternalUrl) {
   try {
-    // Remove leading slash for proper import path
-    const importPath = src.startsWith('/') ? src.substring(1) : src;
+    // Clean up path if needed
+    const cleanPath = src.startsWith('/') ? src.substring(1) : src;
     
-    // Check if file exists
-    const absolutePath = path.join(process.cwd(), importPath);
-    imageExists = existsSync(absolutePath);
-    
-    if (imageExists) {
-      // Dynamically import the image
-      imageSrc = await import(`/${importPath}`);
-      isLocalImage = true;
-    }
+    // Import the image directly - this triggers Astro's image optimization
+    optimizedImage = await import(`../../../${cleanPath}`);
   } catch (error) {
     console.error(`Error loading image from path: ${src}`, error);
   }
 }
 ---
 
-{isLocalImage && imageSrc ? (
-  <Image 
-    src={imageSrc.default} 
-    alt={alt}
+{isExternalUrl ? (
+  <img 
+    src={src} 
+    alt={alt} 
     width={width}
     height={height}
     class={className}
     {...rest}
   />
-) : isExternalImage ? (
-  <img 
-    src={src} 
-    alt={alt} 
-    width={width} 
-    height={height} 
+) : optimizedImage ? (
+  <Image 
+    src={optimizedImage.default} 
+    alt={alt}
+    width={width || optimizedImage.default.width}
+    height={height || optimizedImage.default.height}
     class={className}
     {...rest}
   />
