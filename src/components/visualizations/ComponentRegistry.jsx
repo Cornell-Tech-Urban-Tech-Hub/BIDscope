@@ -2,6 +2,7 @@ import React from 'react';
 import RobotabilityMap from '../groups/_matt_demo/RobotabilityMap.jsx';
 // Import all other visualization components you need
 // import OtherComponent from '../path/to/OtherComponent';
+import WestVillageStreetView from '../visualizations/WestVillageStreetView.jsx';
 
 // Map component paths to their actual component implementations
 const componentRegistry = {
@@ -14,6 +15,10 @@ const componentRegistry = {
   
   // Add all other components following the same pattern
   // 'ComponentName': ComponentReference,
+  'WestVillageStreetView': WestVillageStreetView,
+  'visualizations/WestVillageStreetView': WestVillageStreetView,
+  'src/components/visualizations/WestVillageStreetView': WestVillageStreetView,
+  'src/components/visualizations/WestVillageStreetView.jsx': WestVillageStreetView,
 };
 
 // External component loader - loads a YouTube embed or other external content
