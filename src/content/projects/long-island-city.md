@@ -4,7 +4,8 @@ title: "Long Island City Partnership"
 description: "Analysis of the Long Island City Partnership, an area undergoing rapid transformation in Queens."
 publishDate: 2023-10-05
 updatedDate: 2023-10-20
-thumbnail: "../../assets/placeholder.jpg"
+thumbnail: "../../assets/lic.png"
+# thumbnail: "../../components/groups/LIC/lic.png"
 
 # BID-specific Information
 bidName: "Long Island City Partnership"
@@ -18,10 +19,10 @@ revisionMode: true
 tags: ["Mixed-Use Development", "Arts District", "Waterfront", "Innovation Hub"]
 
 # Visualization Component References - empty arrays to be filled by students
-insightComponents: []
-transformationComponents: []
-predictionComponents: []
-consensusComponents: []
+insightComponents: ['src/components/groups/LIC/insight.jsx']
+transformationComponents: ['src/components/groups/LIC/transformation.jsx']
+predictionComponents: ['src/components/groups/LIC/prediction.jsx']
+consensusComponents: ['src/components/groups/LIC/consensus.jsx']
 
 # Data Sources and techniques
 dataSource: "NYC Open Data, Long Island City Partnership Annual Reports, Census Data, Real Estate Market Data, Arts Organization Data, MTA Ridership"
@@ -32,27 +33,49 @@ The Long Island City Partnership serves one of New York City's fastest-growing a
 
 # Insight Analysis
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla facilisi. Proin eget fermentum nisi. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Donec euismod, nisl eget aliquam ultricies, nunc sapien ultricies arcu, vel feugiat nunc nisl eget libero. Vivamus commodo tortor ac quam varius, in accumsan nulla rutrum. Mauris egestas erat sit amet augue volutpat, eu convallis odio tincidunt. Nulla facilisi. Praesent luctus urna sed dolor congue dictum. Maecenas dignissim eros at nisi varius, in lacinia velit pulvinar.
+Long Island City (LIC) is a vibrant, rapidly developing neighborhood in Queens that functions as a major transportation hub with excellent connectivity through 8 subway lines, 15 bus lines, 3 ferry landings, and numerous other transit options. Originally established in 2005, the Long Island City Business Improvement District (LIC BID) has undergone strategic expansions in 2017 and now in 2025, tripling its coverage area to serve the growing needs of this dynamic community.
 
-Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. In hac habitasse platea dictumst. Proin sed finibus justo. Praesent ultrices dolor non fermentum blandit. Quisque vel congue magna, at varius ligula. Aliquam erat volutpat. Aenean vestibulum metus nec enim consequat, id maximus dolor dignissim. Nullam vehicula tristique eros, non cursus purus elementum ac. Mauris tempus erat purus, sit amet feugiat enim fermentum non.
+The 2025 expansion and also our BID transformation aim to address a critical problem identified in the expansion areas: lack of visibility and community engagement. This expansion aims to bring much-needed services to previously underserved areas that have seen increasing foot traffic and commercial activity, with former side streets now functioning as main streets requiring dedicated support and infrastructure.
+
+The neighborhood features diverse assets including educational institutions, cultural venues, office spaces, creative workshops, food production facilities, and community recreation areas. Key stakeholders in this expansion include business owners in the expansion area, nearby residents, visitors (primarily from within the city), LIC Partnership operation officials, municipal departments, and potential investors.
+
+Data analysis of the area reveals significant foot traffic patterns along major corridors, with pedestrian density simulations highlighting key intersection points that would benefit from activation. The expansion builds upon LIC's established identity as a cultural hotspot with numerous galleries, museums, and performance spaces that have transformed the neighborhood from its industrial roots into a vibrant arts destination.
 
 # Transformation Analysis
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eget neque at metus aliquam convallis. Nam finibus convallis felis, eu faucibus neque. Vestibulum gravida diam at ipsum posuere, ut pulvinar purus malesuada. Integer gravida fringilla arcu a fermentum. Nullam faucibus dui augue, a imperdiet magna gravida ut. Donec ac justo et enim tempus gravida at quis quam. Duis eu dapibus nisi, a fermentum quam. Mauris nec leo sit amet elit gravida egestas vel at magna. Nulla nisi neque, iaculis in augue eget, lacinia sodales nisl.
+The transformation strategy for the LIC BID expansion area builds on successful models already proven in the other part of LIC, particularly drawing inspiration from Culture Lab LIC. This cultural hub transformed a once-industrial block into a vibrant community center, demonstrating how temporary venues can establish lasting identity and activity. Culture Lab LIC serves as a scalable model for cultural infrastructure, attracting over 1,000 attendees per weekend, generating $785K+ in annual revenue, supporting 20+ artist residencies yearly, and maintaining 30+ community partnerships.
 
-Mauris faucibus risus eget libero facilisis, non sagittis urna gravida. Sed feugiat justo odio, non mollis massa efficitur ac. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Pellentesque vulputate dictum dolor, eget vestibulum magna volutpat at. Cras a tellus velit. Nam nisi libero, aliquet at facilisis at, consequat nec purus. Sed tincidunt ligula eget placerat rutrum. Praesent pharetra congue purus, eu consequat nisl. Pellentesque euismod, mauris id ultrices efficitur, erat purus imperdiet magna, sit amet sollicitudin turpis ante id lacus.
+Drawing from the successful experience in LIC, our proposed intervention format centers around pop-up events—temporary, multi-functional public spaces (street corners and parking lots) strategically located in underutilized areas. These pop-ups offer several advantages: they are pilot-friendly and easy to iterate, temporary by design, low-risk yet high-impact, and serve as bridges to future planning by opening pathways for long-term interventions without requiring permanent infrastructure.
+
+An innovative "LIC BID Pop-up Event Location Selection Tool" has been developed using path-based multi-criteria decision analysis to identify optimal parking lot locations for these events. The tool evaluates 54 potential parking lots based on subway accessibility, housing proximity, biking infrastructure, POI proximity, and traffic flow, creating a comprehensive scoring system that optimizes for community impact.
+
+The transformation combines "hard" and "soft" system elements. The hard system includes building physical pop-up cultural and market plazas featuring local art installations, food truck areas, live performances, and interactive wayfinding. The soft system provides digital and institutional support through website promotion, social media engagement, and the integration of an existing LIC Community E-Gift Card program that connects over 100 participating businesses.
 
 # Prediction Analysis
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed feugiat lacus ut justo elementum, efficitur sollicitudin nulla volutpat. In hac habitasse platea dictumst. Ut varius at arcu vel vestibulum. Quisque congue magna a ligula elementum, sit amet eleifend eros rutrum. Donec eu nisi eu tortor posuere dictum. Quisque et fringilla justo. Nullam nec auctor nisi. Donec ornare nibh vel consequat tempus. Aliquam laoreet diam turpis, non aliquet libero convallis in. Sed facilisis, velit nec gravida dapibus, dolor felis tincidunt diam, non sagittis est nisi eget ex. Nullam eget semper erat. Vivamus viverra ac enim at tempor. Vestibulum id tellus at velit rhoncus tincidunt sed ut magna.
+To understand the potential impacts of our pop-up interventions, we analyzed two key scenarios: a mini market featuring local food and crafts, and an art installation designed to encourage walkability and increase dwell time in the area. Our analysis shows that each intervention creates different but complementary impacts. The mini market generates peak activity during lunch hours, with visitors staying 8-12 minutes on average and spending approximately $15-25 per visit. Meanwhile, art installations attract after-work crowds and weekend family visits, with shorter dwell times but contribute to area awareness through social media engagement.
 
-Curabitur tincidunt felis quis dui fermentum, eget tristique erat interdum. Mauris vel leo semper, facilisis ligula vitae, porta risus. Duis facilisis purus vel ipsum maximus, nec sagittis magna facilisis. Sed arcu magna, rhoncus nec congue ut, finibus sed diam. Ut sodales tellus non ornare tempus. Donec at felis pellentesque, malesuada neque posuere, ultrices sem. Nam pharetra sapien sed eros congue, in tincidunt nisl semper. Fusce porta felis in risus molestie, vel placerat mauris facilisis.
+These immediate effects cascade into broader impacts. Immediately after visiting, awareness of the area begins to grow through multiple channels – from new social media followers and newsletter signups to geo-tagged posts and community survey responses. This digital engagement has already generated 40% year-over-year growth on Instagram for similar initiatives. The pop-up economy creates several economic benefits: boosting nearby retail revenue, providing direct income for vendors, creating spillover sales for permanent businesses, potential job creation in both temporary and permanent roles, and opportunities to link with grant programs for long-term support. Market research indicates that while the monthly rent for retail space averages $24.92 per square foot in the area, these temporary activations can operate for just 3-14 days while creating outsized impact.
+
+By activating these spaces, the pop-up events will increase foot traffic, participation and engagement, boost local business revenue, create economic impact through job creation and tax revenue, enhance perceived safety, and strengthen neighborhood identity. This data-driven approach ensures targeted interventions that maximize return on investment while building community support for the expansion initiative.
 
 # Consensus Analysis
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec et tortor eget magna consequat tincidunt. Phasellus neque nulla, finibus ac sollicitudin non, convallis vel nisi. Etiam auctor placerat faucibus. Ut vitae mollis ante, et tempus mauris. Quisque ac urna purus. Aliquam vulputate molestie lectus, non volutpat risus vehicula luctus. Aenean ac quam eu purus eleifend placerat at eget diam. Morbi dapibus at elit in convallis. Mauris posuere leo quam, vitae fringilla leo tempor vel. Ut quis mi porta, suscipit ligula ac, consequat leo. Cras id imperdiet lectus. Aenean quis arcu nisi. Nulla vel nisl eu eros finibus auctor ac ut urna. Suspendisse ac luctus arcu.
+Our consensus-building approach creates a collaborative framework where stakeholders with diverse interests work together toward shared goals through transparent processes, inclusive participation, and iterative refinement that adapts to changing conditions and feedback. This process recognizes that different stakeholders have varying interests, influence, and preferred communication methods, requiring tailored engagement strategies. For groups like local business owners and residents, we employ accessible methods including community workshops, social media engagement, and direct participation in pop-up events.
 
-Donec vitae justo vitae turpis rutrum vestibulum vel at tortor. Aliquam quis tellus ut quam viverra fermentum in vitae nulla. Sed mattis accumsan libero, vel sollicitudin ante fringilla at. Nulla facilisi. Duis dignissim varius est, nec dignissim eros. Nullam orci risus, fermentum eu faucibus sit amet, laoreet quis eros. Proin bibendum, metus id bibendum pretium, quam urna dapibus leo, eget tempor magna sem at purus. Praesent faucibus dui id varius elementum. Sed consectetur, orci id rhoncus eleifend, enim magna pellentesque ante, et ornare lectus diam sit amet diam. Integer at magna et arcu iaculis consectetur at dictum lacus.
+Our multi-channel strategy utilizes both active input methods (interviews, workshops, comments, feedback forms) and passive data collection (foot traffic analysis, social media engagement, participation metrics, economic data, platform analytics) to create a comprehensive understanding of what stakeholders both say they want and how they actually behave when interventions are implemented. For example, we can observe which pop-up events generate the most engagement, analyze spending patterns through the LIC gift card program, and track how interventions affect visitor dwell time, creating a more complete picture of stakeholder preferences and identifying opportunities that might be missed through traditional engagement alone.
+
+Our consensus process preserves existing cultural assets by implementing a local-first policy that prioritizes existing businesses in pop-up opportunities, giving them the first chance to benefit from increased visibility. This ensures we protect what makes LIC unique while enhancing its connectivity and appeal.
+
+We've established a clear evolution path that transforms temporary interventions into permanent improvements over time:
+- Phase 1 (1-3 months): Pop-up phase with temporary installations requiring minimal infrastructure
+- Phase 2 (3-12 months): Seasonal programming with recurring events and light infrastructure
+- Phase 3 (1-2 years): Semi-permanent installations with more substantial physical improvements
+- Phase 4 (2+ years): Permanent transformation with full implementation of successful elements
+
+At each stage, we evaluate success through multiple metrics: economic indicators like business revenue and occupancy rates; social measures including event participation and resident satisfaction; visibility metrics such as social media mentions and visitor numbers; and sustainability factors including operational costs and environmental impact. This phased approach builds consensus through shared experience rather than abstract plans, reducing risk while allowing the community to shape the area's future organically.
+
+To make this consensus process practical and accessible, we've developed an interactive Streamlit tool that serves as both a communication platform and a decision-making framework. The platform allows stakeholders to explore potential interventions and their impacts, and captures distributed input from participants regardless of when or where they engage. By integrating data from our previous analysis phases, it helps stakeholders understand the potential consequences of different choices while fostering a sense of ownership and investment in the expansion's success.
 
 ## Additional Resources
 

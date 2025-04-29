@@ -2,6 +2,12 @@ import React from 'react';
 import RobotabilityMap from '../groups/_matt_demo/RobotabilityMap.jsx';
 // Import all other visualization components you need
 // import OtherComponent from '../path/to/OtherComponent';
+import StreamlitTransformation from '../groups/LIC/transformation.jsx';
+import InsightComponent from '../groups/LIC/insight.jsx';
+import StreamlitConsensus from '../groups/LIC/consensus.jsx';
+import PredictionComponent from '../groups/LIC/prediction.jsx'
+
+
 
 // Map component paths to their actual component implementations
 const componentRegistry = {
@@ -14,6 +20,28 @@ const componentRegistry = {
   
   // Add all other components following the same pattern
   // 'ComponentName': ComponentReference,
+
+  // LIC components
+  'groups/LIC/transformation': StreamlitTransformation,
+  'groups/LIC/transformation.jsx': StreamlitTransformation,
+  'src/components/groups/LIC/transformation': StreamlitTransformation,
+  'src/components/groups/LIC/transformation.jsx': StreamlitTransformation,
+  
+  'groups/LIC/insight': InsightComponent,
+  'groups/LIC/insight.jsx': InsightComponent,
+  'src/components/groups/LIC/insight': InsightComponent,
+  'src/components/groups/LIC/insight.jsx': InsightComponent,
+
+  'groups/LIC/consensus': StreamlitConsensus,
+  'groups/LIC/consensus.jsx': StreamlitConsensus,
+  'src/components/groups/LIC/consensus': StreamlitConsensus,
+  'src/components/groups/LIC/consensus.jsx': StreamlitConsensus,
+  
+  'groups/LIC/prediction': PredictionComponent,
+  'groups/LIC/prediction.jsx': PredictionComponent,
+  'src/components/groups/LIC/prediction': PredictionComponent,
+  'src/components/groups/LIC/prediction.jsx': PredictionComponent,
+  
 };
 
 // External component loader - loads a YouTube embed or other external content
