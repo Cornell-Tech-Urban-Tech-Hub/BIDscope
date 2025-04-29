@@ -1,197 +1,84 @@
 ---
-// AstroImageLoader.astro - A component that loads and optimizes images using Astro's Image component
 import { Image } from 'astro:assets';
+import { existsSync } from 'node:fs';
+import path from 'node:path';
 
-// Define props with TypeScript for type safety
 interface Props {
   src: string;
-  alt?: string;
+  alt: string;
   width?: number;
   height?: number;
   class?: string;
 }
 
-// Destructure the props with defaults
-const { src, alt = '', width = 800, height = 600, class: className = '' } = Astro.props;
+const { src, alt, width, height, class: className, ...rest } = Astro.props;
 
-// Process the image path
-let imagePath;
+let imageSrc;
+let isLocalImage = false;
 let isExternalImage = false;
-let errorMessage = null;
+let imageExists = false;
 
-// Get the base URL for proper path resolution
-const baseUrl = import.meta.env.BASE_URL || '/';
-const isProd = import.meta.env.PROD;
-
-// Check if the source is an external URL
+// Check if it's an external URL
 if (src.startsWith('http://') || src.startsWith('https://')) {
   isExternalImage = true;
-  imagePath = src;
 } else {
+  // Handle local image paths
   try {
-    // Handle paths that include /src/ by removing that part
-    // and any leading slash to make it relative to project root
-    let importPath = src;
+    // Remove leading slash for proper import path
+    const importPath = src.startsWith('/') ? src.substring(1) : src;
     
-    // For relative paths starting with ../../
-    if (importPath.startsWith('../../')) {
-      // These are already properly formatted relative to the component location
-      importPath = importPath;
-    }
-    // Remove /src/ prefix if present (common in your file paths)
-    else if (importPath.includes('/src/')) {
-      importPath = importPath.replace('/src/', '/');
-    } else if (importPath.startsWith('src/')) {
-      importPath = importPath.replace('src/', '');
-    }
+    // Check if file exists
+    const absolutePath = path.join(process.cwd(), importPath);
+    imageExists = existsSync(absolutePath);
     
-    // Remove any leading slash for import
-    if (importPath.startsWith('/')) {
-      importPath = importPath.substring(1);
-    }
-    
-    // For relative paths and public directory images
-    if (importPath.startsWith('public/')) {
-      // Handle public directory paths by removing 'public/'
-      imagePath = `/${importPath.replace('public/', '')}`;
-      isExternalImage = true;
-    } else if (importPath.startsWith('/') && !importPath.includes('/src/')) {
-      // Already a root-relative path, might be from public directory
-      imagePath = importPath;
-      isExternalImage = true;
-    } else {
-      try {
-        console.log(`[AstroImageLoader] Attempting to import image: ${importPath}`);
-        
-        // Use dynamic import to get the image
-        const imageModule = await import(`../../${importPath}`);
-        imagePath = imageModule.default;
-        console.log(`[AstroImageLoader] Successfully imported image: ${importPath}`);
-      } catch (importError) {
-        console.error(`[AstroImageLoader] Failed to import image: ${importPath}`, importError);
-        
-        // Try checking if this is a public directory image
-        if (importPath.startsWith('images/') || !importPath.includes('/')) {
-          // This might be a public directory image, try using directly
-          imagePath = `/${importPath}`;
-          isExternalImage = true;
-          console.log(`[AstroImageLoader] Falling back to public path: ${imagePath}`);
-        } else {
-          // Try a direct path with baseUrl
-          imagePath = `${baseUrl}${importPath}`;
-          isExternalImage = true;
-          console.log(`[AstroImageLoader] Falling back to baseUrl path: ${imagePath}`);
-        }
-      }
+    if (imageExists) {
+      // Dynamically import the image
+      imageSrc = await import(`/${importPath}`);
+      isLocalImage = true;
     }
   } catch (error) {
-    console.error(`[AstroImageLoader] Error processing image path: ${src}`, error);
-    errorMessage = `Failed to load image: ${src}. Error: ${error.message}`;
-    
-    // Set a fallback for the public directory as a last resort
-    if (src.startsWith('/')) {
-      // This might be a public directory image, use directly
-      imagePath = src;
-      isExternalImage = true;
-      console.log(`[AstroImageLoader] Last resort fallback to direct path: ${imagePath}`);
-    } else {
-      // Try with baseUrl prefix
-      imagePath = `${baseUrl}${src}`;
-      isExternalImage = true;
-      console.log(`[AstroImageLoader] Last resort fallback with baseUrl: ${imagePath}`);
-    }
+    console.error(`Error loading image from path: ${src}`, error);
   }
 }
 ---
 
-{isExternalImage ? (
-  <div class="astro-image-container">
-    <img 
-      src={imagePath} 
-      alt={alt} 
-      class={`astro-image ${className}`}
-      loading="lazy"
-      width={width}
-      height={height}
-      onerror="this.onerror=null; this.classList.add('image-error'); this.parentNode.classList.add('has-error');"
-    />
-    {isProd && (
-      <noscript>
-        <div class="noscript-message">Image: {imagePath}</div>
-      </noscript>
-    )}
-  </div>
-) : imagePath ? (
-  <div class="astro-image-container">
-    <Image 
-      src={imagePath} 
-      alt={alt} 
-      width={width}
-      height={height}
-      class={`astro-image ${className}`}
-    />
-  </div>
+{isLocalImage && imageSrc ? (
+  <Image 
+    src={imageSrc.default} 
+    alt={alt}
+    width={width}
+    height={height}
+    class={className}
+    {...rest}
+  />
+) : isExternalImage ? (
+  <img 
+    src={src} 
+    alt={alt} 
+    width={width} 
+    height={height} 
+    class={className}
+    {...rest}
+  />
 ) : (
-  <div class="error-message">
-    <p>{errorMessage || `Failed to load image: ${src}`}</p>
-    <p>Make sure the image exists and the path is correct</p>
-    <code class="debug-path">{src}</code>
+  <div class={`image-error ${className || ''}`}>
+    <p>Unable to load image: {src}</p>
   </div>
 )}
 
 <style>
-  .astro-image-container {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    position: relative;
+  .image-error {
+    padding: 1rem;
+    border: 1px dashed #ccc;
+    background-color: #f9f9f9;
+    text-align: center;
+    font-size: 0.875rem;
+    color: #666;
   }
   
-  .astro-image {
+  img {
     max-width: 100%;
     height: auto;
     display: block;
-    margin: 0 auto;
-  }
-  
-  .error-message {
-    color: red;
-    padding: 1rem;
-    border: 1px solid red;
-    border-radius: 4px;
-    margin: 1rem 0;
-    text-align: center;
-  }
-  
-  .debug-path {
-    font-size: 0.8rem;
-    opacity: 0.7;
-    word-break: break-all;
-  }
-  
-  .image-error {
-    border: 1px dashed red;
-    min-height: 100px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .has-error::after {
-    content: "Image failed to load";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(255, 0, 0, 0.1);
-    padding: 0.5rem;
-    border-radius: 4px;
-    font-size: 0.8rem;
-  }
-  
-  .noscript-message {
-    display: none;
   }
 </style>
