@@ -142,6 +142,31 @@ The tool offers several key features that were essential for our visualization p
 
 Using these features, we created before-and-after visualizations that demonstrate how our proposed interventions would enhance the pedestrian experience while respecting the neighborhood's historic character. The visualizations clearly illustrate the potential improvements in walkability, aesthetic cohesion, and public space utilization that align with our transformation goals.
 
+## Walkability Analysis
+
+To analyze and visualize the impact of our proposed sidewalk widening interventions, we developed an [Interactive Sidewalk Width Analysis Tool](https://github.com/ethan-yz-hao/interactive-city-planning) specifically for the West Village BID. This tool allows stakeholders to explore how changes to sidewalk dimensions affect pedestrian density and comfort throughout different times of day.
+
+The tool provides several key analytical capabilities:
+
+1. **Time-Based Pedestrian Density Visualization**:
+
+    - Morning (9 AM), midday (12 PM), and evening (7 PM) pedestrian traffic patterns
+    - Color-coded density indicators showing areas of potential congestion
+    - Hexagon aggregation view for broader density analysis
+
+2. **Interactive Width Adjustment**:
+
+    - Select individual sidewalk segments for targeted analysis
+    - Adjust sidewalk widths using an intuitive slider interface
+    - Real-time calculation of pedestrian density metrics
+
+3. **Data-Driven Decision Support**:
+    - Quantitative metrics showing before/after comparisons
+    - Identification of high-priority segments based on current pedestrian density
+    - Visualization of potential bottlenecks during peak hours
+
+The analysis tool integrates actual pedestrian count data with spatial measurements of the existing streetscape, providing an evidence-based approach to our proposed interventions. This data-driven methodology ensures that our recommendations target the areas with the greatest need and potential impact.
+
 ## Economic Impact
 
 ### Business Activities
