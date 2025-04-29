@@ -1,71 +1,49 @@
 ---
 import { Image } from 'astro:assets';
 
+// Define the props interface
 interface Props {
   src: string;
   alt: string;
   width?: number;
   height?: number;
-  class?: string;
 }
 
-const { src, alt, width, height, class: className, ...rest } = Astro.props;
+// Get the props with defaults
+const { 
+  src, 
+  alt, 
+  width = undefined, 
+  height = undefined 
+} = Astro.props;
 
-// Check if it's an external URL
-const isExternalUrl = src.startsWith('http://') || src.startsWith('https://');
-
-// For local images, let Astro's image optimization handle it
-let optimizedImage;
-if (!isExternalUrl) {
-  try {
-    // Clean up path if needed
-    const cleanPath = src.startsWith('/') ? src.substring(1) : src;
-    
-    // Import the image directly - this triggers Astro's image optimization
-    optimizedImage = await import(`../../../${cleanPath}`);
-  } catch (error) {
-    console.error(`Error loading image from path: ${src}`, error);
-  }
-}
+// Handle both absolute paths and paths that don't start with '/'
+const imageSrc = src.startsWith('/') ? src : `/${src}`;
 ---
 
-{isExternalUrl ? (
-  <img 
-    src={src} 
-    alt={alt} 
+<div class="astro-image-container">
+  <Image
+    src={imageSrc}
+    alt={alt}
     width={width}
     height={height}
-    class={className}
-    {...rest}
+    class="astro-loaded-image"
   />
-) : optimizedImage ? (
-  <Image 
-    src={optimizedImage.default} 
-    alt={alt}
-    width={width || optimizedImage.default.width}
-    height={height || optimizedImage.default.height}
-    class={className}
-    {...rest}
-  />
-) : (
-  <div class={`image-error ${className || ''}`}>
-    <p>Unable to load image: {src}</p>
-  </div>
-)}
+</div>
 
 <style>
-  .image-error {
-    padding: 1rem;
-    border: 1px dashed #ccc;
-    background-color: #f9f9f9;
-    text-align: center;
-    font-size: 0.875rem;
-    color: #666;
+  .astro-image-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
   }
   
-  img {
+  .astro-loaded-image {
     max-width: 100%;
     height: auto;
-    display: block;
+    object-fit: contain;
   }
 </style>
