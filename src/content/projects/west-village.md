@@ -228,11 +228,11 @@ Revitalizing a neighborhood isn’t only about adding infrastructure — it's ab
 
 InCitu allows us to overlay **vintage-inspired urban elements** onto real-world street views using a mobile device. These AR renderings help stakeholders and community members preview how historic features can enhance the pedestrian experience.
 
-### Proposed Aesthetic Interventions:
+### Proposed Aesthetic Interventions (Click to view in InCitu):
 
--   [**Decorative iron barrier**](https://app.incitu.us/project/?id=irjdssen)
--   [**Retro-style streetlamp**](https://app.incitu.us/project/?id=zd0nqbph)
--   [**Classic bench design**](https://app.incitu.us/project/?id=n92ntojo)
+-   🛑 [**Decorative iron barrier**](https://app.incitu.us/project/?id=irjdssen)
+-   💡 [**Retro-style streetlamp**](https://app.incitu.us/project/?id=zd0nqbph)
+-   🪑 [**Classic bench design**](https://app.incitu.us/project/?id=n92ntojo)
 
 These elements are more than just upgrades — they evoke the rich cultural history of the neighborhood and encourage passersby to slow down, observe, and enjoy their surroundings.
 

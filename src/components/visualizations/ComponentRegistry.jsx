@@ -6,7 +6,7 @@ import StreamlitTransformation from '../groups/LIC/transformation.jsx';
 import InsightComponent from '../groups/LIC/insight.jsx';
 import StreamlitConsensus from '../groups/LIC/consensus.jsx';
 import PredictionComponent from '../groups/LIC/prediction.jsx'
-import WestVillageStreetView from '../visualizations/WestVillageStreetView.jsx';
+import WestVillageStreetView from '../groups/west-village/WestVillageStreetView.jsx';
 
 // Map component paths to their actual component implementations
 const componentRegistry = {
