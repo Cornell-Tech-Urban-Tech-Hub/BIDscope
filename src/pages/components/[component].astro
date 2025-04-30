@@ -5,6 +5,7 @@ import AstroImageLoader from '../../components/visualizations/AstroImageLoader.a
 
 // Define a custom minimal layout for component-only view
 const base = import.meta.env.BASE_URL || '/';
+const baseUrl = base.endsWith('/') ? base : `${base}/`;
 
 // Generate paths for all components from all projects
 export async function getStaticPaths() {
@@ -70,8 +71,26 @@ const { componentPath, projectTitle, projectSlug, componentTitle, bidName } = As
 // Helper function to check if a path is an image
 function isImagePath(path) {
   if (!path) return false;
+  // Check if it's an absolute URL to an image
+  if (path.startsWith('http') && /\.(jpg|jpeg|png|gif|svg|webp)$/i.test(path)) {
+    return true;
+  }
+  // Check local file extensions
   const ext = path.split('.').pop().toLowerCase();
   return ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'].includes(ext);
+}
+
+// Process component paths to handle relative paths correctly
+function processComponentPath(path) {
+  if (!path) return null;
+  // If it's an absolute URL, return it as is
+  if (path.startsWith('http')) return path;
+  // If it's an image path that doesn't start with '/', add the base URL
+  if (isImagePath(path) && !path.startsWith('/')) {
+    return `${baseUrl}${path}`;
+  }
+  // Return the path as is for component imports
+  return path;
 }
 
 // Determine if this component is an image
@@ -199,7 +218,7 @@ const isImage = isImagePath(componentPath);
     <div class="component-page">
       <header class="component-header">
         <h1 class="component-title">{componentTitle} - {bidName}</h1>
-        <a href={`${base}/projects/${projectSlug}`} class="back-link">
+        <a href={`${baseUrl}projects/${projectSlug}`} class="back-link">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="m15 18-6-6 6-6"></path>
           </svg>
@@ -212,7 +231,7 @@ const isImage = isImagePath(componentPath);
           {isImage ? (
             <div class="image-wrapper">
               <AstroImageLoader 
-                src={componentPath} 
+                src={processComponentPath(componentPath)} 
                 alt={componentTitle} 
                 class="fullscreen-image"
               />

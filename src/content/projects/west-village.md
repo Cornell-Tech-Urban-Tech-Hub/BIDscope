@@ -19,7 +19,7 @@ tags: ["Historic District", "Retail", "Tourism", "Cultural Heritage"]
 
 # Visualization Component References - empty arrays to be filled by students
 insightComponents:
-    - "../../components/visualizations/WestVillageStreetView.jsx"
+  ["WestVillageStreetView"]
 transformationComponents: []
 predictionComponents:
     [https://www.youtube.com/embed/5z-ai3G0_HQ, https://youtu.be/Yi7UfaQPESo]

@@ -162,8 +162,26 @@ function hasContent(html) {
 // Helper function to check if a path is an image
 function isImagePath(path) {
   if (!path) return false;
+  // Check if it's an absolute URL to an image
+  if (path.startsWith('http') && /\.(jpg|jpeg|png|gif|svg|webp)$/i.test(path)) {
+    return true;
+  }
+  // Check local file extensions
   const ext = path.split('.').pop().toLowerCase();
   return ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'].includes(ext);
+}
+
+// Process component paths to handle relative paths correctly
+function processComponentPath(path) {
+  if (!path) return null;
+  // If it's an absolute URL, return it as is
+  if (path.startsWith('http')) return path;
+  // If it's an image path that doesn't start with '/', add the base URL
+  if (isImagePath(path) && !path.startsWith('/')) {
+    return `${baseUrl}${path}`;
+  }
+  // Return the path as is for component imports
+  return path;
 }
 ---
 
@@ -275,7 +293,7 @@ function isImagePath(path) {
                           </a>
                           <div class="viz-component-wrapper">
                             {isImagePath(component) ? (
-                              <AstroImageLoader src={component} alt={`Insight visualization ${i + 1}`} />
+                              <AstroImageLoader src={processComponentPath(component)} alt={`Insight visualization ${i + 1}`} />
                             ) : (
                               <DynamicComponentLoader client:only="react" componentPath={component} />
                             )}

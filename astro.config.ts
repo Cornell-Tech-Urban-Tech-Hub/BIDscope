@@ -4,7 +4,7 @@ import react from '@astrojs/react';
 import UnoCSS from 'unocss/astro';
 
 export default defineConfig({
-  site: 'https://bidspec.mfranchi.net',  // Repository name as base path
+  site: 'https://bidspec.urbanforward.tech',  // Repository name as base path
   base: '/', // Explicitly define base path for all site URLs
   trailingSlash: 'ignore',
   integrations: [sitemap(), react(), UnoCSS()],
