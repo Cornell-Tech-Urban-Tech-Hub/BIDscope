@@ -21,10 +21,10 @@ tags: ["Retail", "Small Business", "Community Development"]
 
 
 # No components, We show only static images, not .jsx elements
-insightComponents: ["/src/components/groups/fifth-avenue-bid/5th_avenue_nlp.png", "/src/components/groups/fifth-avenue-bid/5th_avenue_nlp2.png"]
-transformationComponents: ["/src/components/groups/fifth-avenue-bid/average_streetmix.png"]
-predictionComponents: ["/src/components/groups/fifth-avenue-bid/floodnet_elevation.png", "/src/components/groups/fifth-avenue-bid/floodnet_flood_map.png"]
-consensusComponents: [/src/components/groups/fifth-avenue-bid/consensus.png]
+insightComponents: ["/public/components/groups/fifth-ave-brooklyn/5th_avenue_nlp2.png"]
+transformationComponents: ["/public/components/groups/fifth-ave-brooklyn/average_streetmix.png"]
+predictionComponents: ["/public/components/groups/fifth-ave-brooklyn/floodnet_elevation.png", "/public/components/groups/fifth-ave-brooklyn/floodnet_flood_map.png"]
+consensusComponents: [/public/components/groups/fifth-ave-brooklyn/consensus.png]
 
 ---
 
