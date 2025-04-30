@@ -4,7 +4,7 @@ title: "5th Avenue BID - Brooklyn"
 description: "Analysis of the 5th Avenue Business Improvement District in Park Slope, Brooklyn."
 publishDate: 2023-09-15
 updatedDate: 2023-10-01
-thumbnail: "/src/components/groups/fifth-avenue-bid/5th_thumbnail.png"
+thumbnail: "/src/components/groups/fifth-avenue-brooklyn/5th_thumbnail.png"
 
 # BID-specific Information
 bidName: "Park Slope 5th Avenue"
@@ -21,10 +21,10 @@ tags: ["Retail", "Small Business", "Community Development"]
 
 
 # No components, We show only static images, not .jsx elements
-insightComponents: ["/public/components/groups/fifth-ave-brooklyn/5th_avenue_nlp.png", "/public/components/groups/fifth-ave-brooklyn/5th_avenue_nlp2.png"]
-transformationComponents: ["/public/components/groups/fifth-ave-brooklyn/average_streetmix.png"]
-predictionComponents: ["/public/components/groups/fifth-ave-brooklyn/floodnet_elevation.png", "/public/components/groups/fifth-ave-brooklyn/floodnet_flood_map.png"]
-consensusComponents: [/public/components/groups/fifth-ave-brooklyn/consensus.png]
+insightComponents: ["/components/groups/fifth-avenue-brooklyn/5th_avenue_nlp.png", "/components/groups/fifth-avenue-brooklyn/5th_avenue_nlp2.png"]
+transformationComponents: ["/components/groups/fifth-avenue-brooklyn/average_streetmix.png"]
+predictionComponents: ["/components/groups/fifth-avenue-brooklyn/floodnet_elevation.png", "/components/groups/fifth-avenue-brooklyn/floodnet_flood_map.png"]
+consensusComponents: [/components/groups/fifth-avenue-brooklyn/consensus.png]
 
 ---
 
@@ -115,7 +115,7 @@ This view represents the current state of 5th Avenue with existing infrastructur
 
 <figure>
   <img
-  src="../../../public/components/groups/fifth-ave-brooklyn/average_streetmix.png"
+  src="/public/components/groups/fifth-avenue-brooklyn/average_streetmix.png"
   alt="Figure 1. StreetMix View 1: Baseline Scenario">
   <figcaption>Figure 1. StreetMix View 1: Baseline Scenario</figcaption>
 </figure>
@@ -123,7 +123,7 @@ This view represents the current state of 5th Avenue with existing infrastructur
 The current street design includes standard sidewalks, transit shelters, bicycle lanes, and parking areas, but lacks significant water management features. Two trees provide minimal stormwater interception.
 
 <figure>
-  <img src="../../../public/components/groups/fifth-ave-brooklyn/average-gama.gif" alt="Figure 2. GAMA View 1: Average Flooding Scenario"/>
+  <img src="/public/components/groups/fifth-avenue-brooklyn/average-gama.gif" alt="Figure 2. GAMA View 1: Average Flooding Scenario"/>
   <figcaption>Figure 2. GAMA View 1: Average Flooding Scenario</figcaption>
 </figure>
 
@@ -146,21 +146,21 @@ This view illustrates what happens during severe weather events with the current
 <div style="display: flex; gap: 1rem;">
 <figure style="width: 33%;">
   <img
-  src="../../../public/components/groups/fifth-ave-brooklyn/increased_streetmix.png"
+  src="/public/components/groups/fifth-avenue-brooklyn/increased_streetmix.png"
   alt="Figure 3.1. StreetMix View 2: High-Risk Scenario">
   <figcaption>Figure 3.1. StreetMix View 2: High-Risk Scenario</figcaption>
 </figure>
 
 <figure style="width: 33%;">
   <img
-  src="../../../public/components/groups/fifth-ave-brooklyn/increased_flood_streetmix.gif"
+  src="/public/components/groups/fifth-avenue-brooklyn/increased_flood_streetmix.gif"
   alt="Figure 3.2. StreetMix Simulation: Increased Flooding Scenario"/>
   <figcaption>Figure 3.2. StreetMix Simulation: Increased Flooding Scenario</figcaption>
 </figure>
 
 <figure style="width: 33%;">
   <img
-  src="../../../public/components/groups/fifth-ave-brooklyn/increased_flood_street.png"
+  src="/public/components/groups/fifth-avenue-brooklyn/increased_flood_street.png"
   alt="Figure 3.3. Street Gen: Street view generated similar to StreetMix design for High-Risk scenario"
   style="width: 100%; height: 185px; object-fit: cover;" >
   <figcaption>Figure 3.3.  Street Gen: Street view generated similar to StreetMix design for High-Risk scenario</figcaption>
@@ -173,7 +173,7 @@ During heavy rainfall, the current configuration fails to adequately manage stor
 
 <figure>
   <img
-  src="../../../public/components/groups/fifth-ave-brooklyn/increased_gama.gif"
+  src="/public/components/groups/fifth-avenue-brooklyn/increased_gama.gif"
   alt="Figure 4. GAMA View 2: Increased Flooding Scenario"/>
   <figcaption>Figure 4. GAMA View 2: Increased Flooding Scenario</figcaption>
 </figure>
@@ -203,21 +203,21 @@ This view represents our proposed intervention scenario with enhanced green infr
 <div style="display: flex; gap: 1rem;">
 <figure style="width: 33%;">
   <img
-  src="../../../public/components/groups/fifth-ave-brooklyn/reduced_streetmix.png"
+  src="/public/components/groups/fifth-avenue-brooklyn/reduced_streetmix.png"
   alt="Figure 5.1. StreetMix View 3: Intervention Scenario">
   <figcaption>Figure 5.1. StreetMix View 3: Intervention Scenario</figcaption>
 </figure>
 
 <figure style="width: 33%;">
   <img
-  src="../../../public/components/groups/fifth-ave-brooklyn/reduced_flood_streetmix.gif"
+  src="/public/components/groups/fifth-avenue-brooklyn/reduced_flood_streetmix.gif"
   alt="Figure 5.2. StreetMix Simulation 2: Reduced Flooding Scenario"/>
   <figcaption>Figure 5.2. StreetMix Simulation: Reduced Flooding Scenario</figcaption>
 </figure>
 
 <figure style="width: 33%;">
   <img
-  src="../../../public/components/groups/fifth-ave-brooklyn/reduced_flood_street.png"
+  src="/public/components/groups/fifth-avenue-brooklyn/reduced_flood_street.png"
   alt="Figure 5.2. Street Gen: Street view generated similar to StreetMix design for Intervention scenario"
   style="width: 100%; height: 185px; object-fit: cover;" />
   <figcaption>Figure 5.2. Street Gen: Street view generated similar to StreetMix design for Intervention scenario</figcaption>
@@ -228,7 +228,7 @@ The redesigned street features expanded sidewalks, improved transit infrastructu
 
 <figure>
   <img
-  src="../../../public/components/groups/fifth-ave-brooklyn/reduced_gama.gif"
+  src="/public/components/groups/fifth-avenue-brooklyn/reduced_gama.gif"
   alt="Figure 6. GAMA View 3: Reduced Flooding Scenario"/>
   <figcaption>Figure 6. GAMA View 3: Reduced Flooding Scenario</figcaption>
 </figure>
