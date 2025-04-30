@@ -4,7 +4,7 @@ title: "West Village BID"
 description: "Analysis of the West Village Business Improvement District in Manhattan."
 publishDate: 2023-09-20
 updatedDate: 2023-10-05
-thumbnail: "../../assets/placeholder.jpg"
+thumbnail: "src/components/groups/west-village/thumbnail.jpg"
 
 # BID-specific Information
 bidName: "West Village"
@@ -19,10 +19,17 @@ tags: ["Historic District", "Retail", "Tourism", "Cultural Heritage"]
 
 # Visualization Component References - empty arrays to be filled by students
 insightComponents:
-  ["/components/groups/west-village/street_view1.png", "WestVillageStreetView"]
+    [
+        "/components/groups/west-village/street_view1.png",
+        "WestVillageStreetView",
+    ]
 transformationComponents: ["/components/groups/west-village/current_state.jpg"]
 predictionComponents:
-    [https://www.youtube.com/embed/5z-ai3G0_HQ, https://www.youtube.com/embed/Yi7UfaQPESo]
+    [
+        https://www.youtube.com/embed/5z-ai3G0_HQ,
+        https://www.youtube.com/embed/Yi7UfaQPESo,
+        https://www.youtube.com/embed/VfcZxu9Tmsc,
+    ]
 consensusComponents: ["/components/groups/west-village/consensus_agents.png"]
 
 # Data Sources and techniques
@@ -168,32 +175,38 @@ The tool provides several key analytical capabilities:
 The analysis tool integrates actual pedestrian count data with spatial measurements of the existing streetscape, providing an evidence-based approach to our proposed interventions. This data-driven methodology ensures that our recommendations target the areas with the greatest need and potential impact.
 
 ## Walkability Simulation
+
 We have implemented a tool using the **GAMA platform** to simulate and visualize the effects of adding resting areas in the West Village BID. The goal is to enhance pedestrian walkability, especially for vulnerable populations such as the elderly or those with mobility limitations.
 
 GAMA enables us to model real-world pedestrian behavior through agent-based simulation. Each pedestrian agent is programmed with behaviors such as:
-- Walking forward
-- Slowing down when crowded
-- Seeking rest when fatigued
+
+-   Walking forward
+-   Slowing down when crowded
+-   Seeking rest when fatigued
 
 We developed two simulation scenarios:
-- **Baseline**: Pedestrians move through the BID under existing conditions, with limited access to seating.
-- **Intervention**: Additional benches are installed throughout the area, offering more opportunities for pedestrians to rest.
+
+-   **Baseline**: Pedestrians move through the BID under existing conditions, with limited access to seating.
+-   **Intervention**: Additional benches are installed throughout the area, offering more opportunities for pedestrians to rest.
 
 By comparing the two simulations, we observed a reduction in pedestrian fatigue and a more even distribution of foot traffic in the intervention case. This demonstrates that even small design interventions can improve urban comfort and accessibility.
 
 ### Before Intervention
+
 ![](/components/groups/west-village/rest-area_before.gif)  
-*Baseline scenario: Pedestrians move without added benches. Red tiredness indicators cluster in key areas lacking rest infrastructure.*
+_Baseline scenario: Pedestrians move without added benches. Red tiredness indicators cluster in key areas lacking rest infrastructure._
 
 ### After Intervention
+
 ![](/components/groups/west-village/rest-area_after.gif)  
-*Intervention scenario: With benches added, tiredness indicators decrease and spread out, showing improved pedestrian recovery and comfort.*
+_Intervention scenario: With benches added, tiredness indicators decrease and spread out, showing improved pedestrian recovery and comfort._
 
 ### Tiredness Levels Visualization
-*Dot colors represent tiredness levels:  
+
+_Dot colors represent tiredness levels:  
 🟢 Green = Energetic  
 🟡 Yellow = Moderately Tired  
-🔴 Red = Very Tired / Needs Rest*
+🔴 Red = Very Tired / Needs Rest_
 
 In the baseline simulation, red clusters indicate pedestrian fatigue due to the lack of rest areas. In the intervention scenario, those red zones begin to fade — signaling a more walkable and supportive environment.
 
@@ -202,9 +215,10 @@ In the baseline simulation, red clusters indicate pedestrian fatigue due to the 
 ### Interactive Scenario Planning
 
 In addition to visualizing fatigue patterns, our GAMA model serves as an interactive **planning tool**. Decision-makers can:
-- Adjust the number and location of resting areas
-- Explore multiple design configurations
-- Observe how pedestrian flow and comfort levels shift in response
+
+-   Adjust the number and location of resting areas
+-   Explore multiple design configurations
+-   Observe how pedestrian flow and comfort levels shift in response
 
 This enables low-risk exploration of **“what-if” scenarios**, supporting smarter, data-driven design decisions before implementation begins.
 
@@ -215,25 +229,27 @@ Revitalizing a neighborhood isn’t only about adding infrastructure — it's ab
 InCitu allows us to overlay **vintage-inspired urban elements** onto real-world street views using a mobile device. These AR renderings help stakeholders and community members preview how historic features can enhance the pedestrian experience.
 
 ### Proposed Aesthetic Interventions:
-- [**Decorative iron barrier**](https://app.incitu.us/project/?id=irjdssen)  
-- [**Retro-style streetlamp**](https://app.incitu.us/project/?id=zd0nqbph)  
-- [**Classic bench design**](https://app.incitu.us/project/?id=n92ntojo)  
+
+-   [**Decorative iron barrier**](https://app.incitu.us/project/?id=irjdssen)
+-   [**Retro-style streetlamp**](https://app.incitu.us/project/?id=zd0nqbph)
+-   [**Classic bench design**](https://app.incitu.us/project/?id=n92ntojo)
 
 These elements are more than just upgrades — they evoke the rich cultural history of the neighborhood and encourage passersby to slow down, observe, and enjoy their surroundings.
 
 ### On-Site Visualization
+
 ![](/components/groups/west-village/incitu_visualization.png)  
-*Vintage design elements — including barriers, lighting, and benches — rendered at full scale in their future locations using InCitu.*
+_Vintage design elements — including barriers, lighting, and benches — rendered at full scale in their future locations using InCitu._
 
 ### Real-Time Decision Support
 
 InCitu turns aesthetic planning into an interactive, immersive experience. Stakeholders can:
-- **Place, resize, and rotate elements** in context
-- **Visualize designs at street level** before implementation
-- **Engage in collaborative decision-making** without needing design expertise
+
+-   **Place, resize, and rotate elements** in context
+-   **Visualize designs at street level** before implementation
+-   **Engage in collaborative decision-making** without needing design expertise
 
 By making proposed changes feel real, InCitu helps bridge the gap between concept and consensus. This tool supports a more inclusive design process and ensures our streetscape interventions are not just functional, but meaningful.
-
 
 ## Economic Impact
 
@@ -257,13 +273,12 @@ Based on **20%** increase, this is estimate increase of job opportunities.
 
 # Consensus Analysis
 
-- **Strategy for Public Engagement**
- Because successful urban interventions hinge on community buy-in, we devised a multi-pronged public engagement strategy. It included open workshops, online surveys, and pop-up installations. The aim was to gather input from residents, business owners, and visitors early and often—ensuring that design decisions reflect local needs.
-- **Communication Between Agents**
- In our agent-based models, we conceptualized city stakeholders (municipal authorities, the BID board, residents, merchants) as distinct “agents” with unique interests. We then established communication channels—public forums, newsletters, neighborhood apps—to facilitate dialogue. This real-time feedback loop allowed quick adaptation of proposals, reducing friction between parties with differing priorities.
-- **Collaborative Decision Process**
- Finally, we proposed an ongoing collaborative framework wherein data-driven simulations, AR visualization tools, and community input converge to guide final decisions. By layering insights, transformations, and predictions in one shared platform, all parties can weigh in on trade-offs and refine proposals. This cyclical, consensus-focused process aims to produce more inclusive, lasting outcomes for the West Village BID.
-
+-   **Strategy for Public Engagement**
+    Because successful urban interventions hinge on community buy-in, we devised a multi-pronged public engagement strategy. It included open workshops, online surveys, and pop-up installations. The aim was to gather input from residents, business owners, and visitors early and often—ensuring that design decisions reflect local needs.
+-   **Communication Between Agents**
+    In our agent-based models, we conceptualized city stakeholders (municipal authorities, the BID board, residents, merchants) as distinct “agents” with unique interests. We then established communication channels—public forums, newsletters, neighborhood apps—to facilitate dialogue. This real-time feedback loop allowed quick adaptation of proposals, reducing friction between parties with differing priorities.
+-   **Collaborative Decision Process**
+    Finally, we proposed an ongoing collaborative framework wherein data-driven simulations, AR visualization tools, and community input converge to guide final decisions. By layering insights, transformations, and predictions in one shared platform, all parties can weigh in on trade-offs and refine proposals. This cyclical, consensus-focused process aims to produce more inclusive, lasting outcomes for the West Village BID.
 
 ## Additional Resources
 
