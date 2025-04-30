@@ -21,7 +21,7 @@ tags: ["Retail", "Small Business", "Community Development"]
 
 
 # No components, We show only static images, not .jsx elements
-insightComponents: ["/public/components/groups/fifth-ave-brooklyn/5th_avenue_nlp2.png"]
+insightComponents: ["/public/components/groups/fifth-ave-brooklyn/5th_avenue_nlp.png", "/public/components/groups/fifth-ave-brooklyn/5th_avenue_nlp2.png"]
 transformationComponents: ["/public/components/groups/fifth-ave-brooklyn/average_streetmix.png"]
 predictionComponents: ["/public/components/groups/fifth-ave-brooklyn/floodnet_elevation.png", "/public/components/groups/fifth-ave-brooklyn/floodnet_flood_map.png"]
 consensusComponents: [/public/components/groups/fifth-ave-brooklyn/consensus.png]
