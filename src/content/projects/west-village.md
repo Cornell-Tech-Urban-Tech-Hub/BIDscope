@@ -23,7 +23,7 @@ insightComponents:
 transformationComponents: []
 predictionComponents:
     [https://www.youtube.com/embed/5z-ai3G0_HQ, https://youtu.be/Yi7UfaQPESo]
-consensusComponents: ["../../components/groups/west-village/consensus_agents.png"]
+consensusComponents: []
 
 # Data Sources and techniques
 dataSource: "NYC Open Data, West Village BID Annual Reports, Census Data, Tourism Statistics"
