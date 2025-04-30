@@ -23,7 +23,7 @@ insightComponents:
 transformationComponents: []
 predictionComponents:
     [https://www.youtube.com/embed/5z-ai3G0_HQ, https://youtu.be/Yi7UfaQPESo]
-consensusComponents: []
+consensusComponents: ["../../components/groups/west-village/consensus_agents.png"]
 
 # Data Sources and techniques
 dataSource: "NYC Open Data, West Village BID Annual Reports, Census Data, Tourism Statistics"
@@ -231,9 +231,13 @@ Based on **20%** increase, this is estimate increase of job opportunities.
 
 # Consensus Analysis
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec et tortor eget magna consequat tincidunt. Phasellus neque nulla, finibus ac sollicitudin non, convallis vel nisi. Etiam auctor placerat faucibus. Ut vitae mollis ante, et tempus mauris. Quisque ac urna purus. Aliquam vulputate molestie lectus, non volutpat risus vehicula luctus. Aenean ac quam eu purus eleifend placerat at eget diam. Morbi dapibus at elit in convallis. Mauris posuere leo quam, vitae fringilla leo tempor vel. Ut quis mi porta, suscipit ligula ac, consequat leo. Cras id imperdiet lectus. Aenean quis arcu nisi. Nulla vel nisl eu eros finibus auctor ac ut urna. Suspendisse ac luctus arcu.
+- **Strategy for Public Engagement**
+ Because successful urban interventions hinge on community buy-in, we devised a multi-pronged public engagement strategy. It included open workshops, online surveys, and pop-up installations. The aim was to gather input from residents, business owners, and visitors early and often—ensuring that design decisions reflect local needs.
+- **Communication Between Agents**
+ In our agent-based models, we conceptualized city stakeholders (municipal authorities, the BID board, residents, merchants) as distinct “agents” with unique interests. We then established communication channels—public forums, newsletters, neighborhood apps—to facilitate dialogue. This real-time feedback loop allowed quick adaptation of proposals, reducing friction between parties with differing priorities.
+- **Collaborative Decision Process**
+ Finally, we proposed an ongoing collaborative framework wherein data-driven simulations, AR visualization tools, and community input converge to guide final decisions. By layering insights, transformations, and predictions in one shared platform, all parties can weigh in on trade-offs and refine proposals. This cyclical, consensus-focused process aims to produce more inclusive, lasting outcomes for the West Village BID.
 
-Donec vitae justo vitae turpis rutrum vestibulum vel at tortor. Aliquam quis tellus ut quam viverra fermentum in vitae nulla. Sed mattis accumsan libero, vel sollicitudin ante fringilla at. Nulla facilisi. Duis dignissim varius est, nec dignissim eros. Nullam orci risus, fermentum eu faucibus sit amet, laoreet quis eros. Proin bibendum, metus id bibendum pretium, quam urna dapibus leo, eget tempor magna sem at purus. Praesent faucibus dui id varius elementum. Sed consectetur, orci id rhoncus eleifend, enim magna pellentesque ante, et ornare lectus diam sit amet diam. Integer at magna et arcu iaculis consectetur at dictum lacus.
 
 ## Additional Resources
 
