@@ -6,8 +6,7 @@ import StreamlitTransformation from '../groups/LIC/transformation.jsx';
 import InsightComponent from '../groups/LIC/insight.jsx';
 import StreamlitConsensus from '../groups/LIC/consensus.jsx';
 import PredictionComponent from '../groups/LIC/prediction.jsx'
-
-
+import WestVillageStreetView from '../visualizations/WestVillageStreetView.jsx';
 
 // Map component paths to their actual component implementations
 const componentRegistry = {
@@ -42,6 +41,10 @@ const componentRegistry = {
   'src/components/groups/LIC/prediction': PredictionComponent,
   'src/components/groups/LIC/prediction.jsx': PredictionComponent,
   
+  'WestVillageStreetView': WestVillageStreetView,
+  'visualizations/WestVillageStreetView': WestVillageStreetView,
+  'src/components/visualizations/WestVillageStreetView': WestVillageStreetView,
+  'src/components/visualizations/WestVillageStreetView.jsx': WestVillageStreetView,
 };
 
 // External component loader - loads a YouTube embed or other external content
