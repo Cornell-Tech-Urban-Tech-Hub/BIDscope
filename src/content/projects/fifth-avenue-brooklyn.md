@@ -66,7 +66,7 @@ In an effort to aid the issues we’ve mentioned so far, we propose assisting in
 
 There is a range of improvements we can make to 5th Avenue that will allow it to become a proactive area for flood mitigation. Expanding rain gardens, bioswales, and permeable surfaces to absorb excess rainwater naturally can aid in green stormwater management. As shown in Transformation Visualization, we used Streetmix to show some examples of improvements (discussed further). Installing strategic water catchment areas to prevent overflow into vulnerable streets via retention basins and flood barriers can further contribite to flood prevention. Lastly, using sensors and real-time monitoring to optimize water flow and prevent backups via smart drainaige systems can assure that sewers do not go beyong their capacity. 
 
-To fund improvements, we suggest reallocating a portion of the Gowanus Canal Superfund investment toward upstream flood prevention — especially on 5th Avenue — because keeping water from reaching 4th Avenue now will reduce future remediation costs downstream. We also see potential in local revenue tools — like shoreline protection districts, targeted taxes, or partnerships with the insurance industry — where insurers could invest in risk reduction that directly benefits their bottom line. We suggest a public-private partnership model. Local businesses — whose storefronts and operations are directly affected by flooding — could co-fund the project, while federal Superfund dollars would match private contributions.
+To fund improvements, we suggest reallocating a portion of the Gowanus Canal Superfund investment toward upstream flood prevention, especially on 5th Avenue because keeping water from reaching 4th Avenue now will reduce future remediation costs downstream. We also see potential in local revenue tools, like shoreline protection districts, targeted taxes, or partnerships with the insurance industry where insurers could invest in risk reduction that directly benefits their bottom line. We suggest a public-private partnership model. Local businesses, whose storefronts and operations are directly affected by flooding could co-fund the project, while federal Superfund dollars would match private contributions.
 
 And lastly, transforming community outreach by partnering with more public schools to install rain gardens, launching a “Resilient Open Streets” model where public funding supports community-led maintenance, and adding educational signage will help residents understand and contribute to flood mitigation efforts. 
 
@@ -122,7 +122,6 @@ This view represents the current state of 5th Avenue with existing infrastructur
 
 The current street design includes standard sidewalks, transit shelters, bicycle lanes, and parking areas, but lacks significant water management features. Two trees provide minimal stormwater interception.
 
-<!-- ![Figure 4. GAMA View 1: Average Flooding Scenario](../../assets/5th_floodnet.png) -->
 <figure>
   <img src="../../../public/components/groups/fifth-ave-brooklyn/average-gama.gif" alt="Figure 2. GAMA View 1: Average Flooding Scenario"/>
   <figcaption>Figure 2. GAMA View 1: Average Flooding Scenario</figcaption>
@@ -144,16 +143,33 @@ The GAMA model reveals important baseline conditions:
 ### View 2: Increased Flooding/High-Risk Scenario
 This view illustrates what happens during severe weather events with the current infrastructure.
 
-<figure>
+<div style="display: flex; gap: 1rem;">
+<figure style="width: 33%;">
   <img
   src="../../../public/components/groups/fifth-ave-brooklyn/increased_streetmix.png"
-  alt="Figure 3. StreetMix View 2: High-Risk Scenario">
-  <figcaption>Figure 3. StreetMix View 2: High-Risk Scenario</figcaption>
+  alt="Figure 3.1. StreetMix View 2: High-Risk Scenario">
+  <figcaption>Figure 3.1. StreetMix View 2: High-Risk Scenario</figcaption>
 </figure>
+
+<figure style="width: 33%;">
+  <img
+  src="../../../public/components/groups/fifth-ave-brooklyn/increased_flood_streetmix.gif"
+  alt="Figure 3.2. StreetMix Simulation: Increased Flooding Scenario"/>
+  <figcaption>Figure 3.2. StreetMix Simulation: Increased Flooding Scenario</figcaption>
+</figure>
+
+<figure style="width: 33%;">
+  <img
+  src="../../../public/components/groups/fifth-ave-brooklyn/increased_flood_street.png"
+  alt="Figure 3.3. Street Gen: Street view generated similar to StreetMix design for High-Risk scenario"
+  style="width: 100%; height: 185px; object-fit: cover;" >
+  <figcaption>Figure 3.3.  Street Gen: Street view generated similar to StreetMix design for High-Risk scenario</figcaption>
+</figure>
+</div>
 
 During heavy rainfall, the current configuration fails to adequately manage stormwater, leading to reduced pedestrian activity as the street becomes less hospitable.
 
-<!-- ![Figure 5. GAMA View 2: Increased Flooding Scenario](../../assets/5th_floodnet.png) -->
+<!-- ![Figure 4. GAMA View 2: Increased Flooding Scenario] -->
 
 <figure>
   <img
@@ -184,13 +200,29 @@ The aerial view clearly shows the spread of floodwaters across lower-elevation a
 
 This view represents our proposed intervention scenario with enhanced green infrastructure and stormwater management.
 
-<!-- ![Figure 6. StreetMix View 3: Intervention Scenario](../../assets/5th_floodnet.png) -->
-<figure>
+<div style="display: flex; gap: 1rem;">
+<figure style="width: 33%;">
   <img
   src="../../../public/components/groups/fifth-ave-brooklyn/reduced_streetmix.png"
-  alt="Figure 5. StreetMix View 3: Intervention Scenario">
-  <figcaption>Figure 5. StreetMix View 3: Intervention Scenario</figcaption>
+  alt="Figure 5.1. StreetMix View 3: Intervention Scenario">
+  <figcaption>Figure 5.1. StreetMix View 3: Intervention Scenario</figcaption>
 </figure>
+
+<figure style="width: 33%;">
+  <img
+  src="../../../public/components/groups/fifth-ave-brooklyn/reduced_flood_streetmix.gif"
+  alt="Figure 5.2. StreetMix Simulation 2: Reduced Flooding Scenario"/>
+  <figcaption>Figure 5.2. StreetMix Simulation: Reduced Flooding Scenario</figcaption>
+</figure>
+
+<figure style="width: 33%;">
+  <img
+  src="../../../public/components/groups/fifth-ave-brooklyn/reduced_flood_street.png"
+  alt="Figure 5.2. Street Gen: Street view generated similar to StreetMix design for Intervention scenario"
+  style="width: 100%; height: 185px; object-fit: cover;" />
+  <figcaption>Figure 5.2. Street Gen: Street view generated similar to StreetMix design for Intervention scenario</figcaption>
+</figure>
+</div>
 
 The redesigned street features expanded sidewalks, improved transit infrastructure, and critically, increased vegetation and permeable surfaces. The street view image reveals a dramatically greener environment, with tree canopy coverage significantly higher than in the current configuration.
 
