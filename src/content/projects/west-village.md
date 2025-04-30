@@ -19,11 +19,11 @@ tags: ["Historic District", "Retail", "Tourism", "Cultural Heritage"]
 
 # Visualization Component References - empty arrays to be filled by students
 insightComponents:
-  ["WestVillageStreetView"]
-transformationComponents: []
+  ["/components/groups/west-village/street_view1.png", "WestVillageStreetView"]
+transformationComponents: ["/components/groups/west-village/current_state.jpg"]
 predictionComponents:
-    [https://www.youtube.com/embed/5z-ai3G0_HQ, https://youtu.be/Yi7UfaQPESo]
-consensusComponents: []
+    [https://www.youtube.com/embed/5z-ai3G0_HQ, https://www.youtube.com/embed/Yi7UfaQPESo]
+consensusComponents: ["/components/groups/west-village/consensus_agents.png"]
 
 # Data Sources and techniques
 dataSource: "NYC Open Data, West Village BID Annual Reports, Census Data, Tourism Statistics"
@@ -182,11 +182,11 @@ We developed two simulation scenarios:
 By comparing the two simulations, we observed a reduction in pedestrian fatigue and a more even distribution of foot traffic in the intervention case. This demonstrates that even small design interventions can improve urban comfort and accessibility.
 
 ### Before Intervention
-![](../../../public/components/groups/west-village/rest-area_before.gif)  
+![](/components/groups/west-village/rest-area_before.gif)  
 *Baseline scenario: Pedestrians move without added benches. Red tiredness indicators cluster in key areas lacking rest infrastructure.*
 
 ### After Intervention
-![](../../../public/components/groups/west-village/rest-area_after.gif)  
+![](/components/groups/west-village/rest-area_after.gif)  
 *Intervention scenario: With benches added, tiredness indicators decrease and spread out, showing improved pedestrian recovery and comfort.*
 
 ### Tiredness Levels Visualization
@@ -207,6 +207,32 @@ In addition to visualizing fatigue patterns, our GAMA model serves as an interac
 - Observe how pedestrian flow and comfort levels shift in response
 
 This enables low-risk exploration of **“what-if” scenarios**, supporting smarter, data-driven design decisions before implementation begins.
+
+## Aesthetic Elements Visualization with InCitu
+
+Revitalizing a neighborhood isn’t only about adding infrastructure — it's about restoring a sense of place. To support our walkability interventions, we used **InCitu**, an augmented reality (AR) platform, to visualize aesthetic improvements directly within the West Village streetscape.
+
+InCitu allows us to overlay **vintage-inspired urban elements** onto real-world street views using a mobile device. These AR renderings help stakeholders and community members preview how historic features can enhance the pedestrian experience.
+
+### Proposed Aesthetic Interventions:
+- [**Decorative iron barrier**](https://app.incitu.us/project/?id=irjdssen)  
+- [**Retro-style streetlamp**](https://app.incitu.us/project/?id=zd0nqbph)  
+- [**Classic bench design**](https://app.incitu.us/project/?id=n92ntojo)  
+
+These elements are more than just upgrades — they evoke the rich cultural history of the neighborhood and encourage passersby to slow down, observe, and enjoy their surroundings.
+
+### On-Site Visualization
+![](/components/groups/west-village/incitu_visualization.png)  
+*Vintage design elements — including barriers, lighting, and benches — rendered at full scale in their future locations using InCitu.*
+
+### Real-Time Decision Support
+
+InCitu turns aesthetic planning into an interactive, immersive experience. Stakeholders can:
+- **Place, resize, and rotate elements** in context
+- **Visualize designs at street level** before implementation
+- **Engage in collaborative decision-making** without needing design expertise
+
+By making proposed changes feel real, InCitu helps bridge the gap between concept and consensus. This tool supports a more inclusive design process and ensures our streetscape interventions are not just functional, but meaningful.
 
 
 ## Economic Impact

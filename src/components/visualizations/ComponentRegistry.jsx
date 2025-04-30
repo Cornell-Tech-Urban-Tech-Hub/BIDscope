@@ -41,6 +41,7 @@ const componentRegistry = {
   'src/components/groups/LIC/prediction': PredictionComponent,
   'src/components/groups/LIC/prediction.jsx': PredictionComponent,
   
+  // West Village components
   'WestVillageStreetView': WestVillageStreetView,
   'visualizations/WestVillageStreetView': WestVillageStreetView,
   'src/components/visualizations/WestVillageStreetView': WestVillageStreetView,
