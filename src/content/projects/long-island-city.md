@@ -2,8 +2,8 @@
 # Basic Project Information
 title: "Long Island City Partnership"
 description: "Analysis of the Long Island City Partnership, an area undergoing rapid transformation in Queens."
-publishDate: 2023-10-05
-updatedDate: 2023-10-20
+publishDate: 2025-04-30
+updatedDate: 2025-04-30
 thumbnail: "../../assets/lic.png"
 # thumbnail: "../../components/groups/LIC/lic.png"
 

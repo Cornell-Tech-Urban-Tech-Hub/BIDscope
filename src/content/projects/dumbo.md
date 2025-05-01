@@ -2,8 +2,8 @@
 # Basic Project Information
 title: "DUMBO Improvement District"
 description: "Analysis of the DUMBO Improvement District in Brooklyn, an area known for its tech innovation and arts scene."
-publishDate: 2023-09-25
-updatedDate: 2023-10-10
+publishDate: 2025-04-30
+updatedDate: 2025-04-30
 thumbnail: "../../assets/placeholder.jpg"
 
 # BID-specific Information

@@ -2,8 +2,8 @@
 # Basic Project Information
 title: "5th Avenue BID - Brooklyn"
 description: "Analysis of the 5th Avenue Business Improvement District in Park Slope, Brooklyn."
-publishDate: 2023-09-15
-updatedDate: 2023-10-01
+publishDate: 2025-04-30
+updatedDate: 2025-04-30
 thumbnail: "/src/components/groups/fifth-avenue-brooklyn/5th_thumbnail.png"
 
 # BID-specific Information

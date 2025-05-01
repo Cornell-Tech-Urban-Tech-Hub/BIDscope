@@ -2,8 +2,8 @@
 # Basic Project Information
 title: "West Village BID"
 description: "Analysis of the West Village Business Improvement District in Manhattan."
-publishDate: 2023-09-20
-updatedDate: 2023-10-05
+publishDate: 2025-04-30
+updatedDate: 2025-04-30
 thumbnail: "src/components/groups/west-village/thumbnail.jpg"
 
 # BID-specific Information

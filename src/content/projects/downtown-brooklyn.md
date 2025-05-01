@@ -2,8 +2,8 @@
 # Basic Project Information
 title: "Downtown Brooklyn Partnership"
 description: "Analysis of the Downtown Brooklyn Partnership, a major commercial and cultural district in Brooklyn."
-publishDate: 2023-10-01
-updatedDate: 2023-10-15
+publishDate: 2025-04-30
+updatedDate: 2025-04-30
 thumbnail: "../../assets/dtbk.png"
 
 # BID-specific Information
