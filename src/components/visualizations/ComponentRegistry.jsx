@@ -8,6 +8,10 @@ import StreamlitConsensus from '../groups/LIC/consensus.jsx';
 import PredictionComponent from '../groups/LIC/prediction.jsx'
 import WestVillageStreetView from '../visualizations/WestVillageStreetView.jsx';
 
+import InsightIframe from '../groups/dtbk/InsightIframe.jsx';
+import TransformationIframe from '../groups/dtbk/TransformationIframe.jsx';
+
+
 // Map component paths to their actual component implementations
 const componentRegistry = {
   // Key should match the path specified in content files (without the full path)
@@ -45,6 +49,10 @@ const componentRegistry = {
   'visualizations/WestVillageStreetView': WestVillageStreetView,
   'src/components/visualizations/WestVillageStreetView': WestVillageStreetView,
   'src/components/visualizations/WestVillageStreetView.jsx': WestVillageStreetView,
+
+  // DTBK components
+  "src/components/groups/dtbk/InsightIframe.jsx": InsightIframe,
+  "src/components/groups/dtbk/TransformationIframe.jsx": TransformationIframe,
 };
 
 // External component loader - loads a YouTube embed or other external content
