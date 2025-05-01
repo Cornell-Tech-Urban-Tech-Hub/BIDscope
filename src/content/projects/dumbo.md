@@ -43,7 +43,7 @@ Challenge: 80% of visitors cluster at one photo spot (Washington St), straining 
 - Economic Context: Median income $163K (vs. NYC’s average of $55K)
 - Neighborhood Assets: Iconic bridge views, cobblestone streets, 140+ art studios/galleries, Brooklyn Tech Triangle anchor (1,000+ tech firms) 
 - Project Goal: Disperse tourist traffic, enhance the pedestrian experience, and activate underused public space 
-![overview](/public/components/groups/dumbo/overview.jpg)
+![overview](/components/groups/dumbo/overview.jpg)
 
 
 # Insight Analysis
@@ -52,7 +52,7 @@ Through interviews with tourists, local businesses, and visitors, research, and 
 
 Washington Street’s famous Manhattan Bridge view has become a victim of its own Instagram success, creating severe bottlenecks that disrupt pedestrian flow and overwhelm local infrastructure. During peak hours, the concentration of tourists and photographers creates a congested environment that diminishes the experience for everyone. This over-concentration demonstrates a missed opportunity, as many visitors leave without experiencing DUMBO’s broader offerings. 
 
-![washington](/public/components/groups/dumbo/Washington%20St.JPG)
+![washington](/components/groups/dumbo/Washington%20St.JPG)
 
 Meanwhile, several potentially vibrant public spaces throughout the district sit underutilized. Areas like Dock Street, Anchorage Plaza, and the York Street subway entrance lack distinctive identity and programming, appearing as “dead zones” to visitors with no compelling reason to linger. These spaces have tremendous potential for activation through strategic interventions such as seating, public art, and temporary markets that could transform them into worthy destinations. 
 
