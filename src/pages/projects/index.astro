@@ -4,7 +4,10 @@ import ProjectCard from '../../components/projects/ProjectCard.astro';
 import { getCollection } from 'astro:content';
 
 // Fetch all projects
-const allProjects = await getCollection('projects');
+let allProjects = await getCollection('projects');
+// filter out projects that are draft 
+allProjects = allProjects.filter(project => !project.data.draft);
+
 
 // Sort projects by publish date (newest first)
 const sortedProjects = allProjects.sort((a, b) => 

@@ -12,6 +12,7 @@ const projects = defineCollection({
     yearEstablished: z.number().optional(),
     featured: z.boolean().default(false),
     revisionMode: z.boolean().default(false).describe('If true, displays visualization placeholders even if no components exist'),
+    draft: z.boolean().default(false).describe('If true, the project will not be displayed in the public site'),
     tags: z.array(z.string()).default([]),
     
     // Visualization component references - now as arrays to support multiple components per section

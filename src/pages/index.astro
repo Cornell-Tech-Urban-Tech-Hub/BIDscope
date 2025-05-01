@@ -9,7 +9,12 @@ const featuredProjects = await getCollection('projects', ({ data }) => data.feat
 
 // Get all project BID names for the map
 const allProjects = await getCollection('projects');
-const projectBids = allProjects.map(project => project.data.bidName);
+let projectBids = allProjects.map(project => project.data.bidName);
+// Filter out projects that are draft 
+projectBids = projectBids.filter(bid => {
+  const project = allProjects.find(p => p.data.bidName === bid);
+  return project && !project.data.draft;
+});
 
 // Create a mapping from BID names to project slugs for direct navigation
 const bidToSlugMap = Object.fromEntries(
