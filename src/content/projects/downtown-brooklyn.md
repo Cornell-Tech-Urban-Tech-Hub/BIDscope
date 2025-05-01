@@ -34,7 +34,7 @@ visualizationTechniques: ["Time Series Analysis", "Comparative Metrics", "Spatia
 The **Downtown Brooklyn Partnership (DBP)** stands as a key steward of New York City’s third-largest central business district. Since its establishment in 2006, the DBP has provided management and strategic vision across a significant 1.8 square mile area encompassing three distinct Business Improvement Districts: MetroTech, Fulton Mall, and Court-Livingston-Schermerhorn.
 
 <figure style="max-width: 80%; margin: auto; display: block;">
-  <img src="../../../public/components/groups/dtbk/Downtown Brooklyn_Introduction.png" alt="Downtown Brooklyn skyline with text overlay" style="max-width: 100%; height: auto;">
+  <img src="/components/groups/dtbk/Downtown Brooklyn_Introduction.png" alt="Downtown Brooklyn skyline with text overlay" style="max-width: 100%; height: auto;">
   <figcaption style="text-align: center;">An introduction to Downtown Brooklyn and the Partnership.</figcaption>
 </figure>
 
@@ -51,63 +51,63 @@ Downtown Brooklyn is defined by its rapid pace of change and the interplay of di
 One of the most significant recent shifts is the dramatic increase in **residential development**. The district, traditionally dominated by large office buildings and governmental facilities, now features numerous high-rise residential towers, often incorporating street-level retail. This signals not only a growing population but also a change in its composition, with an influx of higher-income residents drawn to the new housing stock and proximity to transit. Alongside this, a large student population contributes significantly to the area's daytime activity. While this mixed-use growth brings vibrancy, it also contributes to a sense of transience, as many individuals primarily commute into or through the district for work or study without deeply engaging with its local businesses or community life. This pattern of movement highlights the transient nature of many who pass through the district daily.
 
 <figure style="max-width: 80%; margin: auto; display: block;">
-  <img src="../../../public/components/groups/dtbk/Transience.png" alt="Diagram showing different types of people passing through DTBK" style="max-width: 100%; height: auto;">
+  <img src="/components/groups/dtbk/Transience.png" alt="Diagram showing different types of people passing through DTBK" style="max-width: 100%; height: auto;">
   <figcaption style="text-align: center;">Downtown Brooklyn experiences significant transience from commuters, students, shoppers, and tourists.</figcaption>
 </figure>
 
 Examining transit ridership data provides a clearer picture of this transient population and their primary modes of entry and exit from the district.
 
 <figure style="max-width: 80%; margin: auto; display: block;">
-  <img src="../../../public/components/groups/dtbk/Transcience_Ridership.png" alt="Graph showing subway ridership trends in Downtown Brooklyn stations" style="max-width: 100%; height: auto;">
+  <img src="/components/groups/dtbk/Transcience_Ridership.png" alt="Graph showing subway ridership trends in Downtown Brooklyn stations" style="max-width: 100%; height: auto;">
   <figcaption style="text-align: center;">Subway ridership data highlights the large volume of people entering and leaving the district daily.</figcaption>
 </figure>
 
 While foot traffic has seen some recovery post-pandemic, it still lags behind pre-recession levels, indicating a potential shift in commuter and shopping behavior that impacts local businesses and the district's overall vitality.
 
 <figure style="max-width: 80%; margin: auto; display: block;">
-  <img src="../../../public/components/groups/dtbk/Trends in Foot Traffic.png" alt="Graph showing trends in foot traffic in Downtown Brooklyn over time" style="max-width: 100%; height: auto;">
+  <img src="/components/groups/dtbk/Trends in Foot Traffic.png" alt="Graph showing trends in foot traffic in Downtown Brooklyn over time" style="max-width: 100%; height: auto;">
   <figcaption style="text-align: center;">Foot traffic trends indicate the ongoing challenge of full recovery since the pandemic.</figcaption>
 </figure>
 
 Despite significant BID investment, the revenue generated within the district has not fully justified the costs, underscoring the need to convert this transience into sustained local economic engagement and demonstrate clearer returns on investment.
 
 <figure style="max-width: 40%; margin: auto; display: block;">
-  <img src="../../../public/components/groups/dtbk/DTBK Money.png" alt="Graphic illustrating high BID investment versus revenue" style="max-width: 100%; height: auto;">
+  <img src="/components/groups/dtbk/DTBK Money.png" alt="Graphic illustrating high BID investment versus revenue" style="max-width: 100%; height: auto;">
   <figcaption style="text-align: center;">High BID investment versus revenue generation is a key financial challenge.</figcaption>
 </figure>
 
 The **physical infrastructure** of Downtown Brooklyn presents both assets and challenges. While new public spaces and streetscape improvements have emerged, major thoroughfares such as Flatbush Avenue, Tillary Street, and Adams Street continue to function as high-traffic arterials. These "stroads"—characterized by fast-moving vehicular traffic alongside commercial properties—create significant barriers to pedestrian movement, impacting safety and limiting seamless connectivity within the district. Navigating intersections designed primarily for cars can be hazardous, fragmenting the pedestrian experience despite efforts to improve walkability. Visualizations based on NYC Open Data and site observations highlight these conflict points, particularly where major roads intersect pedestrian-heavy areas near transit hubs and retail corridors. These highways act as formidable barriers, limiting easy access into the core BID areas.
 
 <figure style="max-width: 80%; margin: auto; display: block;">
-  <img src="../../../public/components/groups/dtbk/Highway Barrier.png" alt="Aerial view showing highways acting as barriers around DTBK" style="max-width: 100%; height: auto;">
+  <img src="/components/groups/dtbk/Highway Barrier.png" alt="Aerial view showing highways acting as barriers around DTBK" style="max-width: 100%; height: auto;">
   <figcaption style="text-align: center;">Highways and major roads create significant barriers to pedestrian access into the BID core.</figcaption>
 </figure>
 
 A detailed map of these highway barriers underscores the challenge of crossing into the district.
 
 <figure style="max-width: 80%; margin: auto; display: block;">
-  <img src="../../../public/components/groups/dtbk/Highway Barrier Map.png" alt="Map highlighting highway barriers in the DTBK area" style="max-width: 100%; height: auto;">
+  <img src="/components/groups/dtbk/Highway Barrier Map.png" alt="Map highlighting highway barriers in the DTBK area" style="max-width: 100%; height: auto;">
   <figcaption style="text-align: center;">Mapping major arterial roads illustrates physical barriers to walkability.</figcaption>
 </figure>
 
 Key subway stops and public housing developments are often concentrated along these barrier roads, making safe and easy access to the BID core crucial for connectivity, access, and equity for a significant portion of the population.
 
 <figure style="max-width: 80%; margin: auto; display: block;">
-  <img src="../../../public/components/groups/dtbk/Subways and Public Housing.png" alt="Map showing location of subways and public housing relative to barrier roads" style="max-width: 100%; height: auto;">
+  <img src="/components/groups/dtbk/Subways and Public Housing.png" alt="Map showing location of subways and public housing relative to barrier roads" style="max-width: 100%; height: auto;">
   <figcaption style="text-align: center;">Subways and public housing are often located near highway barriers, impacting access.</figcaption>
 </figure>
 
 Downtown Brooklyn's **public spaces and cultural assets** contribute significantly to its character, though their impact varies across the district. Existing plazas, such as MetroTech Commons, offer valuable seating and programming opportunities but often see peak use tied to specific events or times of day. There are observable gaps in elements that encourage pedestrian comfort and linger time, such as adequate greenery and shade, especially on streets that have not yet undergone significant revitalization. Public art installations, including murals and temporary exhibits, enhance the aesthetic appeal but tend to be concentrated in specific pockets, leaving other areas feeling primarily functional or commercial. While seasonal events successfully draw crowds, cultivating year-round cultural engagement is key to fully activating the public realm and fostering a stronger sense of place. The DBP also provides active sanitation and safety crews, visible throughout the district in bright uniforms, contributing to the perception and reality of a clean and safe environment for residents and visitors alike.
 
 <figure style="max-width: 80%; margin: auto; display: block;">
-  <img src="../../../public/components/groups/dtbk/Insights_Sanitation and Safety Crew.png" alt="Image showing a sanitation and safety crew member" style="max-width: 100%; height: auto;">
+  <img src="/components/groups/dtbk/Insights_Sanitation and Safety Crew.png" alt="Image showing a sanitation and safety crew member" style="max-width: 100%; height: auto;">
   <figcaption style="text-align: center;">Active and visible sanitation and safety crews contribute to the BID's cleanliness and safety.</figcaption>
 </figure>
 
 Finally, the **governance structure** of the Business Improvement Districts under the DBP plays a crucial role in shaping development, yet it is not without its complexities. As articulated by Robert Perris, former Manager of Brooklyn Community District 2, while BIDs can be powerful tools for supplementing municipal services and improving public spaces, their funding model—primarily through property owner assessments—can inherently prioritize the interests of large landowners. This dynamic can sometimes lead to tensions, particularly regarding the rapid pace of high-rise development often described as the "Manhattanization" of Downtown Brooklyn. This transformation, characterized by tall buildings and escalating rents, raises concerns among community members about affordability and the potential displacement of long-standing small businesses and residents, highlighting the need for inclusive planning processes that consider a broader range of voices beyond major property stakeholders. Speaking with stakeholders like a former community district manager provided valuable qualitative insights into these tensions and the perpetual state of change in DTBK, noting the mixed public perception of increased density and cost of living.
 
 <figure style="max-width: 80%; margin: auto; display: block;">
-  <img src="../../../public/components/groups/dtbk/Conversation with community district manager.png" alt="Quote from Robert Perris, former Brooklyn CD2 Manager" style="max-width: 100%; height: auto;">
+  <img src="/components/groups/dtbk/Conversation with community district manager.png" alt="Quote from Robert Perris, former Brooklyn CD2 Manager" style="max-width: 100%; height: auto;">
   <figcaption style="text-align: center;">Insights from a conversation with former Community District 2 Manager, Robert Perris.</figcaption>
 </figure>
 
@@ -118,7 +118,7 @@ Finally, the **governance structure** of the Business Improvement Districts unde
 Based on our insights into Downtown Brooklyn's current state and challenges, we propose a two-pronged approach to foster transformative change: enhancing digital engagement to connect transient populations with local offerings and implementing physical infrastructure improvements to create a more walkable and permeable urban environment. Aligning with the DBP's existing plans, which foresee increased pedestrian areas by 2030 as outlined in their Public Realm Action Plan, is a key consideration for any proposed transformation to ensure synergy with ongoing efforts.
 
 <figure style="max-width: 80%; margin: auto; display: block;">
-  <img src="../../../public/components/groups/dtbk/Future proofing Plans.png" alt="Map illustrating planned walking areas in DTBK by 2030" style="max-width: 100%; height: auto;">
+  <img src="/components/groups/dtbk/Future proofing Plans.png" alt="Map illustrating planned walking areas in DTBK by 2030" style="max-width: 100%; height: auto;">
   <figcaption style="text-align: center;">Downtown Brooklyn Partnership's Public Realm Action Plan includes significant planned walking areas by 2030.</figcaption>
 </figure>
 
@@ -129,21 +129,21 @@ The app would feature **QR Code Check-Ins** at participating businesses, restaur
 The second strategy involves **physical infrastructure improvements** focused on enhancing pedestrian safety, comfort, and connectivity. Addressing the barriers posed by major arterial roads is paramount. This includes implementing **Improved Crosswalks and Wayfinding** at critical intersections, particularly along Adams Street and where it meets Fulton Street. This would involve increasing the visibility of crossings, optimizing signal timing for pedestrians, and installing clear, intuitive signage to guide visitors from transit hubs towards the BID's core commercial areas. Building on the idea of reclaiming street space, we propose concepts like **Promenades or “Shared Streets”** in underutilized areas, such as narrow parking lots or wide medians. These spaces could be transformed into pedestrian-prioritized corridors with seating, greenery, and shade, encouraging people to linger and interact rather than simply passing through. One particular point of focus is the complex intersection at Brooklyn Bridge Boulevard and Fulton Street. This 5-way intersection is a key point connecting Columbus Park and the walkable core of DTBK. The presence of a parking lot in the middle can discourage entry and block views, making it uninviting.
 
 <figure style="max-width: 80%; margin: auto; display: block;">
-  <img src="../../../public/components/groups/dtbk/Intersection of Focus.png" alt="Aerial view highlighting the intersection at Brooklyn Bridge Boulevard and Fulton Street" style="max-width: 100%; height: auto;">
+  <img src="/components/groups/dtbk/Intersection of Focus.png" alt="Aerial view highlighting the intersection at Brooklyn Bridge Boulevard and Fulton Street" style="max-width: 100%; height: auto;">
   <figcaption style="text-align: center;">Focusing on the complex intersection at Brooklyn Bridge Boulevard and Fulton Street.</figcaption>
 </figure>
 
 An example of this concept could involve transforming the parking lot at the intersection of focus into a decorated promenade connecting Columbus Park to Downtown Brooklyn, a concept also considered in the DBP's plans.
 
 <figure style="max-width: 80%; margin: auto; display: block;">
-  <img src="../../../public/components/groups/dtbk/Transformation_Promenade.png" alt="Rendered concept of a pedestrian promenade replacing a parking lot" style="max-width: 100%; height: auto;">
+  <img src="/components/groups/dtbk/Transformation_Promenade.png" alt="Rendered concept of a pedestrian promenade replacing a parking lot" style="max-width: 100%; height: auto;">
   <figcaption style="text-align: center;">A conceptual rendering of a promenade replacing the parking lot at the intersection of focus (Image Credit: DBP Partnership).</figcaption>
 </figure>
 
 Another transformation idea for this intersection is an **Extended or Midblock Crosswalk** from the northern side of Fulton-Columbus to Willoughby Plaza, providing a more direct and safer connection for pedestrians navigating this busy junction.
 
 <figure style="max-width: 80%; margin: auto; display: block;">
-  <img src="../../../public/components/groups/dtbk/Transformation_Extended Crosswalk.png" alt="Diagram illustrating an extended crosswalk proposal" style="max-width: 100%; height: auto;">
+  <img src="/components/groups/dtbk/Transformation_Extended Crosswalk.png" alt="Diagram illustrating an extended crosswalk proposal" style="max-width: 100%; height: auto;">
   <figcaption style="text-align: center;">Proposal for an extended or midblock crosswalk to improve connectivity.</figcaption>
 </figure>
 
@@ -151,11 +151,11 @@ For high-risk zones with significant traffic volume, exploring the possibility o
 
 <figure style="display: flex; gap: 1rem; justify-content: center;">
     <figure style="width: 48%;">
-        <img src="../../../public/components/groups/dtbk/Streetview Tool.png" alt="Screenshot of a street view tool interface" style="max-width: 100%; height: auto;">
+        <img src="/components/groups/dtbk/Streetview Tool.png" alt="Screenshot of a street view tool interface" style="max-width: 100%; height: auto;">
         <figcaption style="text-align: center;">Using a street view tool to visualize potential urban design changes.</figcaption>
     </figure>
     <figure style="width: 48%;">
-        <img src="../../../public/components/groups/dtbk/Street view Tools_Future Streets.png" alt="Segmented street view image showing potential changes" style="max-width: 100%; height: auto;">
+        <img src="/components/groups/dtbk/Street view Tools_Future Streets.png" alt="Segmented street view image showing potential changes" style="max-width: 100%; height: auto;">
         <figcaption style="text-align: center;">Segmented street view image demonstrating areas for potential interventions.</figcaption>
     </figure>
 </figure>
@@ -163,7 +163,7 @@ For high-risk zones with significant traffic volume, exploring the possibility o
 For example, visualizing changes at the Tillary - Brooklyn Bridge Blvd intersection, highlighting areas like overpasses or tunnels.
 
 <figure style="max-width: 80%; margin: auto; display: block;">
-  <img src="../../../public/components/groups/dtbk/Future Streets_Tillary Brooklyn Bridge Blvd.png" alt="Street view showing Tillary - Brooklyn Bridge Blvd intersection with segmentation" style="max-width: 100%; height: auto;">
+  <img src="/components/groups/dtbk/Future Streets_Tillary Brooklyn Bridge Blvd.png" alt="Street view showing Tillary - Brooklyn Bridge Blvd intersection with segmentation" style="max-width: 100%; height: auto;">
   <figcaption style="text-align: center;">Segmented street view of the Tillary - Brooklyn Bridge Blvd intersection.</figcaption>
 </figure>
 
@@ -171,15 +171,15 @@ Simple pilot solutions could include adding pedestrian-friendly elements like se
 
 <figure style="display: flex; gap: 1rem; justify-content: center;">
     <figure style="width: 31%;">
-        <img src="../../../public/components/groups/dtbk/Pilot Solution_Seating.png" alt="Image of a proposed seating area" style="max-width: 100%; height: auto;">
+        <img src="/components/groups/dtbk/Pilot Solution_Seating.png" alt="Image of a proposed seating area" style="max-width: 100%; height: auto;">
         <figcaption style="text-align: center;">Pilot concept: adding seating.</figcaption>
     </figure>
     <figure style="width: 31%;">
-        <img src="../../../public/components/groups/dtbk/Pilot Solution_Fountain.png" alt="Image of a proposed fountain feature" style="max-width: 100%; height: auto;">
+        <img src="/components/groups/dtbk/Pilot Solution_Fountain.png" alt="Image of a proposed fountain feature" style="max-width: 100%; height: auto;">
         <figcaption style="text-align: center;">Pilot concept: fountain feature.</figcaption>
     </figure>
      <figure style="width: 31%;">
-        <img src="../../../public/components/groups/dtbk/Pilot Solution_Signage.png" alt="Image of proposed directional signage" style="max-width: 100%; height: auto;">
+        <img src="/components/groups/dtbk/Pilot Solution_Signage.png" alt="Image of proposed directional signage" style="max-width: 100%; height: auto;">
         <figcaption style="text-align: center;">Pilot concept: improved signage.</figcaption>
     </figure>
 </figure>
@@ -195,7 +195,7 @@ To move beyond theoretical proposals and understand the potential real-world eff
 Agent-based modeling allows us to simulate individual pedestrian movements and their responses to changes like improved crossings or new walkable paths. We used GAMA to model agents representing people moving within the Downtown Brooklyn area, simulating how many agents would successfully enter the core BID district.
 
 <figure style="max-width: 40%; margin: auto; display: block;">
-  <img src="../../../public/components/groups/dtbk/DTBK Gama Agent.png" alt="Screenshot of a GAMA agent-based model simulation" style="max-width: 100%; height: auto;">
+  <img src="/components/groups/dtbk/DTBK Gama Agent.png" alt="Screenshot of a GAMA agent-based model simulation" style="max-width: 100%; height: auto;">
   <figcaption style="text-align: center;">A GAMA agent-based model simulating pedestrian movements via road weights in Downtown Brooklyn.</figcaption>
 </figure>
 
@@ -203,11 +203,11 @@ Our model grounds agent behavior in reality, using data like open street maps to
 
 <figure style="display: flex; gap: 1rem; justify-content: center;">
     <figure style="width: 48%;">
-        <img src="../../../public/components/groups/dtbk/Gama_DTBK Origin.png" alt="Map showing origins in the GAMA model" style="max-width: 100%; height: auto;">
+        <img src="/components/groups/dtbk/Gama_DTBK Origin.png" alt="Map showing origins in the GAMA model" style="max-width: 100%; height: auto;">
         <figcaption style="text-align: center;">GAMA model visualizing origin points of agents.</figcaption>
     </figure>
      <figure style="width: 48%;">
-        <img src="../../../public/components/groups/dtbk/Gama_Commuting Flow Analysis.png" alt="Map showing commuting flow paths in the GAMA model" style="max-width: 100%; height: auto;">
+        <img src="/components/groups/dtbk/Gama_Commuting Flow Analysis.png" alt="Map showing commuting flow paths in the GAMA model" style="max-width: 100%; height: auto;">
         <figcaption style="text-align: center;">Simulated commuting flow paths in the GAMA model.</figcaption>
     </figure>
 </figure>
@@ -215,7 +215,7 @@ Our model grounds agent behavior in reality, using data like open street maps to
 A key finding from these simulations relates to what we term "highway reluctance"—the perceived difficulty or danger of crossing major arterial roads. Our models incorporate specific logic to account for this barrier, assigning an additional cost to routes that require crossing a highway.
 
 <figure style="max-width: 80%; margin: auto; display: block;">
-  <img src="../../../public/components/groups/dtbk/Highway Barrier Logic.png" alt="Diagram illustrating highway barrier logic in the GAMA model" style="max-width: 100%; height: auto;">
+  <img src="/components/groups/dtbk/Highway Barrier Logic.png" alt="Diagram illustrating highway barrier logic in the GAMA model" style="max-width: 100%; height: auto;">
   <figcaption style="text-align: center;">Logic incorporated into the GAMA model to simulate the impact of highway barriers on pedestrian movement.</figcaption>
 </figure>
 
@@ -223,11 +223,11 @@ Simulations predict that reducing this barrier through interventions like enhanc
 
 <figure style="display: flex; gap: 1rem; justify-content: center;">
     <figure style="width: 48%;">
-        <img src="../../../public/components/groups/dtbk/DTBK Gama Agent_Highway.gif" alt="GAMA simulation GIF showing pedestrian flow with high vs low highway reluctance" style="max-width: 100%; height: auto;">
+        <img src="/components/groups/dtbk/DTBK Gama Agent_Highway.gif" alt="GAMA simulation GIF showing pedestrian flow with high vs low highway reluctance" style="max-width: 100%; height: auto;">
         <figcaption style="text-align: center;">GAMA simulation demonstrating the effect of reduced 'highway reluctance' on pedestrian entry into the BID core.</figcaption>
     </figure>
      <figure style="width: 48%;">
-        <img src="../../../public/components/groups/dtbk/GAMA Agent_Highway Reluctance.png" alt="Graph showing BID visitor rate with high vs low highway reluctance" style="max-width: 100%; height: auto;">
+        <img src="/components/groups/dtbk/GAMA Agent_Highway Reluctance.png" alt="Graph showing BID visitor rate with high vs low highway reluctance" style="max-width: 100%; height: auto;">
         <figcaption style="text-align: center;">Graph comparing BID visitor rates in control (baseline reluctance) vs. treatment (reduced reluctance) GAMA simulations.</figcaption>
     </figure>
 </figure>
@@ -254,21 +254,21 @@ These predictions, derived from data-driven models, offer valuable insights into
 Translating data-driven insights and proposed transformations into actionable urban change requires engaging a diverse array of stakeholders and fostering a process of consensus-building. Traditional public engagement methods, such as town hall meetings, often fail to capture the perspectives of the very people who interact with Downtown Brooklyn daily—the students, commuters, shoppers, and visitors who contribute significantly to its dynamism but may not have the time or means to participate in formal processes. As Robert Perris observed, while the district is shaped by these daily users, their voices are often missing from the decision-making table, which tends to be structured around institutional actors and property owners.
 
 <figure style="max-width: 80%; margin: auto; display: block;">
-  <img src="../../../public/components/groups/dtbk/Who Shapes DTBK_.png" alt="Graphic posing the question 'Who Shapes Downtown Brooklyn?'" style="max-width: 100%; height: auto;">
+  <img src="/components/groups/dtbk/Who Shapes DTBK_.png" alt="Graphic posing the question 'Who Shapes Downtown Brooklyn?'" style="max-width: 100%; height: auto;">
   <figcaption style="text-align: center;">Thousands move through DTBK daily, yet they aren't systematically engaged in its design.</figcaption>
 </figure>
 
 The current planning process often focuses on institutional stakeholders, leaving out the daily users whose experiences are critical to understanding the district's public realm.
 
 <figure style="max-width: 80%; margin: auto; display: block;">
-  <img src="../../../public/components/groups/dtbk/Who participates in the planning process.png" alt="Diagram showing stakeholders in planning process, highlighting who is included vs excluded" style="max-width: 100%; height: auto;">
+  <img src="/components/groups/dtbk/Who participates in the planning process.png" alt="Diagram showing stakeholders in planning process, highlighting who is included vs excluded" style="max-width: 100%; height: auto;">
   <figcaption style="text-align: center;">Engagement is often structured around institutions, not the diverse people who use the space daily.</figcaption>
 </figure>
 
 To address this "engagement gap," we propose **StreetStudio**, a system designed to bring the decision-making process directly to the street, meeting people where they are and making participation easy and accessible.
 
 <figure style="max-width: 80%; margin: auto; display: block;">
-  <img src="../../../public/components/groups/dtbk/Introducing Streetstudio.png" alt="Concept graphic for StreetStudio" style="max-width: 100%; height: auto;">
+  <img src="/components/groups/dtbk/Introducing Streetstudio.png" alt="Concept graphic for StreetStudio" style="max-width: 100%; height: auto;">
   <figcaption style="text-align: center;">Introducing StreetStudio: A Walkable Co-Design System.</figcaption>
 </figure>
 
@@ -279,7 +279,7 @@ Complementing these methods would be **Mobile & Text Polling**, allowing individ
 The data collected through these methods would feed into **Transparent Dashboards**, accessible to key stakeholders.
 
 <figure style="max-width: 80%; margin: auto; display: block;">
-  <img src="../../../public/components/groups/dtbk/Street studio dashboard.png" alt="Concept graphic for the StreetStudio Dashboard" style="max-width: 100%; height: auto;">
+  <img src="/components/groups/dtbk/Street studio dashboard.png" alt="Concept graphic for the StreetStudio Dashboard" style="max-width: 100%; height: auto;">
   <figcaption style="text-align: center;">The StreetStudio Dashboard makes participation visible and links feedback to data.</figcaption>
 </figure>
 
@@ -288,7 +288,7 @@ These dashboards would visualize design preferences by location, allow filtering
 Identifying and engaging the "Agents of Change" is crucial for implementation. These include the **DBP and city agencies** (such as DOT and SBS), who would utilize the aggregated dashboard analytics for planning and resource allocation. **Business Owners** would receive targeted alerts and summaries related to their immediate surroundings (sidewalk conditions, foot traffic patterns). **Residents, Students, and Visitors**—the everyday users—would engage through the low-barrier StreetStudio tools. **Academic Partners** and civic tech groups could leverage the data for further analysis and research, while **Advocacy Groups** could use the transparent dashboard to monitor changes and ensure the representation of diverse community needs, including accessibility and language considerations. The goal is to create a continuous feedback loop where insights from the street directly inform planning and decision-making, making the process more responsive, representative, and ultimately, building greater trust and shared ownership in the future of Downtown Brooklyn.
 
 <figure style="max-width: 80%; margin: auto; display: block;">
-  <img src="../../../public/components/groups/dtbk/Agents of Change.png" alt="Diagram illustrating Agents of Change and how to engage them" style="max-width: 100%; height: auto;">
+  <img src="/components/groups/dtbk/Agents of Change.png" alt="Diagram illustrating Agents of Change and how to engage them" style="max-width: 100%; height: auto;">
   <figcaption style="text-align: center;">Identifying the key stakeholders who can influence or implement proposed interventions.</figcaption>
 </figure>
 
