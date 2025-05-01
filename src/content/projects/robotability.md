@@ -12,9 +12,9 @@ projectName: "Robotability Project"
 location: "Urban Environments"
 yearEstablished: 2023
 
-featured: true
-draft: false
-revisionMode: true
+featured: false
+draft: true
+revisionMode: false
 tags: ["Robotics", "Urban Design", "Accessibility", "Smart Cities", "Automation"]
 
 insightComponents: [
