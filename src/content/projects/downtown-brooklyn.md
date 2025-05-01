@@ -14,7 +14,7 @@ yearEstablished: 2006
 # Content Classification
 featured: true
 draft: false
-revisionMode: true
+revisionMode: false
 tags: ["Commercial Hub", "Education", "Cultural District", "Urban Development"]
 
 # Visualization Component References

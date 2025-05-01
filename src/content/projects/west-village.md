@@ -14,7 +14,7 @@ yearEstablished: 2007
 # Content Classification
 featured: true
 draft: false
-revisionMode: true
+revisionMode: false
 tags: ["Historic District", "Retail", "Tourism", "Cultural Heritage"]
 
 # Visualization Component References - empty arrays to be filled by students

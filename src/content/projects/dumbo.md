@@ -14,7 +14,7 @@ yearEstablished: 2006
 # Content Classification
 featured: true
 draft: false
-revisionMode: true
+revisionMode: false
 tags: ["Tech Hub", "Arts", "Waterfront", "Historic Industrial"]
 
 # Visualization Component References - empty arrays to be filled by students

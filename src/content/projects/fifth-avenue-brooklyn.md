@@ -14,7 +14,7 @@ yearEstablished: 1992
 # Content Classification
 featured: true
 draft: false
-revisionMode: true
+revisionMode: false
 tags: ["Retail", "Small Business", "Community Development"]
 
 # Visualization Component References - empty arrays to be filled by students

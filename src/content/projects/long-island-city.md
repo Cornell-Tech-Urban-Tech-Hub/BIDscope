@@ -15,7 +15,7 @@ yearEstablished: 2005
 # Content Classification
 featured: true
 draft: false
-revisionMode: true
+revisionMode: false
 tags: ["Mixed-Use Development", "Arts District", "Waterfront", "Innovation Hub"]
 
 # Visualization Component References - empty arrays to be filled by students
